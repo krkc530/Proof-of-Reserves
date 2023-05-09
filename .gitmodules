@@ -1,0 +1,3 @@
+[submodule "server/napirs-legogroth16"]
+	path = server/napirs-legogroth16
+	url = https://github.com/kyoungbinkim/napirs-legogroth16.git

@@ -1,0 +1,20 @@
+{
+  "name": "proof-of-reserves",
+  "version": "1.0.0",
+  "description": "new proof of reserves impl",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyoungbinkim/Proof-of-Reserves.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kyoungbinkim/Proof-of-Reserves/issues"
+  },
+  "homepage": "https://github.com/kyoungbinkim/Proof-of-Reserves#readme"
+}
