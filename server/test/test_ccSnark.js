@@ -9,36 +9,33 @@ describe('legoro16 test', () => {
             path.resolve('../napirs-legogroth16/circom/bn128/range_proof.r1cs'),
             1,
             randomNumber(),
-            path.resolve('./pk.bin'),
-            path.resolve('./vk.bin')
+            path.resolve('./crs/pk.bin'),
+            path.resolve('./crs/vk.bin')
         );
     })
 
     it('test prove', async () => {
-        legogro16.proveRangeBn128(
-            path.resolve('../napirs-legogroth16/circom/bn128/range_proof.r1cs'),
-            path.resolve('../napirs-legogroth16/circom/bn128/range_proof.wasm'),
-            path.resolve('./pk.bin'),
-            path.resolve('./proof.bin'),
-            '0x123123ff',
-            randomNumber()
-        );
-
-        console.log('test proof : ', JSON.parse(legogro16.getProofBn128(path.resolve('./proof.bin'))));
+        for(let i = 0; i < 10; i++) {
+            const proofPath = './proof/proof' + i + '.bin';
+            const value = randomNumber().toString(16);
+            console.log(i, "th value : ", value);
+            legogro16.proveRangeBn128(
+                path.resolve('../napirs-legogroth16/circom/bn128/range_proof.r1cs'),
+                path.resolve('../napirs-legogroth16/circom/bn128/range_proof.wasm'),
+                path.resolve('./crs/pk.bin'),
+                path.resolve(proofPath),
+                value,
+                randomNumber()
+            );
+    
+            console.log('test proof : ', JSON.parse(legogro16.getProofBn128(path.resolve(proofPath))));
+        }
     })
-
+    
     it('test verify', async () => {
         const verifyResult  = legogro16.verifyRangeBn128(
-            path.resolve('./vk.bin'),
-            path.resolve('./proof.bin'),
-        );
-        console.log('test verify\t: ', verifyResult);
-    })
-
-    it('test verify invalid proof', () => {
-        const verifyResult  = legogro16.verifyRangeBn128(
-            path.resolve('./vk.bin'),
-            path.resolve('./invalidProof.bin'),
+            path.resolve('./crs/vk.bin'),
+            path.resolve('./proof/proof1.bin'),
         );
         console.log('test verify\t: ', verifyResult);
     })
