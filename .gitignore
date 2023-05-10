@@ -131,4 +131,8 @@ dist
 
 
 server/test/*.bin
+server/test/crs/*.bin
+server/test/proof/*.bin
 server/test/*.json
+server/test/crs/*.json
+server/test/proof/*.json
