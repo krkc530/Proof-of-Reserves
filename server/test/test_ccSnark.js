@@ -28,10 +28,19 @@ describe('legoro16 test', () => {
     })
 
     it('test verify', async () => {
-        legogro16.verifyRangeBn128(
+        const verifyResult  = legogro16.verifyRangeBn128(
             path.resolve('./vk.bin'),
             path.resolve('./proof.bin'),
         );
+        console.log('test verify\t: ', verifyResult);
+    })
+
+    it('test verify invalid proof', () => {
+        const verifyResult  = legogro16.verifyRangeBn128(
+            path.resolve('./vk.bin'),
+            path.resolve('./invalidProof.bin'),
+        );
+        console.log('test verify\t: ', verifyResult);
     })
 })
 
