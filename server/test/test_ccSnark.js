@@ -3,14 +3,19 @@ import path from 'path';
 
 describe('legoro16 test', () => {
 
+    const r1csPath = path.resolve('../napirs-legogroth16/circom/bn128/range_proof.r1cs')
+    const wasmPath = path.resolve('../napirs-legogroth16/circom/bn128/range_proof.wasm');
+    const pkPath = path.resolve('./crs/pk.bin')
+    const vkPath = path.resolve('./crs/vk.bin')
+
+
     it('test setup',  async () => {
-        console.log(path.resolve('../napirs-legogroth16/circom/bn128/range_proof.r1cs'))
         legogro16.setupFromCircomR1CsBn128(
-            path.resolve('../napirs-legogroth16/circom/bn128/range_proof.r1cs'),
+            r1csPath,
             1,
             randomNumber(),
-            path.resolve('./crs/pk.bin'),
-            path.resolve('./crs/vk.bin')
+            pkPath,
+            vkPath
         );
     })
 
@@ -18,11 +23,11 @@ describe('legoro16 test', () => {
         for(let i = 0; i < 10; i++) {
             const proofPath = './proof/proof' + i + '.bin';
             const value = randomNumber().toString(16);
-            console.log(i, "th value : ", value);
+
             legogro16.proveRangeBn128(
-                path.resolve('../napirs-legogroth16/circom/bn128/range_proof.r1cs'),
-                path.resolve('../napirs-legogroth16/circom/bn128/range_proof.wasm'),
-                path.resolve('./crs/pk.bin'),
+                r1csPath,
+                wasmPath,
+                pkPath,
                 path.resolve(proofPath),
                 value,
                 randomNumber()
@@ -34,7 +39,7 @@ describe('legoro16 test', () => {
     
     it('test verify', async () => {
         const verifyResult  = legogro16.verifyRangeBn128(
-            path.resolve('./crs/vk.bin'),
+            vkPath,
             path.resolve('./proof/proof1.bin'),
         );
         console.log('test verify\t: ', verifyResult);
