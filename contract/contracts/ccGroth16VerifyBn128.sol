@@ -26,8 +26,7 @@ library ccGroth16BN128 {
 
     // Verification equation:
     //      A*B = alpha*beta + C*dela + D*gamma 
-
-    // ccSNARK
+    // ccSNARK dose not have inputs, inputs are embeded at D
 
     function _verify(
         uint256[] storage vk,
@@ -38,5 +37,26 @@ library ccGroth16BN128 {
     {
         require(proof.length == 10, "Invalid proof length");
         require(vk.length ==  14, "Invalid vk length");
+
+        Pairing.G1Point memory A = Pairing.G1Point(proof[0], proof[1]);
+        Pairing.G2Point memory B = Pairing.G2Point(proof[2], proof[3], proof[4], proof[5]);
+        Pairing.G1Point memory C = Pairing.G1Point(proof[6], proof[7]);
+        Pairing.G1Point memory D = Pairing.G1Point(proof[8], proof[9]);
+
+        Pairing.G1Point memory alpha = Pairing.G1Point(vk[0], vk[1]);
+        Pairing.G2Point memory beta = Pairing.G2Point(vk[2], vk[3], vk[4], vk[5]);
+        Pairing.G2Point memory gamma = Pairing.G2Point(vk[6], vk[7], vk[8], vk[9]);
+        Pairing.G2Point memory delta = Pairing.G2Point(vk[10], vk[11], vk[12], vk[13]);
+
+        return Pairing.pairingProd4(
+            A,
+            B,
+            alpha,
+            beta,
+            C,
+            delta,
+            D,
+            gamma
+        );
     }
 }

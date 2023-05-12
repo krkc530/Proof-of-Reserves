@@ -1,0 +1,2559 @@
+{
+  "contractName": "ccGroth16BN128",
+  "abi": [],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ccGroth16VerifyBn128.sol\":\"ccGroth16BN128\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/PairingBn128.sol\":{\"keccak256\":\"0xfd541605100993acfdb38742a9e67d2b9ba374ce7fbcf4beb6f21c2ebb0c98bc\",\"license\":\"LGPL-3.0+\",\"urls\":[\"bzz-raw://4e53a24f870b3be9e4771ff55a389b1fdde9aa33ae60df811814a29851072d3d\",\"dweb:/ipfs/QmQEKuEj19ALJDaAAUZBXbhB6cjKEivZcfBEdoBGTMKQ45\"]},\"project:/contracts/ccGroth16VerifyBn128.sol\":{\"keccak256\":\"0xc92e62466dcaa081e87d06b1248b0b3bbfcaac157fa281cb77f561c169935f83\",\"license\":\"LGPL-3.0+\",\"urls\":[\"bzz-raw://595a12c861b554b7ea012c8d0c6352143f5b52c97a3fce2270675b1c4a5ac2eb\",\"dweb:/ipfs/QmY8ET22a5i8JYYX9FtSJfuLMWkKM2NN3XEYVwqbwL4qWS\"]}},\"version\":1}",
+  "bytecode": "0x60566050600b82828239805160001a6073146043577f4e487b7100000000000000000000000000000000000000000000000000000000600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212200a9d681ffe48389daec5ce9355b7d972fb6315c9f4f2cfd6f42bc0b7ea99000a64736f6c63430008110033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212200a9d681ffe48389daec5ce9355b7d972fb6315c9f4f2cfd6f42bc0b7ea99000a64736f6c63430008110033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "94:1826:1:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "94:1826:1:-:0;;;;;;;;",
+  "source": "// SPDX-License-Identifier: LGPL-3.0+\npragma solidity ^0.8.2;\n\nimport \"./PairingBn128.sol\";\n\n\nlibrary ccGroth16BN128 {\n\n    uint256 internal constant _PRIME_R =\n        // solhint-disable-next-line max-line-length\n        21888242871839275222246405745257275088548364400416034343698204186575808495617;\n\n    // BN128 에서는 G1이 2개의 uint256로 구성되어 있고, G2는 4개의 uint256로 구성되어 있다.\n\n    // VerifyingKey : \n    //      uint256[2] alpha    : G_1\n    //      uint256[2] beta     : G_2\n    //      uint256[2] gamma    : G_2\n    //      uint256[2] delta    : G_2\n\n    // Proof : \n    //      uint256[2] A    : G_1\n    //      uint256[4] B    : G_2\n    //      uint256[2] C    : G_1\n    //      uint256[2] D    : G_1\n\n    // Verification equation:\n    //      A*B = alpha*beta + C*dela + D*gamma \n\n    // ccSNARK\n\n    function _verify(\n        uint256[] storage vk,\n        uint256[] memory proof\n    )\n        internal\n        returns (bool)\n    {\n        require(proof.length == 10, \"Invalid proof length\");\n        require(vk.length ==  14, \"Invalid vk length\");\n\n        Pairing.G1Point memory A = Pairing.G1Point(proof[0], proof[1]);\n        Pairing.G2Point memory B = Pairing.G2Point(proof[2], proof[3], proof[4], proof[5]);\n        Pairing.G1Point memory C = Pairing.G1Point(proof[6], proof[7]);\n        Pairing.G1Point memory D = Pairing.G1Point(proof[8], proof[9]);\n\n        Pairing.G1Point memory alpha = Pairing.G1Point(vk[0], vk[1]);\n        Pairing.G2Point memory beta = Pairing.G2Point(vk[2], vk[3], vk[4], vk[5]);\n        Pairing.G2Point memory gamma = Pairing.G2Point(vk[6], vk[7], vk[8], vk[9]);\n        Pairing.G2Point memory delta = Pairing.G2Point(vk[10], vk[11], vk[12], vk[13]);\n\n        return Pairing.pairingProd4(\n            A,\n            B,\n            alpha,\n            beta,\n            C,\n            delta,\n            D,\n            gamma\n        );\n    }\n}",
+  "sourcePath": "/Users/kim/Proof-of-Reserves/contract/contracts/ccGroth16VerifyBn128.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/ccGroth16VerifyBn128.sol",
+    "exportedSymbols": {
+      "Pairing": [
+        613
+      ],
+      "ccGroth16BN128": [
+        804
+      ]
+    },
+    "id": 805,
+    "license": "LGPL-3.0+",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 615,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "38:23:1"
+      },
+      {
+        "absolutePath": "project:/contracts/PairingBn128.sol",
+        "file": "./PairingBn128.sol",
+        "id": 616,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 805,
+        "sourceUnit": 614,
+        "src": "63:28:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "ccGroth16BN128",
+        "contractDependencies": [],
+        "contractKind": "library",
+        "fullyImplemented": true,
+        "id": 804,
+        "linearizedBaseContracts": [
+          804
+        ],
+        "name": "ccGroth16BN128",
+        "nameLocation": "102:14:1",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": true,
+            "id": 619,
+            "mutability": "constant",
+            "name": "_PRIME_R",
+            "nameLocation": "150:8:1",
+            "nodeType": "VariableDeclaration",
+            "scope": 804,
+            "src": "124:175:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 617,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "124:7:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": {
+              "hexValue": "3231383838323432383731383339323735323232323436343035373435323537323735303838353438333634343030343136303334333433363938323034313836353735383038343935363137",
+              "id": 618,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "222:77:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_rational_21888242871839275222246405745257275088548364400416034343698204186575808495617_by_1",
+                "typeString": "int_const 2188...(69 digits omitted)...5617"
+              },
+              "value": "21888242871839275222246405745257275088548364400416034343698204186575808495617"
+            },
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 802,
+              "nodeType": "Block",
+              "src": "976:942:1",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "id": 634,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "expression": {
+                            "id": 631,
+                            "name": "proof",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 625,
+                            "src": "994:5:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                              "typeString": "uint256[] memory"
+                            }
+                          },
+                          "id": 632,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberLocation": "1000:6:1",
+                          "memberName": "length",
+                          "nodeType": "MemberAccess",
+                          "src": "994:12:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "hexValue": "3130",
+                          "id": 633,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1010:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_10_by_1",
+                            "typeString": "int_const 10"
+                          },
+                          "value": "10"
+                        },
+                        "src": "994:18:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "496e76616c69642070726f6f66206c656e677468",
+                        "id": 635,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1014:22:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_a384685b2d9864ca58af3cdeb11675a5eb31234b321579291672bb93c38d256c",
+                          "typeString": "literal_string \"Invalid proof length\""
+                        },
+                        "value": "Invalid proof length"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_a384685b2d9864ca58af3cdeb11675a5eb31234b321579291672bb93c38d256c",
+                          "typeString": "literal_string \"Invalid proof length\""
+                        }
+                      ],
+                      "id": 630,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        4294967278,
+                        4294967278
+                      ],
+                      "referencedDeclaration": 4294967278,
+                      "src": "986:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 636,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "986:51:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 637,
+                  "nodeType": "ExpressionStatement",
+                  "src": "986:51:1"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "id": 642,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "expression": {
+                            "id": 639,
+                            "name": "vk",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 622,
+                            "src": "1055:2:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                              "typeString": "uint256[] storage pointer"
+                            }
+                          },
+                          "id": 640,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberLocation": "1058:6:1",
+                          "memberName": "length",
+                          "nodeType": "MemberAccess",
+                          "src": "1055:9:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "hexValue": "3134",
+                          "id": 641,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1069:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_14_by_1",
+                            "typeString": "int_const 14"
+                          },
+                          "value": "14"
+                        },
+                        "src": "1055:16:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "496e76616c696420766b206c656e677468",
+                        "id": 643,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1073:19:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_a20d9bf9f3faaa4398dcb2e6d3531d16c6e91326d342df8e1a8cdaa3069f8247",
+                          "typeString": "literal_string \"Invalid vk length\""
+                        },
+                        "value": "Invalid vk length"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_a20d9bf9f3faaa4398dcb2e6d3531d16c6e91326d342df8e1a8cdaa3069f8247",
+                          "typeString": "literal_string \"Invalid vk length\""
+                        }
+                      ],
+                      "id": 638,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        4294967278,
+                        4294967278
+                      ],
+                      "referencedDeclaration": 4294967278,
+                      "src": "1047:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 644,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1047:46:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 645,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1047:46:1"
+                },
+                {
+                  "assignments": [
+                    650
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 650,
+                      "mutability": "mutable",
+                      "name": "A",
+                      "nameLocation": "1127:1:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 802,
+                      "src": "1104:24:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                        "typeString": "struct Pairing.G1Point"
+                      },
+                      "typeName": {
+                        "id": 649,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 648,
+                          "name": "Pairing.G1Point",
+                          "nameLocations": [
+                            "1104:7:1",
+                            "1112:7:1"
+                          ],
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 7,
+                          "src": "1104:15:1"
+                        },
+                        "referencedDeclaration": 7,
+                        "src": "1104:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G1Point_$7_storage_ptr",
+                          "typeString": "struct Pairing.G1Point"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 660,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "baseExpression": {
+                          "id": 653,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1147:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 655,
+                        "indexExpression": {
+                          "hexValue": "30",
+                          "id": 654,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1153:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_0_by_1",
+                            "typeString": "int_const 0"
+                          },
+                          "value": "0"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1147:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 656,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1157:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 658,
+                        "indexExpression": {
+                          "hexValue": "31",
+                          "id": 657,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1163:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_1_by_1",
+                            "typeString": "int_const 1"
+                          },
+                          "value": "1"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1157:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 651,
+                        "name": "Pairing",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 613,
+                        "src": "1131:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_Pairing_$613_$",
+                          "typeString": "type(library Pairing)"
+                        }
+                      },
+                      "id": 652,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1139:7:1",
+                      "memberName": "G1Point",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 7,
+                      "src": "1131:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_G1Point_$7_storage_ptr_$",
+                        "typeString": "type(struct Pairing.G1Point storage pointer)"
+                      }
+                    },
+                    "id": 659,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1131:35:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                      "typeString": "struct Pairing.G1Point memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1104:62:1"
+                },
+                {
+                  "assignments": [
+                    665
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 665,
+                      "mutability": "mutable",
+                      "name": "B",
+                      "nameLocation": "1199:1:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 802,
+                      "src": "1176:24:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                        "typeString": "struct Pairing.G2Point"
+                      },
+                      "typeName": {
+                        "id": 664,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 663,
+                          "name": "Pairing.G2Point",
+                          "nameLocations": [
+                            "1176:7:1",
+                            "1184:7:1"
+                          ],
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 16,
+                          "src": "1176:15:1"
+                        },
+                        "referencedDeclaration": 16,
+                        "src": "1176:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G2Point_$16_storage_ptr",
+                          "typeString": "struct Pairing.G2Point"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 681,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "baseExpression": {
+                          "id": 668,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1219:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 670,
+                        "indexExpression": {
+                          "hexValue": "32",
+                          "id": 669,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1225:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_2_by_1",
+                            "typeString": "int_const 2"
+                          },
+                          "value": "2"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1219:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 671,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1229:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 673,
+                        "indexExpression": {
+                          "hexValue": "33",
+                          "id": 672,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1235:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_3_by_1",
+                            "typeString": "int_const 3"
+                          },
+                          "value": "3"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1229:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 674,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1239:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 676,
+                        "indexExpression": {
+                          "hexValue": "34",
+                          "id": 675,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1245:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_4_by_1",
+                            "typeString": "int_const 4"
+                          },
+                          "value": "4"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1239:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 677,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1249:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 679,
+                        "indexExpression": {
+                          "hexValue": "35",
+                          "id": 678,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1255:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_5_by_1",
+                            "typeString": "int_const 5"
+                          },
+                          "value": "5"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1249:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 666,
+                        "name": "Pairing",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 613,
+                        "src": "1203:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_Pairing_$613_$",
+                          "typeString": "type(library Pairing)"
+                        }
+                      },
+                      "id": 667,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1211:7:1",
+                      "memberName": "G2Point",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 16,
+                      "src": "1203:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_G2Point_$16_storage_ptr_$",
+                        "typeString": "type(struct Pairing.G2Point storage pointer)"
+                      }
+                    },
+                    "id": 680,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1203:55:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                      "typeString": "struct Pairing.G2Point memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1176:82:1"
+                },
+                {
+                  "assignments": [
+                    686
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 686,
+                      "mutability": "mutable",
+                      "name": "C",
+                      "nameLocation": "1291:1:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 802,
+                      "src": "1268:24:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                        "typeString": "struct Pairing.G1Point"
+                      },
+                      "typeName": {
+                        "id": 685,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 684,
+                          "name": "Pairing.G1Point",
+                          "nameLocations": [
+                            "1268:7:1",
+                            "1276:7:1"
+                          ],
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 7,
+                          "src": "1268:15:1"
+                        },
+                        "referencedDeclaration": 7,
+                        "src": "1268:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G1Point_$7_storage_ptr",
+                          "typeString": "struct Pairing.G1Point"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 696,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "baseExpression": {
+                          "id": 689,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1311:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 691,
+                        "indexExpression": {
+                          "hexValue": "36",
+                          "id": 690,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1317:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_6_by_1",
+                            "typeString": "int_const 6"
+                          },
+                          "value": "6"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1311:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 692,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1321:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 694,
+                        "indexExpression": {
+                          "hexValue": "37",
+                          "id": 693,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1327:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_7_by_1",
+                            "typeString": "int_const 7"
+                          },
+                          "value": "7"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1321:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 687,
+                        "name": "Pairing",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 613,
+                        "src": "1295:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_Pairing_$613_$",
+                          "typeString": "type(library Pairing)"
+                        }
+                      },
+                      "id": 688,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1303:7:1",
+                      "memberName": "G1Point",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 7,
+                      "src": "1295:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_G1Point_$7_storage_ptr_$",
+                        "typeString": "type(struct Pairing.G1Point storage pointer)"
+                      }
+                    },
+                    "id": 695,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1295:35:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                      "typeString": "struct Pairing.G1Point memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1268:62:1"
+                },
+                {
+                  "assignments": [
+                    701
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 701,
+                      "mutability": "mutable",
+                      "name": "D",
+                      "nameLocation": "1363:1:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 802,
+                      "src": "1340:24:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                        "typeString": "struct Pairing.G1Point"
+                      },
+                      "typeName": {
+                        "id": 700,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 699,
+                          "name": "Pairing.G1Point",
+                          "nameLocations": [
+                            "1340:7:1",
+                            "1348:7:1"
+                          ],
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 7,
+                          "src": "1340:15:1"
+                        },
+                        "referencedDeclaration": 7,
+                        "src": "1340:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G1Point_$7_storage_ptr",
+                          "typeString": "struct Pairing.G1Point"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 711,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "baseExpression": {
+                          "id": 704,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1383:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 706,
+                        "indexExpression": {
+                          "hexValue": "38",
+                          "id": 705,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1389:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_8_by_1",
+                            "typeString": "int_const 8"
+                          },
+                          "value": "8"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1383:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 707,
+                          "name": "proof",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 625,
+                          "src": "1393:5:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                            "typeString": "uint256[] memory"
+                          }
+                        },
+                        "id": 709,
+                        "indexExpression": {
+                          "hexValue": "39",
+                          "id": 708,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1399:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_9_by_1",
+                            "typeString": "int_const 9"
+                          },
+                          "value": "9"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1393:8:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 702,
+                        "name": "Pairing",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 613,
+                        "src": "1367:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_Pairing_$613_$",
+                          "typeString": "type(library Pairing)"
+                        }
+                      },
+                      "id": 703,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1375:7:1",
+                      "memberName": "G1Point",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 7,
+                      "src": "1367:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_G1Point_$7_storage_ptr_$",
+                        "typeString": "type(struct Pairing.G1Point storage pointer)"
+                      }
+                    },
+                    "id": 710,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1367:35:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                      "typeString": "struct Pairing.G1Point memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1340:62:1"
+                },
+                {
+                  "assignments": [
+                    716
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 716,
+                      "mutability": "mutable",
+                      "name": "alpha",
+                      "nameLocation": "1436:5:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 802,
+                      "src": "1413:28:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                        "typeString": "struct Pairing.G1Point"
+                      },
+                      "typeName": {
+                        "id": 715,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 714,
+                          "name": "Pairing.G1Point",
+                          "nameLocations": [
+                            "1413:7:1",
+                            "1421:7:1"
+                          ],
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 7,
+                          "src": "1413:15:1"
+                        },
+                        "referencedDeclaration": 7,
+                        "src": "1413:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G1Point_$7_storage_ptr",
+                          "typeString": "struct Pairing.G1Point"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 726,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "baseExpression": {
+                          "id": 719,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1460:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 721,
+                        "indexExpression": {
+                          "hexValue": "30",
+                          "id": 720,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1463:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_0_by_1",
+                            "typeString": "int_const 0"
+                          },
+                          "value": "0"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1460:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 722,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1467:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 724,
+                        "indexExpression": {
+                          "hexValue": "31",
+                          "id": 723,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1470:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_1_by_1",
+                            "typeString": "int_const 1"
+                          },
+                          "value": "1"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1467:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 717,
+                        "name": "Pairing",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 613,
+                        "src": "1444:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_Pairing_$613_$",
+                          "typeString": "type(library Pairing)"
+                        }
+                      },
+                      "id": 718,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1452:7:1",
+                      "memberName": "G1Point",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 7,
+                      "src": "1444:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_G1Point_$7_storage_ptr_$",
+                        "typeString": "type(struct Pairing.G1Point storage pointer)"
+                      }
+                    },
+                    "id": 725,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1444:29:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                      "typeString": "struct Pairing.G1Point memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1413:60:1"
+                },
+                {
+                  "assignments": [
+                    731
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 731,
+                      "mutability": "mutable",
+                      "name": "beta",
+                      "nameLocation": "1506:4:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 802,
+                      "src": "1483:27:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                        "typeString": "struct Pairing.G2Point"
+                      },
+                      "typeName": {
+                        "id": 730,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 729,
+                          "name": "Pairing.G2Point",
+                          "nameLocations": [
+                            "1483:7:1",
+                            "1491:7:1"
+                          ],
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 16,
+                          "src": "1483:15:1"
+                        },
+                        "referencedDeclaration": 16,
+                        "src": "1483:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G2Point_$16_storage_ptr",
+                          "typeString": "struct Pairing.G2Point"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 747,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "baseExpression": {
+                          "id": 734,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1529:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 736,
+                        "indexExpression": {
+                          "hexValue": "32",
+                          "id": 735,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1532:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_2_by_1",
+                            "typeString": "int_const 2"
+                          },
+                          "value": "2"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1529:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 737,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1536:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 739,
+                        "indexExpression": {
+                          "hexValue": "33",
+                          "id": 738,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1539:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_3_by_1",
+                            "typeString": "int_const 3"
+                          },
+                          "value": "3"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1536:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 740,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1543:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 742,
+                        "indexExpression": {
+                          "hexValue": "34",
+                          "id": 741,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1546:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_4_by_1",
+                            "typeString": "int_const 4"
+                          },
+                          "value": "4"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1543:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 743,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1550:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 745,
+                        "indexExpression": {
+                          "hexValue": "35",
+                          "id": 744,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1553:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_5_by_1",
+                            "typeString": "int_const 5"
+                          },
+                          "value": "5"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1550:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 732,
+                        "name": "Pairing",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 613,
+                        "src": "1513:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_Pairing_$613_$",
+                          "typeString": "type(library Pairing)"
+                        }
+                      },
+                      "id": 733,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1521:7:1",
+                      "memberName": "G2Point",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 16,
+                      "src": "1513:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_G2Point_$16_storage_ptr_$",
+                        "typeString": "type(struct Pairing.G2Point storage pointer)"
+                      }
+                    },
+                    "id": 746,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1513:43:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                      "typeString": "struct Pairing.G2Point memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1483:73:1"
+                },
+                {
+                  "assignments": [
+                    752
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 752,
+                      "mutability": "mutable",
+                      "name": "gamma",
+                      "nameLocation": "1589:5:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 802,
+                      "src": "1566:28:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                        "typeString": "struct Pairing.G2Point"
+                      },
+                      "typeName": {
+                        "id": 751,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 750,
+                          "name": "Pairing.G2Point",
+                          "nameLocations": [
+                            "1566:7:1",
+                            "1574:7:1"
+                          ],
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 16,
+                          "src": "1566:15:1"
+                        },
+                        "referencedDeclaration": 16,
+                        "src": "1566:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G2Point_$16_storage_ptr",
+                          "typeString": "struct Pairing.G2Point"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 768,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "baseExpression": {
+                          "id": 755,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1613:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 757,
+                        "indexExpression": {
+                          "hexValue": "36",
+                          "id": 756,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1616:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_6_by_1",
+                            "typeString": "int_const 6"
+                          },
+                          "value": "6"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1613:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 758,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1620:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 760,
+                        "indexExpression": {
+                          "hexValue": "37",
+                          "id": 759,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1623:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_7_by_1",
+                            "typeString": "int_const 7"
+                          },
+                          "value": "7"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1620:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 761,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1627:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 763,
+                        "indexExpression": {
+                          "hexValue": "38",
+                          "id": 762,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1630:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_8_by_1",
+                            "typeString": "int_const 8"
+                          },
+                          "value": "8"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1627:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 764,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1634:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 766,
+                        "indexExpression": {
+                          "hexValue": "39",
+                          "id": 765,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1637:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_9_by_1",
+                            "typeString": "int_const 9"
+                          },
+                          "value": "9"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1634:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 753,
+                        "name": "Pairing",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 613,
+                        "src": "1597:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_Pairing_$613_$",
+                          "typeString": "type(library Pairing)"
+                        }
+                      },
+                      "id": 754,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1605:7:1",
+                      "memberName": "G2Point",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 16,
+                      "src": "1597:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_G2Point_$16_storage_ptr_$",
+                        "typeString": "type(struct Pairing.G2Point storage pointer)"
+                      }
+                    },
+                    "id": 767,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1597:43:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                      "typeString": "struct Pairing.G2Point memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1566:74:1"
+                },
+                {
+                  "assignments": [
+                    773
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 773,
+                      "mutability": "mutable",
+                      "name": "delta",
+                      "nameLocation": "1673:5:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 802,
+                      "src": "1650:28:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                        "typeString": "struct Pairing.G2Point"
+                      },
+                      "typeName": {
+                        "id": 772,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 771,
+                          "name": "Pairing.G2Point",
+                          "nameLocations": [
+                            "1650:7:1",
+                            "1658:7:1"
+                          ],
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 16,
+                          "src": "1650:15:1"
+                        },
+                        "referencedDeclaration": 16,
+                        "src": "1650:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G2Point_$16_storage_ptr",
+                          "typeString": "struct Pairing.G2Point"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 789,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "baseExpression": {
+                          "id": 776,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1697:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 778,
+                        "indexExpression": {
+                          "hexValue": "3130",
+                          "id": 777,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1700:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_10_by_1",
+                            "typeString": "int_const 10"
+                          },
+                          "value": "10"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1697:6:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 779,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1705:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 781,
+                        "indexExpression": {
+                          "hexValue": "3131",
+                          "id": 780,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1708:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_11_by_1",
+                            "typeString": "int_const 11"
+                          },
+                          "value": "11"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1705:6:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 782,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1713:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 784,
+                        "indexExpression": {
+                          "hexValue": "3132",
+                          "id": 783,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1716:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_12_by_1",
+                            "typeString": "int_const 12"
+                          },
+                          "value": "12"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1713:6:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "baseExpression": {
+                          "id": 785,
+                          "name": "vk",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 622,
+                          "src": "1721:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                            "typeString": "uint256[] storage pointer"
+                          }
+                        },
+                        "id": 787,
+                        "indexExpression": {
+                          "hexValue": "3133",
+                          "id": 786,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1724:2:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_13_by_1",
+                            "typeString": "int_const 13"
+                          },
+                          "value": "13"
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1721:6:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 774,
+                        "name": "Pairing",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 613,
+                        "src": "1681:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_Pairing_$613_$",
+                          "typeString": "type(library Pairing)"
+                        }
+                      },
+                      "id": 775,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1689:7:1",
+                      "memberName": "G2Point",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 16,
+                      "src": "1681:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_G2Point_$16_storage_ptr_$",
+                        "typeString": "type(struct Pairing.G2Point storage pointer)"
+                      }
+                    },
+                    "id": 788,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1681:47:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                      "typeString": "struct Pairing.G2Point memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1650:78:1"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 792,
+                        "name": "A",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 650,
+                        "src": "1780:1:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                          "typeString": "struct Pairing.G1Point memory"
+                        }
+                      },
+                      {
+                        "id": 793,
+                        "name": "B",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 665,
+                        "src": "1795:1:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                          "typeString": "struct Pairing.G2Point memory"
+                        }
+                      },
+                      {
+                        "id": 794,
+                        "name": "alpha",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 716,
+                        "src": "1810:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                          "typeString": "struct Pairing.G1Point memory"
+                        }
+                      },
+                      {
+                        "id": 795,
+                        "name": "beta",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 731,
+                        "src": "1829:4:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                          "typeString": "struct Pairing.G2Point memory"
+                        }
+                      },
+                      {
+                        "id": 796,
+                        "name": "C",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 686,
+                        "src": "1847:1:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                          "typeString": "struct Pairing.G1Point memory"
+                        }
+                      },
+                      {
+                        "id": 797,
+                        "name": "delta",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 773,
+                        "src": "1862:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                          "typeString": "struct Pairing.G2Point memory"
+                        }
+                      },
+                      {
+                        "id": 798,
+                        "name": "D",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 701,
+                        "src": "1881:1:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                          "typeString": "struct Pairing.G1Point memory"
+                        }
+                      },
+                      {
+                        "id": 799,
+                        "name": "gamma",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 752,
+                        "src": "1896:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                          "typeString": "struct Pairing.G2Point memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                          "typeString": "struct Pairing.G1Point memory"
+                        },
+                        {
+                          "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                          "typeString": "struct Pairing.G2Point memory"
+                        },
+                        {
+                          "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                          "typeString": "struct Pairing.G1Point memory"
+                        },
+                        {
+                          "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                          "typeString": "struct Pairing.G2Point memory"
+                        },
+                        {
+                          "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                          "typeString": "struct Pairing.G1Point memory"
+                        },
+                        {
+                          "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                          "typeString": "struct Pairing.G2Point memory"
+                        },
+                        {
+                          "typeIdentifier": "t_struct$_G1Point_$7_memory_ptr",
+                          "typeString": "struct Pairing.G1Point memory"
+                        },
+                        {
+                          "typeIdentifier": "t_struct$_G2Point_$16_memory_ptr",
+                          "typeString": "struct Pairing.G2Point memory"
+                        }
+                      ],
+                      "expression": {
+                        "id": 790,
+                        "name": "Pairing",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 613,
+                        "src": "1746:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_Pairing_$613_$",
+                          "typeString": "type(library Pairing)"
+                        }
+                      },
+                      "id": 791,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1754:12:1",
+                      "memberName": "pairingProd4",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 612,
+                      "src": "1746:20:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_G1Point_$7_memory_ptr_$_t_struct$_G2Point_$16_memory_ptr_$_t_struct$_G1Point_$7_memory_ptr_$_t_struct$_G2Point_$16_memory_ptr_$_t_struct$_G1Point_$7_memory_ptr_$_t_struct$_G2Point_$16_memory_ptr_$_t_struct$_G1Point_$7_memory_ptr_$_t_struct$_G2Point_$16_memory_ptr_$returns$_t_bool_$",
+                        "typeString": "function (struct Pairing.G1Point memory,struct Pairing.G2Point memory,struct Pairing.G1Point memory,struct Pairing.G2Point memory,struct Pairing.G1Point memory,struct Pairing.G2Point memory,struct Pairing.G1Point memory,struct Pairing.G2Point memory) returns (bool)"
+                      }
+                    },
+                    "id": 800,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1746:165:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 629,
+                  "id": 801,
+                  "nodeType": "Return",
+                  "src": "1739:172:1"
+                }
+              ]
+            },
+            "id": 803,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "_verify",
+            "nameLocation": "856:7:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 626,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 622,
+                  "mutability": "mutable",
+                  "name": "vk",
+                  "nameLocation": "891:2:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 803,
+                  "src": "873:20:1",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 620,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "873:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 621,
+                    "nodeType": "ArrayTypeName",
+                    "src": "873:9:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 625,
+                  "mutability": "mutable",
+                  "name": "proof",
+                  "nameLocation": "920:5:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 803,
+                  "src": "903:22:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 623,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "903:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 624,
+                    "nodeType": "ArrayTypeName",
+                    "src": "903:9:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "863:68:1"
+            },
+            "returnParameters": {
+              "id": 629,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 628,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 803,
+                  "src": "966:4:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 627,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "966:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "965:6:1"
+            },
+            "scope": 804,
+            "src": "847:1071:1",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 805,
+        "src": "94:1826:1",
+        "usedErrors": []
+      }
+    ],
+    "src": "38:1882:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.17+commit.8df45f5f.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.11",
+  "updatedAt": "2023-05-12T02:48:56.355Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
