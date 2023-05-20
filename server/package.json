@@ -12,6 +12,7 @@
   "dependencies": {
     "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "voca": "^1.4.0"
   }
 }

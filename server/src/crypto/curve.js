@@ -82,6 +82,16 @@ class MontgomeryCurve{
         return new AffinePoint(newX, newY);
     }
 
+    addAffineG1(p1, p2) {
+        let diffY = math.mod((p1.y - p2.y) ,this.prime);
+        let diffX = math.mod((p1.x - p2.x) ,this.prime);
+        let m = this.fieldDivision(diffY, diffX);
+        let x3 = math.mod( m * m - p1.x - p2.x, this.prime);
+        let y3 = math.mod( m * (p1.x - x3) - p1.y, this.prime);
+
+        return new AffinePoint(x3, y3);
+    }
+
     subAffinePoint(p1, p2){
         let negP2 = new AffinePoint(p2.x, math.mod((-p2.y),this.prime));
 

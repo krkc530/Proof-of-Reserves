@@ -1,0 +1,20 @@
+{
+  "name": "contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "testrpc": "node ./node_modules/ganache-cli/cli.js --hardfork istanbul --port 7545 --gasLimit 0xFFFFFFFFFFFFF --gasPrice 1 --defaultBalanceEther 100000000000 --networkId 1234 --account_keys_path keys.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ganache-cli": "^6.12.2",
+    "lodash": "^4.17.21",
+    "solc": "^0.8.20",
+    "voca": "^1.4.0"
+  }
+}
