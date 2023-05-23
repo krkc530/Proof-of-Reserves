@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "testrpc": "node ./node_modules/ganache-cli/cli.js --hardfork istanbul --port 7545 --gasLimit 0xFFFFFFFFFFFFF --gasPrice 1 --defaultBalanceEther 100000000000 --networkId 1234 --account_keys_path keys.json"
+    "testrpc": "node ./node_modules/ganache-cli/cli.js --hardfork istanbul --port 7545 --gasLimit 0x7fffffffffffffff --gasPrice 1 --defaultBalanceEther 100000000000 --networkId 1234 --account_keys_path keys.json",
+    "start" : "node ./node_modules/ganache-cli/cli.js --port 7545 --gasLimit 0x3FFFFFFFFFFFFF --gasPrice 1 --defaultBalanceEther 100000000000 --networkId 1234 --account_keys_path keys.json"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,9 @@
     "ganache-cli": "^6.12.2",
     "lodash": "^4.17.21",
     "solc": "^0.8.20",
-    "voca": "^1.4.0"
+    "truffle": "^5.9.1",
+    "voca": "^1.4.0",
+    "web3": "^1.10.0",
+    "web3-eth-contract": "^1.10.0"
   }
 }

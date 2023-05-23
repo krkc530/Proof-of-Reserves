@@ -1,0 +1,46 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"notice": "https://github.com/ethereum/go-ethereum/blob/master/params/protocol_params.go",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/PairingBn128.sol": "Pairing"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/PairingBn128.sol": {
+			"keccak256": "0x0dc59306a9d02913a33f44c50674d3151ec883265b2b7e0fd942487c91ee5e22",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://66115d908c655f9919c936c3f17e96eb8cb12ddf428e54c70d9a9d18dd1d1fc3",
+				"dweb:/ipfs/QmPR6pLjzJcSkqm45G18Uh2nXth1bHCRs9egY2tcP4E4HW"
+			]
+		}
+	},
+	"version": 1
+}

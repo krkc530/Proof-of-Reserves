@@ -43,7 +43,10 @@ contract("TEST ProofOfReservesContract", (accounts) => {
       
       
       const verify = await ins.test_verify.call(
-        proofContractFormat
+        proofContractFormat,{
+          from : accounts[0],
+          gas : "0x1f800000000f00"
+        }
       );
       console.log(verify);
     })

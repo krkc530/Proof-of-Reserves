@@ -27,6 +27,12 @@ const parseG2 = (g2String) => {
 
     result = result.map(x => BigInt(x))
 
+    for(i=0;i<result.length;i+=2){
+        let tmp = result[i];
+        result[i] = result[i+1];
+        result[i+1] = tmp;
+    }
+
     return result;
 }
 
@@ -90,8 +96,6 @@ console.log("params : ", params);
 console.log("params length : ", params.length);
 
 module.exports = function (deployer) {
-    deployer.deploy(pairingBN128Lib);
-    deployer.link(pairingBN128Lib, ccGroth16Bn128Lib);
     deployer.deploy(ccGroth16Bn128Lib);
     deployer.link(ccGroth16Bn128Lib, proofOfReserves);
     deployer.deploy(proofOfReserves, params);
