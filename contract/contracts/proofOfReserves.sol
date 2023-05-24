@@ -23,8 +23,6 @@ contract ProofOfReservesContract {
         verifyingKey = _vk;
     }
 
-    // constructor(){}
-
     function test_verify(
         uint256[] memory proof
     ) 
