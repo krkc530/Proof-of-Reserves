@@ -18,3 +18,32 @@ $ yarn install
 $ yarn build --release
 ```
 
+3. install contract package
+```
+$ cd contract
+$ npm i
+```
+
+4. install server package
+```
+$ cd server
+$ npm i
+```
+-------------
+### run ganache block chain
+
+```
+$ cd contract
+$ npm run build
+$ npm run testrpc
+```
+
+#### run test
+open new terminal and run 
+```
+$ cd contract/test
+$ mocha test_verify_web3.js
+```
+
+
+
