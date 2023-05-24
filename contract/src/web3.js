@@ -55,7 +55,7 @@ const callTestVerify = async (proof) => {
         from: Ganache.getAddress(1),
         gas: "0x1fff0000000bea",
     };
-    const encodedABI = ins.methods.test_verify(proof).encodeABI();
+    const encodedABI = ins.methods.upload_commitment(proof).encodeABI();
     const txCount = await w3.eth.getTransactionCount(Ganache.getAddress(1), 'pending');
     const chainId = await w3.eth.getChainId();
     const rawTx = {
@@ -70,7 +70,7 @@ const callTestVerify = async (proof) => {
             },
         },
     };
-    console.log(rawTx)
+    // console.log(rawTx)
 
     const signedTx = await w3.eth.accounts.signTransaction(rawTx, Ganache.getPrivateKey(1));
     const receipt = await w3.eth.sendSignedTransaction(signedTx.rawTransaction);
@@ -78,13 +78,33 @@ const callTestVerify = async (proof) => {
     return receipt
 }
 
-const getAccountValue = async (addr) =>{
+const getVk = async () => {
+    const vk = await ins.methods.get_vk().call();
+    console.log(vk)
+}
 
+const getAllCommitments = async () => {
+    const commitments = await ins.methods.get_all_commitments().call();
+    console.log(commitments)
+}
+
+const getCommitmentCnt = async () => {
+    const cnt = await ins.methods.get_commitment_cnt().call();
+    console.log(cnt)
+}
+
+const setContractAddr = (addr) => {
+    contractAddr = addr;
+    ins.options.address = contractAddr;
 }
 
 module.exports = {
     deploy,
-    callTestVerify
+    callTestVerify,
+    getVk,
+    getAllCommitments,
+    getCommitmentCnt,
+    setContractAddr
 }
 //8866461766386951
 //9007199254740991

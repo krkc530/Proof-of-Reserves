@@ -42,7 +42,7 @@ contract("TEST ProofOfReservesContract", (accounts) => {
       const proofContractFormat = proofToArr(proof)
       
       
-      const verify = await ins.test_verify.call(
+      const verify = await ins.upload_commitment.call(
         proofContractFormat,{
           from : accounts[0],
           gas : "0x1f800000000f00"

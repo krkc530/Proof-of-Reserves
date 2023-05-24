@@ -25,6 +25,10 @@ describe('test', () => {
         );
     })
 
+    it("test get all commitments", async () => {
+      await web3utils.getAllCommitments();
+    })
+
     it('test verify', async () => {
         await web3utils.callTestVerify(
           [
@@ -41,6 +45,18 @@ describe('test', () => {
           ]
         );
     }) 
+    
+    it("test get vk", async () => {
+        await web3utils.getVk();
+    })
+
+    it("test get all commitments", async () => {
+        await web3utils.getAllCommitments();
+    })
+
+    it("test get commitment cnt", async () => {
+        await web3utils.getCommitmentCnt();
+    })
 })
 
 /*==== TEST ====*/
