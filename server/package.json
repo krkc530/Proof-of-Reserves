@@ -5,14 +5,18 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "nodemon": "nodemon --experimental-specifier-resolution=node index.js --watch ./src"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
+    "nodemon": "^2.0.22",
     "path": "^0.12.7",
-    "voca": "^1.4.0"
+    "voca": "^1.4.0",
+    "web3": "^1.10.0",
+    "web3-eth-contract": "^1.10.0"
   }
 }
