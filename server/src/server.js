@@ -1,11 +1,8 @@
-import config, {
-    initConfig
-} from "./config";
+import config from "./config.js";
 
-import porContract from "./web3";
+import porContract from "./web3/index.js";
 
 const server = async () => {
-    initConfig();
 
     const receipt = await porContract.uploadCommitment(
         config.homePath + 'keys/proof_sw.json'

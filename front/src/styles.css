@@ -95,4 +95,39 @@
   [class$="element"]:hover {
     filter: brightness(90%);
   }
+
+  .main {
+    background-color: #282c34;
+    background-size: auto;
+    min-height: 100vh;
+  }
+
+  .commitment{
+    /* display: flex;
+    flex-direction: column; */
+    width: 80%;
+    height: 80vh;
+    padding: 20px;
+    overflow: scroll;
+  }
+
+  .commitment__element {
+    text-align: left;
+    font-size: 15px;
+    line-height: 2.1;
+    display: flex;
+    /* font-size: small; */
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: aliceblue;
+    overflow: scroll;
+    overflow-x: scroll;
+  }
+
+  .title{
+    margin-top: auto;
+    padding-top: 5vh;
+    text-align: center;
+    color:beige;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
   

@@ -1,3 +1,5 @@
 import server from "./src/server.js";
 
-server();
+
+if(process.argv.length <2) server();
+

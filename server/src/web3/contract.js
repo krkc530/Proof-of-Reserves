@@ -1,7 +1,7 @@
 import _ from "lodash";
-import Ganache from "./ganache";
-import Deploy from "./deploy";
-import Web3Interface from "./web3.interface";
+import Ganache from "./ganache.js";
+import Deploy from "./deploy.js";
+import Web3Interface from "./web3.interface.js";
 import {
     proofFileToContractFormat
 } from "../utils/string.js"

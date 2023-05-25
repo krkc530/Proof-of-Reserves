@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import types, {
     addPrefixHex
-} from '../utils/types'
+} from '../utils/types.js'
 import _ from 'lodash';
 
 export default class Web3Interface extends Web3 {

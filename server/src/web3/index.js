@@ -1,17 +1,19 @@
 import fs from "fs";
-import proofOfReserveContract from "./contract";
-import Ganache from "./ganache";
-import config from "../config";
+import proofOfReserveContract from "./contract.js";
+import Ganache from "./ganache.js";
+import config from "../config.js";
 import {
     vkFileToContractFormat,
 } from "../utils/string.js"
 
 const contractJson = JSON.parse(fs.readFileSync(config.homePath + 'src/web3/ProofOfReservesContract.json', 'utf-8'));
 
+const vkPath = config.homePath + "napirs-legogroth16/json/Proof_vk/VK.json"
+
 const porContract = await proofOfReserveContract.deployAndconstruct(
     Ganache.getAddress(),
     Ganache.getPrivateKey(),
-    vkFileToContractFormat(config.homePath + 'keys/vk_sw.json'),
+    vkFileToContractFormat(vkPath),
     config.testProvider,
     contractJson.abi,
     contractJson.bytecode
