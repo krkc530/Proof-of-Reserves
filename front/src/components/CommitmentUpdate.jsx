@@ -1,5 +1,6 @@
 import "../styles.css";
 import React, { useState } from 'react';
+import { uploadValue } from "../core/http/http";
 
 export default () => {
 
@@ -7,13 +8,18 @@ export default () => {
     const [valueUpdate, setValueUpdate] = useState('');
     const [indexUpdate, setIndexUpdate] = useState('');
     
-    const uploadOnClick = () => {
+    const uploadOnClick = async () => {
         if(isNaN(valueUpload)) {
             console.log(isNaN(valueUpload), valueUpload);
             alert("value must be a number");
             return
         }
-        
+        if(await uploadValue(valueUpload)){
+            alert("Success");
+        }
+        else{
+            alert("Error");
+        }
     }
 
     const updateOnClick = () => {
