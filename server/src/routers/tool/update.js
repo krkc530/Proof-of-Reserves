@@ -4,7 +4,9 @@ import {result} from "lodash";
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/:id/:value', (req, res) => {
+
+    //id 랑 value
 
     check = false;
     console.log("update value", req.body);

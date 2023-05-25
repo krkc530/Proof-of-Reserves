@@ -6,13 +6,14 @@ import proofOfReserveContract from "../../web3/contract.js";
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/:value', (req, res) => {
 
     check = false;
     console.log("new user flag", req.body);
 
     // proof,cm,cmkey 생성
-    legogroth.proof(req.body['index'], req.body['value'], req.body['seed']);
+    // value 만 옴
+    // legogroth.proof(req.params['index'], req.params['value'], req.params['seed']);
 
     // DB에 저장
     connection.query('INSERT INTO list (id,value,random) VALUES (?,?,?)', [
@@ -28,6 +29,7 @@ router.get('/', (req, res) => {
     })
 
     // contract
+    // index 내가
     proofOfReserveContract.uploadCommitment(
         config.homePath + 'Proof_vk/proof_' + req.body['index'] + '.json'
     );
