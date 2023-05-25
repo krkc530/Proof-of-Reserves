@@ -1,19 +1,6 @@
-<<<<<<< HEAD
 import config from "./config.js";
 
 import porContract from "./web3/index.js";
-=======
-import bodyParser from "body-parser";
-import express from "express";
-import mysql from 'mysql2';
-import cors from 'cors';
-import rootRouter from "./routers/index.js";
-import porContract from "./web3/index.js";
-
-export const connection = mysql.createConnection(
-    {'host': '127.0.0.1', 'user': 'root', 'password': '2357', 'database': 'POR'}
-);
->>>>>>> 5ef2958eeb123cb02ec287c7c6827a045b63a6e5
 
 const server = async () => {
 
