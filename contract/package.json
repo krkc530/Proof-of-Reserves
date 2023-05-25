@@ -9,7 +9,7 @@
   "scripts": {
     "testrpc": "node ./node_modules/ganache-cli/cli.js --hardfork istanbul --port 7545 --gasLimit 0x7fffffffffffffff --gasPrice 1 --defaultBalanceEther 100000000000 --networkId 1234 --account_keys_path keys.json",
     "start": "node ./node_modules/ganache-cli/cli.js --port 7545 --gasLimit 0x3FFFFFFFFFFFFF --gasPrice 1 --defaultBalanceEther 100000000000 --networkId 1234 --account_keys_path keys.json",
-    "compile": "truffle compile --all && cp ./build/contracts/ProofOfReservesContract.json ../server/src/web3/"
+    "compile": "truffle compile --all && cp ./build/contracts/ProofOfReservesContract.json ../server/src/web3/ && cp ./build/contracts/ProofOfReservesContract.json ../front/src/core/web3/"
   },
   "author": "",
   "license": "ISC",
