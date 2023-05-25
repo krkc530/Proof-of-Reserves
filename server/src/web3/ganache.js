@@ -4,7 +4,7 @@ import Config, {
     initConfig
 } from '../config.js';
 
-const KeysJson = JSON.parse(fs.readFileSync(Config.homePath + '../contract/keys.json', 'utf-8'));
+const KeysJson = JSON.parse(fs.readFileSync(Config.homePath + '../../../contract/keys.json', 'utf-8'));
 const AddressList = _.keys(_.get(KeysJson, 'private_keys'))
 
 function getAddress(idx = 0) {

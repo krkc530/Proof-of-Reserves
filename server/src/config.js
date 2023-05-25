@@ -1,11 +1,11 @@
 import process from 'process';
 
 let config = {
-    homePath: '/Users/kim/Proof-of-Reserves/server/',
+    homePath: '/Users/kimsw/for_por/Proof-of-Reserves/server/napirs-legogroth16/json/',
 
     testProvider: 'http://127.0.0.1:7545',
 
-    EC_TYPE: 'EC_ALT_BN128',
+    EC_TYPE: 'EC_ALT_BN128'
 }
 
 export const initConfig = () => {

@@ -6,12 +6,12 @@ import {
     vkFileToContractFormat,
 } from "../utils/string.js"
 
-const contractJson = JSON.parse(fs.readFileSync(config.homePath + 'src/web3/ProofOfReservesContract.json', 'utf-8'));
+const contractJson = JSON.parse(fs.readFileSync(config.homePath + '../../src/web3/ProofOfReservesContract.json', 'utf-8'));
 
 const porContract = await proofOfReserveContract.deployAndconstruct(
     Ganache.getAddress(),
     Ganache.getPrivateKey(),
-    vkFileToContractFormat(config.homePath + 'keys/vk_sw.json'),
+    vkFileToContractFormat(config.homePath + 'Proof_vk/VK.json'),
     config.testProvider,
     contractJson.abi,
     contractJson.bytecode
