@@ -3,21 +3,28 @@ import {connection} from "../../server.js";
 import config from "../../config.js";
 import legogroth from '../../../napirs-legogroth16/index.js';
 import proofOfReserveContract from "../../web3/contract.js";
+import { result } from "lodash";
 
 const router = express.Router();
 
 router.get('/:value', (req, res) => {
 
-    check = false;
+    let check = false;
     console.log("new user flag", req.body);
 
     // proof,cm,cmkey 생성
-    // value 만 옴
-    // legogroth.proof(req.params['index'], req.params['value'], req.params['seed']);
+
+    // Id check
+    let Id;
+    let rand = getRandomint(1,10000);
+    connection.query('SELECT COUNT(*) FROM list',(err,result) => {
+        Id = result;
+    })
+    legogroth.proof(Id.toString(), req.params['value'], rand);
 
     // DB에 저장
     connection.query('INSERT INTO list (id,value,random) VALUES (?,?,?)', [
-        req.body['index'], req.body['value'], req.body['seed']
+        Id, Number(req.params['value']), rand
     ], (err, result) => {
         if (err) {
             console.log(err);
@@ -29,9 +36,8 @@ router.get('/:value', (req, res) => {
     })
 
     // contract
-    // index 내가
     proofOfReserveContract.uploadCommitment(
-        config.homePath + 'Proof_vk/proof_' + req.body['index'] + '.json'
+        config.homePath + 'Proof_vk/proof_' + Id + '.json'
     );
 
     res.send({flag: check});
