@@ -136,3 +136,5 @@ server/test/proof/*.bin
 server/test/*.json
 server/test/crs/*.json
 server/test/proof/*.json
+
+*keys.json
