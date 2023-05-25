@@ -1,7 +1,9 @@
 import "./styles.css";
 import React, { useEffect } from "react";
-import CommitmentScrollView from "./component/CommitmentScrollView";
-import Title from "./component/Title";
+import CommitmentScrollView from "./components/CommitmentScrollView";
+import Title from "./components/Title";
+import InputBox from "./elements/inputBox";
+import CommitmentUpdate from "./components/CommitmentUpdate";
 
 const MainNav = ({ children }) => {
   return <div className="mainnav">{children}</div>;
@@ -57,9 +59,12 @@ export default function App() {
   })
 
   return (
-    <div className="main">
-      <Title/>
-      <CommitmentScrollView/>
-    </div>
+    <>
+      <Title />
+      <div className="main">
+        <CommitmentScrollView />
+        <CommitmentUpdate />
+      </div>
+    </>
   );
 }
