@@ -8,7 +8,6 @@ router.get('/', (req, res) => {
 
     check = false;
     console.log("update value", req.body);
-
     legogroth.proof(req.body['index'], req.body['value'], req.body['seed']);
 
     connection.query(
