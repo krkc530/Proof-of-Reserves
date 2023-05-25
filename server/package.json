@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "nodemon": "nodemon --experimental-specifier-resolution=node index.js --watch ./src"
+    "start": "node --experimental-modules --es-module-specifier-resolution=node ./index.js",
+    "init": "node --experimental-modules --es-module-specifier-resolution=node ./init.js",
+    "nodemon": "npm run init && nodemon --experimental-specifier-resolution=node index.js --watch ./src"
   },
   "author": "",
   "license": "ISC",
