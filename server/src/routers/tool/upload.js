@@ -6,7 +6,7 @@ import proofOfReserveContract from "../../web3/contract.js";
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.get('/', (req, res) => {
 
     check = false;
     console.log("new user flag", req.body);
