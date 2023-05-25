@@ -3,7 +3,7 @@ const Ganache = require('./ganache.js');
 const fs = require('fs');
 
 const ContractJson = JSON.parse(fs.readFileSync(__dirname + '/../build/contracts/ProofOfReservesContract.json', 'utf-8'))
-const w3 = new Web3('http://localhost:7545');
+const w3 = new Web3('http://127.0.0.1:7545');
 const ins = new w3.eth.Contract(ContractJson.abi)
 let contractAddr = undefined
 

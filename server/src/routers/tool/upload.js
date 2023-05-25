@@ -1,13 +1,13 @@
+import config from "../../config.js";
 import express from "express";
 import {connection} from "../../server.js";
-import config from "../../config.js";
 import legogroth from '../../../napirs-legogroth16/index.js';
 import proofOfReserveContract from "../../web3/contract.js";
-import { result } from "lodash";
 
 const router = express.Router();
 
 router.get('/:value', (req, res) => {
+
 
     let check = false;
     console.log("new user flag", req.body);
@@ -40,7 +40,12 @@ router.get('/:value', (req, res) => {
         config.homePath + 'Proof_vk/proof_' + Id + '.json'
     );
 
-    res.send({flag: check});
+    var cm_list = proofOfReserveContract.getAllCommitments();
+
+    res.send({
+        cm : cm_list[Number(req.params['id'])],
+        flag : check
+    });
 
 })
 
