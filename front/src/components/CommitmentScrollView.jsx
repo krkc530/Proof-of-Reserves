@@ -1,9 +1,10 @@
 /* global BigInt */
 import "../styles.css";
-import React, { useState } from 'react';
-import { useAsync } from 'react-async';
+import React, { useContext, useEffect, useState } from 'react';
+import { getAllCommitments, getCommitmnetCnt, setContractIns } from "../core/web3/contract";
+import { myContext } from "../App";
 
-const testCommitmentArray = [
+export const testCommitmentArray = [
   [
     '993381692017950907280477496161827207191495973491531754278415681232369201900',
     '19850751609954646487727642737331830826450870526326468903565300908211599615204',
@@ -46,26 +47,38 @@ const testCommitmentArray = [
   ]
 ]
 
+export const loadCommitment = async () => {
+  return testCommitmentArray.concat(await getAllCommitments());
+};
+
 export default () => {
 
-  const [commitmentArray, setCommitmentArray] = useState(testCommitmentArray);
+  const {commitmentArray, setCommitmentArray} = useContext(myContext);
 
   const decTohex = (decStr, padSize = 77) => {
     return BigInt(decStr).toString(10).toUpperCase().padStart(padSize, '0');
   }
 
+  useEffect(() => {
+    setContractIns("0xeb0296Ca8d5C644d342660cDb92b4428E29fC798");
+    const timer = setInterval(async () => {
+      setCommitmentArray(await loadCommitment());
+    }, 10000);
+
+    return () => clearInterval(timer);
+  })
+
   const CommitmentArrayComp = () => {
+    if(commitmentArray === undefined) return <div></div>;
     return (
       <div className="commitment">
         {
           commitmentArray.map((val, ind) => (
-            <>
-              <div 
-                key={ind}
-                className="commitment__element"
-              >
-                {ind + ' :  (' + decTohex(val[0]) + ',' + decTohex(val[1]) + ")"} </div>
-            </>
+            <div
+              key={ind}
+              className="commitment__element"
+            >
+              {ind + ' :  (' + decTohex(val[0]) + ',' + decTohex(val[1]) + ")"} </div>
           ))
         }
         <br />
