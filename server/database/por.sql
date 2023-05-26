@@ -11,8 +11,8 @@ CREATE TABLE list(
 );
 
 INSERT INTO list (id,value,random) VALUES (0,0,0);
--- INSERT INTO list (id,value,random) VALUES (1,0,0);
--- INSERT INTO list (id,value,random) VALUES (2,0,0);
--- INSERT INTO list (id,value,random) VALUES (3,0,0);
--- INSERT INTO list (id,value,random) VALUES (4,0,0);
--- INSERT INTO list (id,value,random) VALUES (5,0,0);
+INSERT INTO list (id,value,random) VALUES (1,0,0);
+INSERT INTO list (id,value,random) VALUES (2,0,0);
+INSERT INTO list (id,value,random) VALUES (3,0,0);
+INSERT INTO list (id,value,random) VALUES (4,0,0);
+INSERT INTO list (id,value,random) VALUES (5,0,0);
