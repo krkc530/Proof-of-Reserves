@@ -53,20 +53,22 @@ export const loadCommitment = async () => {
 };
 
 export default () => {
-
   const {commitmentArray, setCommitmentArray} = useContext(myContext);
 
   const decTohex = (decStr, padSize = 77) => {
     return BigInt(decStr).toString(10).toUpperCase().padStart(padSize, '0');
   }
 
-  useEffect((commitmentArray) => {
+  useEffect(() => {
     const timer = setInterval(async () => {
       // setContractIns(await getContractAddress());
       setCommitmentArray(await loadCommitment());
-    }, 2500);
-    return () => clearInterval(timer);
-  })
+    }, 3000);
+
+    return () => {
+      clearInterval(timer)
+    };
+  }, [commitmentArray])
 
   const CommitmentArrayComp = () => {
     if(commitmentArray === undefined) return <div></div>;

@@ -28,7 +28,7 @@ router.get('/:value', async (req, res) => {
         // DB에 저장
         connection.query('INSERT INTO list (id,value,random) VALUES (?,?,?)', [
             Id, Number(value), rand
-        ], (err, result) => {
+        ], async (err, result) => {
             console.log(err, result)
             if (err) {
                 console.log(err);
@@ -37,7 +37,7 @@ router.get('/:value', async (req, res) => {
                 check = true;
             }
             // contract
-            porContract.uploadCommitment(
+            await porContract.uploadCommitment(
                 config.proofPath + 'Proof_vk/proof_' + Id + '.json'
             );
             res.send({flag: check});

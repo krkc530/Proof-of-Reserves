@@ -9,7 +9,7 @@ export default () => {
     const [valueUpload, setValueUpload] = useState('');
     const [valueUpdate, setValueUpdate] = useState('');
     const [indexUpdate, setIndexUpdate] = useState('');
-    const { setCommitmentArray } = useContext(myContext);
+    const { commitmentArray ,setCommitmentArray } = useContext(myContext);
     
     const uploadOnClick = async (e) => {
         if(isNaN(valueUpload) || valueUpload === '') {
@@ -19,6 +19,7 @@ export default () => {
         }
         if(await uploadValue(valueUpload)){
             await updateCommitmentArray();
+            // alert(commitmentArray.length);
             alert("Success");
         }
         else{
