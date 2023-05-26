@@ -11,30 +11,30 @@ import { getContractAddress } from "./core/http/http";
 
 export const myContext = createContext({
   commitmentArray : [],
-  setCommitmentArray : ()=>{},
+  setCommitmentArray : () =>{},
   contractAddress : "",
+  setContractAddress : () =>{},
 });
 
 export default function App({Component}) {
-    
-  useEffect( ()=>{
-    const loadCommitmentAndContractAddress = async () => {
-      const address = await getContractAddress();
-      // setContractIns('0x28e16C629991bE7aD561E5acaD0c3be3B7E01b96');
-      console.log(address);
-      const commitments = await getAllCommitments();
-    
-      return commitments;
-    }
-    loadCommitmentAndContractAddress();
-  })
-
   let [commitmentArray, setCommitmentArray] = useState([]);
+  let [contractAddress, setContractAddress] = useState("");
+  
+  const loadCommitmentAndContractAddress = async () => {
+    if (contractAddress === "") {
+      const address = await getContractAddress();
+      setContractAddress(address);
+      setContractIns(address.data.Addr)
+    }
+  }
+  loadCommitmentAndContractAddress();
   
   return (
     <myContext.Provider value={{
       commitmentArray   : commitmentArray,
       setCommitmentArray: setCommitmentArray,
+      contractAddress: contractAddress,
+      setContractAddress: setContractAddress,
     }}>
       <Title />
       <div className="main">

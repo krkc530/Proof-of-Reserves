@@ -7,7 +7,7 @@ import rootRouter from "./routers/index.js";
 import porContract from "./web3/index.js";
 
 export const connection = mysql.createConnection(
-    {'host': '127.0.0.1', 'user': 'root', 'password': '2357', 'database': 'POR'}
+    {'host': '127.0.0.1', 'user': 'root', 'password': '1157310', 'database': 'POR'}
 );
 
 const server = async () => {

@@ -7,12 +7,11 @@ import porContract from "../../web3/index.js";
 const router = express.Router();
 
 router.get('/:value', async (req, res) => {
-
+    console.log(req.params.value)
     const check_num = BigInt(req.params.value);
 
     if (check_num < 0 || check_num > (2n ** 64n)) {
-        res.send({flag: false})
-        return
+        return res.send({flag: false})
     }
 
     let check = false;
@@ -43,7 +42,6 @@ router.get('/:value', async (req, res) => {
         porContract.uploadCommitment(
             config.proofPath + 'Proof_vk/proof_' + Id + '.json'
         );
-
     })
 
     var cm_list = await porContract.getAllCommitments();

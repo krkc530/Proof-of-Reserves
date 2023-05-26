@@ -12,7 +12,6 @@ export default () => {
     const { setCommitmentArray } = useContext(myContext);
     
     const uploadOnClick = async (e) => {
-        console.log(e)
         if(isNaN(valueUpload) || valueUpload === '') {
             console.log(isNaN(valueUpload), valueUpload);
             alert("value must be a number");

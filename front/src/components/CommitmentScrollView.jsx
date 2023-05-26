@@ -3,6 +3,7 @@ import "../styles.css";
 import React, { useContext, useEffect, useState } from 'react';
 import { getAllCommitments, getCommitmnetCnt, setContractIns } from "../core/web3/contract";
 import { myContext } from "../App";
+import { getContractAddress } from "../core/http/http";
 
 export const testCommitmentArray = [
   [
@@ -48,7 +49,7 @@ export const testCommitmentArray = [
 ]
 
 export const loadCommitment = async () => {
-  return testCommitmentArray.concat(await getAllCommitments());
+  return await getAllCommitments();
 };
 
 export default () => {
@@ -59,12 +60,11 @@ export default () => {
     return BigInt(decStr).toString(10).toUpperCase().padStart(padSize, '0');
   }
 
-  useEffect(() => {
-    setContractIns("0xeb0296Ca8d5C644d342660cDb92b4428E29fC798");
+  useEffect((commitmentArray) => {
     const timer = setInterval(async () => {
+      // setContractIns(await getContractAddress());
       setCommitmentArray(await loadCommitment());
-    }, 10000);
-
+    }, 2500);
     return () => clearInterval(timer);
   })
 

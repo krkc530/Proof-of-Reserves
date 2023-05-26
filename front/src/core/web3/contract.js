@@ -10,6 +10,7 @@ let   contractABI   = ProofOfReservesContract.abi;
 let   contractAddr  = undefined;
 
 export async function getContractAddressAndSetContractIns(abi=contractABI) {
+    if (contractAddr) return contractIns;
     setContractIns(await getContractAddress(), abi);
 }
 
@@ -26,13 +27,13 @@ export function getContractIns() {
 }
 
 export async function getCommitmnetCnt() {
-    return await (await getContractIns()).get_commitment_cnt();
+    return await (await getContractAddressAndSetContractIns()).get_commitment_cnt();
 }
 
 export async function getAllCommitments() {
     let arr = [];
-    let ret = await (await getContractIns()).get_all_commitments();
-    
+    let ret = await (await getContractAddressAndSetContractIns()).get_all_commitments();
+    console.log(ret);
     for(let i=0; i<ret.length; i++){
         let tmp = ret[i.toString()];
         arr.push([tmp[0], tmp[1]]);
