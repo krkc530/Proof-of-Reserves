@@ -34,6 +34,7 @@ router.get('/:value', async (req, res) => {
                 console.log(err);
                 return;
             } else {
+                console.log("flagg222");
                 check = true;
             }
             console.log(result);
@@ -43,14 +44,13 @@ router.get('/:value', async (req, res) => {
         porContract.uploadCommitment(
             config.proofPath + 'Proof_vk/proof_' + Id + '.json'
         );
-
+        var cm_list = porContract.getAllCommitments();
+        res.send({
+            cm: cm_list[Number(value)],
+            flag: check
+        });
     })
 
-    var cm_list = await porContract.getAllCommitments();
-    res.send({
-        cm: cm_list[Number(value)],
-        flag: check
-    });
 })
 
 export default router;

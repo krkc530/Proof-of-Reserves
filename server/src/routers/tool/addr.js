@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', (req, res) => {
 
     var Address = porContract.Addr;
-    console.log('addr flag1 ',Address);
+    // console.log('addr flag1 ',Address);
 
     res.send({Addr: Address});
 

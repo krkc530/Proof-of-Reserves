@@ -5,10 +5,37 @@ import mysql from 'mysql2';
 import cors from 'cors';
 import rootRouter from "./routers/index.js";
 import porContract from "./web3/index.js";
+import legogroth from '../napirs-legogroth16/index.js';
 
 export const connection = mysql.createConnection(
     {'host': '127.0.0.1', 'user': 'root', 'password': '2357', 'database': 'POR'}
 );
+
+async function set_id_value(value, id) {
+
+    var seed = Math.floor(Math.random() * 10000);
+
+    legogroth.proof(String(id), String(value), seed);
+
+    connection.query(
+        'UPDATE list SET value = ?,random = ? WHERE id = ?',[
+        value,
+        seed,
+        id,],
+        (err, result) => {
+            if (err) {
+                console.log('error in set_id_value funcion');
+                console.log(err);
+                return;
+            }
+        }
+    )
+
+    // contract
+    await porContract.uploadCommitment(
+        config.proofPath + 'Proof_vk/proof_' + String(id) + '.json'
+    );
+}
 
 const server = async () => {
 
@@ -25,6 +52,12 @@ const server = async () => {
     app.listen(8000, () => {
         console.log('server start on 8000')
     });
+
+    await set_id_value(12, 1);
+    await set_id_value(124, 2);
+    await set_id_value(4523, 3);
+    await set_id_value(1324, 4);
+    await set_id_value(1324, 5);
 
 }
 
