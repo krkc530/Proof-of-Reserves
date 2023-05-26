@@ -11,6 +11,7 @@ export default class proofOfReserveContract extends Web3Interface {
         super(endpoint);
         this.Contract = new this.eth.Contract(abi, contractAddress);
         this.Method = this.Contract.methods;
+        this.Addr = contractAddress;
     }
 
     static async deployAndconstruct(from, sk, params, rpc, abi, bytecode, gasPrice = '0x01') {
