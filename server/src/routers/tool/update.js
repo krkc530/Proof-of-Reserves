@@ -8,6 +8,13 @@ const router = express.Router();
 
 router.get('/:id/:value', (req, res) => {
 
+    const check_num = BigInt(req.params.value);
+
+    if (check_num < 0 || check_num > (2n ** 64n)) {
+        res.send({flag: false})
+        return
+    }
+
     //id 랑 value
 
     check = false;

@@ -5,7 +5,6 @@ import mysql from 'mysql2';
 import cors from 'cors';
 import rootRouter from "./routers/index.js";
 import porContract from "./web3/index.js";
-import { functionsIn } from "lodash";
 
 export const connection = mysql.createConnection(
     {'host': '127.0.0.1', 'user': 'root', 'password': '2357', 'database': 'POR'}
