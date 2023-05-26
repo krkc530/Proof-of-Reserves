@@ -14,11 +14,12 @@ router.get('/:value', async (req, res) => {
         return res.send({flag: false})
     }
 
-    let check = false;
     var value = req.params.value;
 
     // proof,cm,cmkey 생성 Id check
     connection.query('SELECT COUNT(*) FROM list', (err, result) => {
+
+        var check = false;
         let rand = Number(Math.floor(Math.random() * 10000)); // 32비트로 바꿔야함.
         var Id = String(result[0]['COUNT(*)']);
 
@@ -35,20 +36,15 @@ router.get('/:value', async (req, res) => {
             } else {
                 check = true;
             }
-            console.log(result);
+            // contract
+            porContract.uploadCommitment(
+                config.proofPath + 'Proof_vk/proof_' + Id + '.json'
+            );
+            res.send({flag: check});
         })
 
-        // contract
-        porContract.uploadCommitment(
-            config.proofPath + 'Proof_vk/proof_' + Id + '.json'
-        );
     })
 
-    var cm_list = await porContract.getAllCommitments();
-    res.send({
-        cm: cm_list[Number(value)],
-        flag: check
-    });
 })
 
 export default router;

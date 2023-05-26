@@ -60,7 +60,6 @@ export default class Web3Interface extends Web3 {
             const rawTx = {
                 ...txDescription,
                 data: encodedABI,
-                nonce: addPrefixHex(txCount.toString(16)),
                 to: call._parent._address,
                 common: {
                     customChain: {
