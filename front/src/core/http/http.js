@@ -16,9 +16,9 @@ export async function uploadValue(value) {
 
     const res = (await httpCli.get('/tool/upload/'+value));
     
-    console.log(res);
+    console.log(res.data);
 
-    return true
+    return res.data.flag
 }
 export default httpCli;
 

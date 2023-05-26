@@ -1,20 +1,26 @@
 import { JsonRpcProvider, Contract } from "ethers";
 import { getContractAddress } from "../http/http";
+import ProofOfReservesContract from "./ProofOfReservesContract";
 import config from "../config";
-import fs from 'fs';
+// import fs from 'fs';
 
-const provider      = new JsonRpcProvider("http://localhost:7545");
-const contractIns   = undefined;
-const contractABI   = JSON.parse(fs.readFileSync(config.HOMEPATH + '/src/core/web3/ProofOfReservesContract.json', 'utf8'))["abi"];
+let   provider      = new JsonRpcProvider("http://127.0.0.1:7545");
+let   contractIns   = undefined;
+let   contractABI   = ProofOfReservesContract.abi;
+let   contractAddr  = undefined;
+
+export async function getContractAddressAndSetContractIns(abi=contractABI) {
+    setContractIns(await getContractAddress(), abi);
+}
 
 export function setContractIns(address, abi=contractABI) {
+    contractAddr= address;
     contractIns = new Contract(address, abi, provider);
 }
 
-export async function getContractIns() {
+export function getContractIns() {
     if(contractIns === undefined){
-        const address = await getContractAddress();
-        setContractIns(address);
+        return undefined
     }
     return contractIns;
 }
@@ -24,7 +30,15 @@ export async function getCommitmnetCnt() {
 }
 
 export async function getAllCommitments() {
-    return await (await getContractIns()).get_all_commitments();
+    let arr = [];
+    let ret = await (await getContractIns()).get_all_commitments();
+    
+    for(let i=0; i<ret.length; i++){
+        let tmp = ret[i.toString()];
+        arr.push([tmp[0], tmp[1]]);
+    }
+
+    return arr;
 }
 
 export default {

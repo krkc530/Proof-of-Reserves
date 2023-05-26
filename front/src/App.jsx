@@ -1,70 +1,48 @@
 import "./styles.css";
-import React, { useEffect } from "react";
-import CommitmentScrollView from "./components/CommitmentScrollView";
+import React, { useEffect, createContext, useState } from "react";
+import CommitmentScrollView, { testCommitmentArray } from "./components/CommitmentScrollView";
 import Title from "./components/Title";
-import InputBox from "./elements/inputBox";
+import { useAsync } from 'react-async';
 import CommitmentUpdate from "./components/CommitmentUpdate";
+import { getAllCommitments, setContractIns } from "./core/web3/contract";
+import { getContractAddress } from "./core/http/http";
 
-const MainNav = ({ children }) => {
-  return <div className="mainnav">{children}</div>;
-};
+const loadCommitmentAndContractAddress = async () => {
+  const address = await getContractAddress();
+  setContractIns(address);
 
+  const commitments = await getAllCommitments();
 
-const Layout = ({
-  children,
-  className
-}) => {
-  return <div className={className}>{children}</div>;
-};
-const LayoutElement = ({
-  children,
-  className
-}) => {
-  const [state, setState] = React.useState(false);
-  return (
-    <div className={className} onClick={() => setState((v) => !v)}>
-      <span> {String(state)}</span>
-    </div>
-  );
-};
+  return {commitments, address};
+}
 
-const HomePage = ({
-  leftNav,
-  centerContent,
-  rightContent
-}) => {
-  return (
-    <div className="homepage">
-      {leftNav}
-      {centerContent}
-      {rightContent}
-    </div>
-  );
-};
-const MainNavElement = ({ children }) => {
-  const [state, setState] = React.useState(false);
-  return (
-    <div className="mainnav__element" onClick={() => setState((v) => !v)}>
-      <span> {String(state)}</span>
-    </div>
-  );
-};
+export const myContext = createContext({
+  commitmentArray : [],
+  setCommitmentArray : ()=>{},
+  contractAddress : "",
+});
 
-const Content = LayoutElement;
+export default function App({Component}) {
 
-export default function App() {
+  let [commitmentArray, setCommitmentArray] = useState([]);
 
-  useEffect(() => {
+  const {data, error, isLoading} = useAsync({promiseFn: loadCommitmentAndContractAddress});
 
-  })
+  if(data){
+    console.log(data);
+    return <div>data</div>
+  }
 
   return (
-    <>
+    <myContext.Provider value={{
+      commitmentArray   : commitmentArray,
+      setCommitmentArray: setCommitmentArray,
+    }}>
       <Title />
       <div className="main">
         <CommitmentScrollView />
         <CommitmentUpdate />
       </div>
-    </>
+    </myContext.Provider>
   );
 }
