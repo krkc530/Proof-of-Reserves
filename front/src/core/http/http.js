@@ -8,7 +8,7 @@ httpCli.defaults.baseURL = 'http://127.0.0.1:8000';
 httpCli.defaults.timeout = 25000;
 
 export async function getContractAddress() {
-    return await httpCli.get('/contractAddress');
+    return await httpCli.get('/tool/addr');
 }
 
 export async function uploadValue(value) {

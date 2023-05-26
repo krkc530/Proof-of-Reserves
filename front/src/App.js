@@ -7,14 +7,7 @@ import CommitmentUpdate from "./components/CommitmentUpdate";
 import { getAllCommitments, setContractIns } from "./core/web3/contract";
 import { getContractAddress } from "./core/http/http";
 
-const loadCommitmentAndContractAddress = async () => {
-  const address = await getContractAddress();
-  setContractIns(address);
 
-  const commitments = await getAllCommitments();
-
-  return {commitments, address};
-}
 
 export const myContext = createContext({
   commitmentArray : [],
@@ -23,16 +16,21 @@ export const myContext = createContext({
 });
 
 export default function App({Component}) {
+    
+  useEffect( ()=>{
+    const loadCommitmentAndContractAddress = async () => {
+      const address = await getContractAddress();
+      // setContractIns('0x28e16C629991bE7aD561E5acaD0c3be3B7E01b96');
+      console.log(address);
+      const commitments = await getAllCommitments();
+    
+      return commitments;
+    }
+    loadCommitmentAndContractAddress();
+  })
 
   let [commitmentArray, setCommitmentArray] = useState([]);
-
-  const {data, error, isLoading} = useAsync({promiseFn: loadCommitmentAndContractAddress});
-
-  if(data){
-    console.log(data);
-    return <div>data</div>
-  }
-
+  
   return (
     <myContext.Provider value={{
       commitmentArray   : commitmentArray,
