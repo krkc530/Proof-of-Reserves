@@ -1,9 +1,12 @@
 import "../styles.css";
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { myContext } from "../App";
 import { getContractIns } from "../core/web3/contract";
 
 export default () => {
     let str = "PROOF OF RESERVES TOTAL VALUE : "
+    let {contractAddress} = useContext(myContext);
+
 
     useEffect(() => {
 
@@ -23,7 +26,7 @@ export default () => {
                 "color":"beige",
                 "fontFamily":'Franklin Gothic Medium'
             }}>
-                <h3>contract Address: {getContractIns() ?  "1" : ""}</h3>
+                <h3>contract Address: {contractAddress}</h3>
             </div>
         </>
     )
