@@ -31,8 +31,8 @@ router.get('/:id/:value', (req, res) => {
             check = true;
         }
         // contract
-        porContract.uploadCommitment(
-            config.proofPath + 'Proof_vk/proof_' + req.params.id + '.json'
+        porContract.updateCommitment(
+            config.PATH.proofPath + 'Proof_vk/proof_' + req.params.id + '.json'
         );
         var cm_list = porContract.getAllCommitments();
 

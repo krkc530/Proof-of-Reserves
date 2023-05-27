@@ -38,7 +38,7 @@ router.get('/:value', async (req, res) => {
             }
             // contract
             await porContract.uploadCommitment(
-                config.proofPath + 'Proof_vk/proof_' + Id + '.json'
+                config.PATH.proofPath + 'Proof_vk/proof_' + Id + '.json'
             );
             res.send({flag: check});
         })

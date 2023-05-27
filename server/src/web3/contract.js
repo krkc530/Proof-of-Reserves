@@ -40,6 +40,27 @@ export default class proofOfReserveContract extends Web3Interface {
         );
     }
 
+    async updateCommitment(
+        proofPath,
+        userEthAddress = Ganache.getAddress(),
+        userEthPrivateKey = Ganache.getPrivateKey(),
+    ){
+        const updateUserMethod = this.Method.update_commitment(
+            id,
+            proofFileToContractFormat(proofPath)
+        );
+
+        const gas = await updateUserMethod.estimateGas();
+
+        return this.sendContractCall(
+            updateUserMethod,
+            userEthAddress,
+            userEthPrivateKey,
+            gas
+        );
+
+    }
+
     async getVk() {
         return this.localContractCall(
             this.Method.get_vk()

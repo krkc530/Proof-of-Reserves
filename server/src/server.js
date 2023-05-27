@@ -8,7 +8,7 @@ import porContract from "./web3/index.js";
 import legogroth from '../napirs-legogroth16/index.js';
 
 export const connection = mysql.createConnection(
-    {'host': '127.0.0.1', 'user': 'root', 'password': '1157310', 'database': 'POR'}
+    {'host': '127.0.0.1', 'user': 'root', 'password': '2357', 'database': 'POR'}
 );
 
 async function set_id_value(value, id) {
@@ -33,7 +33,7 @@ async function set_id_value(value, id) {
 
     // contract
     await porContract.uploadCommitment(
-        config.proofPath + 'Proof_vk/proof_' + String(id) + '.json'
+        config.PATH.proofPath + 'Proof_vk/proof_' + String(id) + '.json'
     );
 }
 

@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import fs from 'fs';
-import Config from '../config.js';
+import config from '../config.js';
 
-const KeysJson = JSON.parse(fs.readFileSync(Config.homePath + '../contract/keys.json', 'utf-8'));
+const KeysJson = JSON.parse(fs.readFileSync(config.PATH.homePath + '../contract/keys.json', 'utf-8'));
 const AddressList = _.keys(_.get(KeysJson, 'private_keys'))
 
 function getAddress(idx = 0) {

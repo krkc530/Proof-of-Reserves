@@ -6,9 +6,9 @@ import {
     vkFileToContractFormat,
 } from "../utils/string.js"
 
-const contractJson = JSON.parse(fs.readFileSync(config.homePath + 'src/web3/ProofOfReservesContract.json', 'utf-8'));
+const contractJson = JSON.parse(fs.readFileSync(config.PATH.homePath + 'src/web3/ProofOfReservesContract.json', 'utf-8'));
 
-const vkPath = config.proofPath + "Proof_vk/VK.json"
+const vkPath = config.PATH.proofPath + "Proof_vk/VK.json"
 
 const porContract = await proofOfReserveContract.deployAndconstruct(
     Ganache.getAddress(),
