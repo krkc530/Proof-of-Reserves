@@ -80,7 +80,7 @@ export default () => {
               key={ind}
               className="commitment__element"
             >
-              {ind + ' :  (' + decTohex(val[0]) + ',' + decTohex(val[1]) + ")"} </div>
+              {ind+1 + ' :  (' + decTohex(val[0]) + ',' + decTohex(val[1]) + ")"} </div>
           ))
         }
         <br />
