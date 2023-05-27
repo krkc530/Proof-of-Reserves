@@ -24,7 +24,7 @@ router.get('/:id/:value', (req, res) => {
 
     connection.query('UPDATE list SET value = ?,random = ? WHERE id = ?', [
         req.params.value, seed, req.params.id
-    ], (err, result) => {
+    ], async (err, result) => {
         var check = false;
         if (err) {
             console.log(err);
@@ -33,7 +33,7 @@ router.get('/:id/:value', (req, res) => {
             check = true;
         }
         // contract
-        porContract.updateCommitment(
+        await porContract.updateCommitment(
             Number(req.params.id) - 1,
             config.PATH.proofPath + 'Proof_vk/proof_' + req.params.id + '.json'
         );
