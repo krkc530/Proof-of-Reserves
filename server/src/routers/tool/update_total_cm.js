@@ -22,8 +22,8 @@ router.get('/', (req, res) => {
 
             for (let i = 0; i < total_usr_num - 1; i++) {
                 usr_list[i] = String(i + 1);
-                total_value = total_value + result[i].value;
-                total_random = total_random + result[i].random;
+                total_value = total_value + result[i+1].value;
+                total_random = total_random + result[i+1].random;
             }
 
             connection.query(
