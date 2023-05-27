@@ -19,6 +19,12 @@ export async function getContractAddress() {
     // return (await httpCli.get('/tool/addr')).data.Addr;
 }
 
+
+/**
+ * 
+ * @param {String} value 
+ * @returns {boolean}
+ */
 export async function uploadValue(value) {
     if(typeof value !== 'string') return false;
 
@@ -28,6 +34,21 @@ export async function uploadValue(value) {
 
     return res.data.flag
 }
+
+/**
+ * 
+ * @param {String} idx   : dec index
+ * @param {String} value : dec balance of user
+ */
+export async function updateValue(idx, value) {
+    const res = await httpCli.get('/tool/update/'+idx+'/'+value);
+
+    console.log(res.data);
+
+    return res.data.flag
+
+}
+
 export default httpCli;
 
 

@@ -1,6 +1,6 @@
 import "../styles.css";
 import React, { useState, useContext } from 'react';
-import { uploadValue } from "../core/http/http";
+import { updateValue, uploadValue } from "../core/http/http";
 import { myContext } from "../App";
 import { getAllCommitments } from "../core/web3/contract";
 
@@ -19,7 +19,6 @@ export default () => {
         }
         if(await uploadValue(valueUpload)){
             await updateCommitmentArray();
-            // alert(commitmentArray.length);
             alert("Success");
         }
         else{
@@ -27,8 +26,7 @@ export default () => {
         }
     }
 
-    const updateOnClick = (e) => {
-        console.log(e)
+    const updateOnClick = async (e) => {
         if(isNaN(valueUpdate) || valueUpdate === '') {
             alert("value must be a number");
             return
@@ -36,6 +34,14 @@ export default () => {
         if(isNaN(indexUpdate) || indexUpdate === '') {
             alert("index must be a number");
             return
+        }
+
+        if(await updateValue(indexUpdate, valueUpdate)){
+            await updateCommitmentArray();
+            alert("Success");
+        }
+        else{
+            alert("Error");
         }
     }
 
