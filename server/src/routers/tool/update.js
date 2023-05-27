@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get('/:id/:value', (req, res) => {
 
+    console.log(req.params);
+
     const check_num = BigInt(req.params.value);
 
     if (check_num < 0 || check_num > (2n ** 64n)) {
@@ -17,13 +19,13 @@ router.get('/:id/:value', (req, res) => {
 
     //id 랑 value
 
-    check = false;
     var seed = Math.floor(Math.random() * 10000);
     legogroth.proof(req.params.id, req.params.value, seed);
 
     connection.query('UPDATE list SET value = ?,random = ? WHERE id = ?', [
         req.params.value, seed, req.params.id
     ], (err, result) => {
+        var check = false;
         if (err) {
             console.log(err);
             return;
@@ -32,12 +34,13 @@ router.get('/:id/:value', (req, res) => {
         }
         // contract
         porContract.updateCommitment(
+            Number(req.params.id),
             config.PATH.proofPath + 'Proof_vk/proof_' + req.params.id + '.json'
         );
-        var cm_list = porContract.getAllCommitments();
+
 
         res.send({
-            cm: cm_list[Number(req.params['id'])]
+            flag : check
         });
     })
 

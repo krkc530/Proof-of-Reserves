@@ -41,6 +41,7 @@ export default class proofOfReserveContract extends Web3Interface {
     }
 
     async updateCommitment(
+        id,
         proofPath,
         userEthAddress = Ganache.getAddress(),
         userEthPrivateKey = Ganache.getPrivateKey(),
