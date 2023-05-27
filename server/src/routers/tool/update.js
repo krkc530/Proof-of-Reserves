@@ -34,7 +34,7 @@ router.get('/:id/:value', (req, res) => {
         }
         // contract
         porContract.updateCommitment(
-            Number(req.params.id),
+            Number(req.params.id) - 1,
             config.PATH.proofPath + 'Proof_vk/proof_' + req.params.id + '.json'
         );
 

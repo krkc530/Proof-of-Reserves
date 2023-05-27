@@ -2,8 +2,8 @@ export default {
   "DB": {
     "host": "127.0.0.1",
     "user": "root",
-    "password": "2357",
-    "database": "POR"
+    "database": "POR",
+    "password": "2357"
   },
   "PATH": {
     "homePath": "/Users/kimsw/for_por/Proof-of-Reserves/server/",
