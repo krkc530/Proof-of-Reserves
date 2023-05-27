@@ -1,21 +1,25 @@
 import "../styles.css";
 import React, { useContext, useEffect, useState } from 'react';
 import { myContext } from "../App";
-import { getContractIns } from "../core/web3/contract";
+import { getTotalValue } from "../core/http/http"
 
 export default () => {
     let str = "PROOF OF RESERVES TOTAL VALUE : "
-    let {contractAddress} = useContext(myContext);
-
+    let [totalValue, setTotalValue] = useState(0);
+    let {contractAddress, commitmentArray} = useContext(myContext);
+    
 
     useEffect(() => {
-
-    })
+        const GetTotalValue = async () =>{
+            setTotalValue(await getTotalValue());
+        }
+        GetTotalValue();
+    }, [commitmentArray])
 
     return(
         <>
             <div className="title">
-                <h1 >{str}</h1>
+                <h1 >{str} {totalValue}</h1>
             </div>
             <div style={{
                 "paddingLeft":"5%",
