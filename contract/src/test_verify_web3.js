@@ -88,6 +88,10 @@ describe('test', () => {
     it("test get commitment cnt", async () => {
         await web3utils.getCommitmentCnt();
     })
+
+    it("test get sum of commitments", async () => {
+      await web3utils.getSumOfCommitmets();
+    })
 })
 
 /*==== TEST ====*/
