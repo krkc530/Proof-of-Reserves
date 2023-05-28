@@ -12,6 +12,7 @@ let   contractAddr  = undefined;
 export async function getContractAddressAndSetContractIns(abi=contractABI) {
     if (contractAddr) return contractIns;
     setContractIns(await getContractAddress(), abi);
+    return contractIns
 }
 
 export function setContractIns(address, abi=contractABI) {
@@ -33,13 +34,19 @@ export async function getCommitmnetCnt() {
 export async function getAllCommitments() {
     let arr = [];
     let ret = await (await getContractAddressAndSetContractIns()).get_all_commitments();
-    console.log(ret);
+    // console.log(ret);
     for(let i=0; i<ret.length; i++){
         let tmp = ret[i.toString()];
         arr.push([tmp[0], tmp[1]]);
     }
 
     return arr;
+}
+
+export async function getSumOfCommitmets() {
+    const ret = await (await getContractAddressAndSetContractIns()).get_sum_of_commitments()
+    // console.log(ret);
+    return '(' + ret[0].toString() + ',' + ret[1].toString() + ')';
 }
 
 export default {
