@@ -8,7 +8,6 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
 
-
     connection.query('SELECT COUNT(*) FROM list', (err, result) => {
 
         var total_usr_num = result[0]['COUNT(*)'];
@@ -22,24 +21,21 @@ router.get('/', (req, res) => {
 
             for (let i = 0; i < total_usr_num - 1; i++) {
                 usr_list[i] = String(i + 1);
-                total_value = total_value + result[i+1].value;
-                total_random = total_random + result[i+1].random;
+                total_value = total_value + result[i + 1].value;
+                total_random = total_random + result[i + 1].random;
             }
 
             connection.query(
                 'UPDATE list SET value = ?,random = ? WHERE id = 0',
                 [total_value, total_random]
             )
-            console.log(usr_list);
 
-            // legogroth.totalPedCm(usr_list);
+            legogroth.totalPedCm(usr_list);
 
-            // porContract.uploadCommitment(
-            //     config.proofPath + 'Proof_vk/proof_0.json'
+            // porContract.uploadCommitment(     config.proofPath + 'Proof_vk/proof_0.json'
             // );
 
             res.send({value: total_value});
-
 
         })
 
