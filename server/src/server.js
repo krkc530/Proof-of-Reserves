@@ -17,19 +17,15 @@ async function set_id_value(value, id) {
 
     legogroth.proof(String(id), String(value), seed);
 
-    connection.query(
-        'UPDATE list SET value = ?,random = ? WHERE id = ?',[
-        value,
-        seed,
-        id,],
-        (err, result) => {
-            if (err) {
-                console.log('error in set_id_value funcion');
-                console.log(err);
-                return;
-            }
+    connection.query('INSERT INTO list (id, value, random) VALUES (?,?,?)', [
+        id, value, seed
+    ], (err, result) => {
+        if (err) {
+            console.log('error in set_id_value funcion');
+            console.log(err);
+            return;
         }
-    )
+    })
 
     // contract
     await porContract.uploadCommitment(
