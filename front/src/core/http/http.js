@@ -52,8 +52,6 @@ export async function updateValue(idx, value) {
 export async function getTotalValue() {
     const res = await httpCli.get('/tool/total_cm');
 
-    console.log(res.data);
-
     return res.data.value
 }
 
