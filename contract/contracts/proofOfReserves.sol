@@ -2,6 +2,7 @@
 pragma solidity >=0.8.0;
 
 import "./ccGroth16VerifyBn128.sol";
+import "./PairingBn128.sol";
 
 contract ProofOfReservesContract {
     // G1 Point (x, y)
@@ -12,7 +13,8 @@ contract ProofOfReservesContract {
 
     uint256[] private verifyingKey;
 
-    Commitment[] commitArray;
+    Pairing.G1Point[] commitArray;
+    Pairing.G1Point sumOfCommitment = Pairing.G1Point(0, 0);
 
     uint256 private commitCnt = 0;
 
@@ -30,8 +32,12 @@ contract ProofOfReservesContract {
     ) public payable returns (uint256) {
         require(ccGroth16BN128._verify(verifyingKey, proof), "verify fail");
 
-        Commitment memory cm = Commitment(proof[8], proof[9]);
+        Pairing.G1Point memory cm = Pairing.G1Point(proof[8], proof[9]);
         commitArray.push(cm);
+
+        if(cm.X == 0 && cm.Y == 0) { sumOfCommitment = cm; } 
+        else { sumOfCommitment = Pairing.add(sumOfCommitment, cm); }
+
         return commitCnt++;
     }
 
@@ -42,8 +48,21 @@ contract ProofOfReservesContract {
         require(idx < commitCnt, "Invalid index");
         require(ccGroth16BN128._verify(verifyingKey, proof), "verify fail");
 
-        commitArray[idx].px = proof[8];
-        commitArray[idx].py = proof[9];
+        Pairing.G1Point memory tmp;
+    
+        tmp = Pairing.add(
+            sumOfCommitment,
+            Pairing.negate(commitArray[idx])
+        );
+
+        commitArray[idx].X = proof[8];
+        commitArray[idx].Y = proof[9];
+
+        sumOfCommitment = Pairing.add(
+            sumOfCommitment,
+            commitArray[idx]
+        );
+        
         return true;
     }
 
@@ -51,11 +70,15 @@ contract ProofOfReservesContract {
         return verifyingKey;
     }
 
-    function get_all_commitments() public view returns (Commitment[] memory) {
+    function get_all_commitments() public view returns (Pairing.G1Point[] memory) {
         return commitArray;
     }
 
     function get_commitment_cnt() public view returns (uint256) {
         return commitCnt;
+    }
+
+    function get_sum_of_commitments() public view returns (Pairing.G1Point memory) {
+        return sumOfCommitment;
     }
 }

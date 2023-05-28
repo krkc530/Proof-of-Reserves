@@ -93,6 +93,12 @@ const getCommitmentCnt = async () => {
     console.log(cnt)
 }
 
+const getSumOfCommitmets = async () => {
+    const sumOfCommits = await ins.methods.get_sum_of_commitments().call();
+    console.log(sumOfCommits);
+    return sumOfCommits;
+}
+
 const setContractAddr = (addr) => {
     contractAddr = addr;
     ins.options.address = contractAddr;
@@ -104,7 +110,8 @@ module.exports = {
     getVk,
     getAllCommitments,
     getCommitmentCnt,
-    setContractAddr
+    setContractAddr,
+    getSumOfCommitmets,
 }
 //8866461766386951
 //9007199254740991
