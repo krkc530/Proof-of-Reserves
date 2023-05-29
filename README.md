@@ -2,6 +2,9 @@
 
 설명 .... 설명 .....
 
+
+## Pre
+
 -------------
 
 ### install package
@@ -35,15 +38,22 @@ $ echo 'export DB_PASSWORD="DB password"' >> ~/.zshrc
 
 ```
 $ cd contract
-$ npm run build
+$ npm run compile
 $ npm run testrpc
 ```
 
-#### run test
-open new terminal and run 
+#### run server
+open new terminal.  
 ```
-$ cd contract/test
-$ mocha test_verify_web3.js
+$ cd server 
+$ npm run nodemon
+```
+
+#### run front 
+open new terminal.  
+```
+$ cd front
+$ npm start
 ```
 
 
