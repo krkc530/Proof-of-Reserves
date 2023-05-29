@@ -28,6 +28,7 @@ $ npm i
 ```
 $ cd server
 $ npm i
+$ echo 'export DB_PASSWORD="DB password"' >> ~/.zshrc 
 ```
 -------------
 ### run ganache block chain
