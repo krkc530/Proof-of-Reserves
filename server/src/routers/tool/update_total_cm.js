@@ -31,6 +31,7 @@ router.get('/', (req, res) => {
             )
 
             legogroth.totalPedCm(usr_list);
+            legogroth.sigmaTotal();
 
             // porContract.uploadCommitment(     config.proofPath + 'Proof_vk/proof_0.json'
             // );
