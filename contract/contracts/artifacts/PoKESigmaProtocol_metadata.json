@@ -8,65 +8,36 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256[]",
-						"name": "_vk",
-						"type": "uint256[]"
+						"internalType": "uint256[2]",
+						"name": "_g",
+						"type": "uint256[2]"
+					},
+					{
+						"internalType": "uint256[2]",
+						"name": "_h",
+						"type": "uint256[2]"
+					},
+					{
+						"internalType": "address",
+						"name": "_proofOfReserversAddr",
+						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "previousOwner",
-						"type": "address"
-					},
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "newOwner",
-						"type": "address"
-					}
-				],
-				"name": "OwnershipTransferred",
-				"type": "event"
-			},
-			{
 				"inputs": [],
-				"name": "get_all_commitments",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "X",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "Y",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct Pairing.G1Point[]",
-						"name": "",
-						"type": "tuple[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "get_commitment_cnt",
+				"name": "g",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "X",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Y",
 						"type": "uint256"
 					}
 				],
@@ -95,69 +66,46 @@
 						"type": "tuple"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "get_vk",
-				"outputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "",
-						"type": "uint256[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "owner",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "renounceOwnership",
-				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "newOwner",
-						"type": "address"
-					}
-				],
-				"name": "transferOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
+				"inputs": [],
+				"name": "h",
+				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "idx",
+						"name": "X",
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256[]",
-						"name": "proof",
-						"type": "uint256[]"
+						"internalType": "uint256",
+						"name": "Y",
+						"type": "uint256"
 					}
 				],
-				"name": "update_commitment",
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[2]",
+						"name": "_cm",
+						"type": "uint256[2]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256[2]",
+						"name": "_proof",
+						"type": "uint256[2]"
+					}
+				],
+				"name": "verify",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -167,40 +115,11 @@
 				],
 				"stateMutability": "payable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "proof",
-						"type": "uint256[]"
-					}
-				],
-				"name": "upload_commitment",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "payable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
 			"kind": "dev",
-			"methods": {
-				"owner()": {
-					"details": "Returns the address of the current owner."
-				},
-				"renounceOwnership()": {
-					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
-				},
-				"transferOwnership(address)": {
-					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
-				}
-			},
+			"methods": {},
 			"version": 1
 		},
 		"userdoc": {
@@ -211,7 +130,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/proofOfReserves.sol": "ProofOfReservesContract"
+			"contracts/PoKE.sol": "PoKESigmaProtocol"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -247,6 +166,14 @@
 			"urls": [
 				"bzz-raw://66115d908c655f9919c936c3f17e96eb8cb12ddf428e54c70d9a9d18dd1d1fc3",
 				"dweb:/ipfs/QmPR6pLjzJcSkqm45G18Uh2nXth1bHCRs9egY2tcP4E4HW"
+			]
+		},
+		"contracts/PoKE.sol": {
+			"keccak256": "0xa725e785c7bbefdd6e9199fa2c667636bca879403f5cad1f9b7d37a0bc0836c5",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://6429b2cdc51471258664f0d3469cf8232b597dcfcb97fe6a04cca96452d45d96",
+				"dweb:/ipfs/QmSdCwiPxzgfsiKLyVprKoXx6mtGmDrvCdgLHdMMUKPUqJ"
 			]
 		},
 		"contracts/ccGroth16VerifyBn128.sol": {

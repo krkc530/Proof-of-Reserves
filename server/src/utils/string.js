@@ -67,3 +67,9 @@ export const proofFileToContractFormat = (path) => {
     const proofJson = JSON.parse(fs.readFileSync(path, 'utf8'));
     return jsonToContractFormat(proofJson);
 }
+
+export const pedersenGenToContractFormat = (path) => {
+    const pedersenGenJson = JSON.parse(fs.readFileSync(path, 'utf8'));
+    console.log(pedersenGenJson)
+    return jsonToContractFormat(pedersenGenJson);
+}

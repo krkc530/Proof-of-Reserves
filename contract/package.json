@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@openzeppelin/contracts": "^4.9.0",
     "ganache-cli": "^6.12.2",
     "lodash": "^4.17.21",
     "solc": "^0.8.20",

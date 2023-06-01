@@ -3,8 +3,10 @@ pragma solidity >=0.8.0;
 
 import "./ccGroth16VerifyBn128.sol";
 import "./PairingBn128.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ProofOfReservesContract {
+
+contract ProofOfReservesContract is Ownable {
     // G1 Point (x, y)
     struct Commitment {
         uint256 px;
@@ -29,7 +31,7 @@ contract ProofOfReservesContract {
     //      uint256[2] D    : G_1
     function upload_commitment(
         uint256[] memory proof
-    ) public payable returns (uint256) {
+    ) public payable onlyOwner returns (uint256) {
         require(ccGroth16BN128._verify(verifyingKey, proof), "verify fail");
 
         Pairing.G1Point memory cm = Pairing.G1Point(proof[8], proof[9]);
@@ -44,7 +46,7 @@ contract ProofOfReservesContract {
     function update_commitment(
         uint256 idx,
         uint256[] memory proof
-    ) public payable returns (bool) {
+    ) public payable onlyOwner returns (bool) {
         require(idx < commitCnt, "Invalid index");
         require(ccGroth16BN128._verify(verifyingKey, proof), "verify fail");
 
