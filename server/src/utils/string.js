@@ -68,8 +68,9 @@ export const proofFileToContractFormat = (path) => {
     return jsonToContractFormat(proofJson);
 }
 
+
+//gamma_abc_g1, eta_gamma_inv_g1
 export const pedersenGenToContractFormat = (path) => {
     const pedersenGenJson = JSON.parse(fs.readFileSync(path, 'utf8'));
-    console.log(pedersenGenJson)
     return jsonToContractFormat(pedersenGenJson);
 }

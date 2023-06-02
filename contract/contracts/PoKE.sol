@@ -31,7 +31,7 @@ contract PoKESigmaProtocol {
     }
 
     function get_sum_of_commitments() 
-        private returns(Pairing.G1Point memory)
+        public payable  returns(Pairing.G1Point memory)
     {
         return ProofOfReservesContract(proofOfReserversAddr).get_sum_of_commitments();
     }
@@ -65,5 +65,40 @@ contract PoKESigmaProtocol {
 
         require(hs.X == tyc.X && hs.Y == tyc.Y, "verify fail");
         return true;
+    }
+
+    // to Debug
+
+    // y = h^r
+    function calc_y(
+        uint256 value
+    )
+        public
+        payable
+        returns (Pairing.G1Point memory)
+    {
+        Pairing.G1Point memory cm = get_sum_of_commitments();
+        Pairing.G1Point memory y =  Pairing.add(cm, Pairing.negate(Pairing.mul(g, value)));
+        return y;
+    }
+
+    // c = Hash( h.x || y.x || t.x )
+    function clac_c(
+        uint256 value,
+        uint256[2] memory t
+    )
+        public
+        payable 
+        returns (uint256[2] memory)
+    {
+        uint256[2] memory ret;
+        Pairing.G1Point memory y = calc_y(value);
+
+        ret[0] = uint256(MiMC7._hash(bytes32(h.X), bytes32(y.X)));
+        ret[1] = uint256(MiMC7._hash(
+            bytes32(ret[0]),  
+            bytes32(t[0])
+        ));
+        return ret;
     }
 }

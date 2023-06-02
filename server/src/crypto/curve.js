@@ -1,16 +1,18 @@
+/* global BigInt */
+
 import math from '../utils/math.js';
 import Config from '../config.js';
-import CurveParam from './curveParam.js';
-/* global BigInt */
+import CurveParam, { WeierstrassCurveParam } from './curveParam.js';
 
 BigInt.prototype.mod = function(n){
     return ((this % n) + n)%n;
 };
 
 class AffinePoint{
-    constructor(x , y){
+    constructor(x , y, inf=false){
         this.x = BigInt(x);
         this.y = BigInt(y);
+        this.inf = inf;
     }
 
     show() {
@@ -82,7 +84,12 @@ class MontgomeryCurve{
         return new AffinePoint(newX, newY);
     }
 
+    // 이거 쓰세요 BN254 경우
     addAffineG1(p1, p2) {
+        if(p1.inf && p2.inf){return new AffinePoint(0,0,true);}
+        if(p1.inf){return p2;}
+        if(p2.inf){return p1;}
+
         let diffY = math.mod((p1.y - p2.y) ,this.prime);
         let diffX = math.mod((p1.x - p2.x) ,this.prime);
         let m = this.fieldDivision(diffY, diffX);
@@ -90,6 +97,10 @@ class MontgomeryCurve{
         let y3 = math.mod( m * (p1.x - x3) - p1.y, this.prime);
 
         return new AffinePoint(x3, y3);
+    }
+    // 두배
+    doubleAffineG1(p) {
+        let s = math.mod( (3 * p.x * p.x + 2 * this.coefA * p.x + 1) * this.fieldDivision(1, 2 * this.coefB * p.y), this.prime);
     }
 
     subAffinePoint(p1, p2){
@@ -125,6 +136,74 @@ class MontgomeryCurve{
         let preTable = this.preprocess(bp, exp);
         let output = this.mul(preTable, exp);
         return output;
+    }
+}
+
+
+export class WeierstrassCurve {
+    constructor(wCurveParam=WeierstrassCurveParam()){
+        this.PRIME = wCurveParam.PRIME;
+        this.ORDER = wCurveParam.ORDER;
+        this.A = wCurveParam.A;
+        this.B = wCurveParam.B;
+    }
+
+    addAffineG1(p1, p2) {
+        if(p1.inf && p2.inf){return new AffinePoint(0,0,true);}
+        if(p1.inf){return p2;}
+        if(p2.inf){return p1;}
+
+        let diffY = math.mod((p1.y - p2.y) ,this.PRIME);
+        let diffX = math.mod((p1.x - p2.x) ,this.PRIME);
+        let m = this.fieldDivision(diffY, diffX);
+        let x3 = math.mod( m * m - p1.x - p2.x, this.PRIME);
+        let y3 = math.mod( m * (p1.x - x3) - p1.y, this.PRIME);
+
+        return new AffinePoint(x3, y3);
+    }
+
+    /**
+     * 
+     * @param {AffinePoint} p 
+     * @param {BigInt} n 
+     */
+    scalarMulG1(p, n){
+        let tmp = p;
+        let result = new AffinePoint(0,0,true);
+        let nBit = n.toString(2);
+        
+        for(let i=nBit.length-1; i>=0; i--) {
+            if(nBit[i] === '1'){
+                result = this.addAffineG1(result, tmp);
+            }
+            tmp = this.doubleAffineG1(tmp);
+        }
+
+        return result;
+    }
+
+    /**
+     * 
+     *  s = (3x1^2 + a) / 2y1 
+     * xr = s^2 - 2x1
+     * yr = s(x1 - xr) - y1
+     * @param {AffinePoint} p 
+     * @returns 
+     */
+    doubleAffineG1(p) {
+        const s = this.fieldDivision( 
+            math.mod((BigInt('3') * p.x * p.x + this.A ), this.PRIME), 
+            BigInt('2')  * p.y
+        );
+
+        const xr = math.mod( s * s - BigInt('2') * p.x, this.PRIME);
+        const yr = math.mod( s * (p.x - xr) - p.y, this.PRIME);
+
+        return new AffinePoint(xr, yr);
+    }
+
+    fieldDivision(a, b) {
+        return math.mod((a * math.modInv(b, this.PRIME)),this.PRIME);
     }
 }
 
@@ -166,6 +245,7 @@ export function basePointMul(exp, curveOption){
 const Curve = {
     AffinePoint,
     MontgomeryCurve,
+    WeierstrassCurve,
     multscalar,
     basePointMul
 };

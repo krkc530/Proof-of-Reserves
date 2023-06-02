@@ -27,6 +27,61 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "calc_y",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "X",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "Y",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Pairing.G1Point",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256[2]",
+						"name": "t",
+						"type": "uint256[2]"
+					}
+				],
+				"name": "clac_c",
+				"outputs": [
+					{
+						"internalType": "uint256[2]",
+						"name": "",
+						"type": "uint256[2]"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "g",
 				"outputs": [
@@ -66,7 +121,7 @@
 						"type": "tuple"
 					}
 				],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -90,19 +145,14 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256[2]",
-						"name": "_cm",
-						"type": "uint256[2]"
-					},
-					{
 						"internalType": "uint256",
 						"name": "value",
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256[2]",
+						"internalType": "uint256[3]",
 						"name": "_proof",
-						"type": "uint256[2]"
+						"type": "uint256[3]"
 					}
 				],
 				"name": "verify",
@@ -160,6 +210,14 @@
 				"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
 			]
 		},
+		"contracts/MiMC7.sol": {
+			"keccak256": "0x6699f15f4ecd06e19e2263c96367069906f77d78b734833cea21e0448e07ea29",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://aa4a3451df04180559d204a9669de06fd147533a27edfa2a4051539488836497",
+				"dweb:/ipfs/QmZUNUrNDPATwMPW5cDQ2qh7cMVyrW5xaGedsf5Mrex2PW"
+			]
+		},
 		"contracts/PairingBn128.sol": {
 			"keccak256": "0x0dc59306a9d02913a33f44c50674d3151ec883265b2b7e0fd942487c91ee5e22",
 			"license": "LGPL-3.0+",
@@ -169,11 +227,11 @@
 			]
 		},
 		"contracts/PoKE.sol": {
-			"keccak256": "0xa725e785c7bbefdd6e9199fa2c667636bca879403f5cad1f9b7d37a0bc0836c5",
+			"keccak256": "0x32af12deec29b7bee7d35cf2ae1360236297a026996f6b0552e9fb90cd3cefb3",
 			"license": "LGPL-3.0+",
 			"urls": [
-				"bzz-raw://6429b2cdc51471258664f0d3469cf8232b597dcfcb97fe6a04cca96452d45d96",
-				"dweb:/ipfs/QmSdCwiPxzgfsiKLyVprKoXx6mtGmDrvCdgLHdMMUKPUqJ"
+				"bzz-raw://05a7f460a4a69da532dcf89372086ca687697c0dde47278d5aaf680b8444ac64",
+				"dweb:/ipfs/QmcTv3Z2772ZJ7a4ouhT28wYqS7APQbnejZ8th7cCxEJhL"
 			]
 		},
 		"contracts/ccGroth16VerifyBn128.sol": {
