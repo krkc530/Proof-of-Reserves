@@ -57,7 +57,7 @@ describe("MiMC", () => {
 
         const weierstrassCurveParam = new WeierstrassCurveParam();
         const totalValue = (BigInt(proof1Key["w"]) + BigInt(proof2Key["w"])).toString()
-        const totalRandom= math.mod(BigInt(proof1Key["v"]) + BigInt(proof2Key["v"]), weierstrassCurveParam.PRIME).toString()
+        const totalRandom= math.mod(BigInt(proof1Key["v"]) + BigInt(proof2Key["v"]), weierstrassCurveParam.ORDER).toString()
         console.log('totalValue : ', totalValue)
         console.log('totalRandom : ', totalRandom)
 
@@ -147,10 +147,11 @@ proof_2
   11556280276652901450345614605907813811810370233914055923580574739179311598358
 ]
 
-t
+sigma PROOF
 [
-    19053156656398739062697369206661106910595616267999446753868356010265008219054,
-    191745541913486903253029348348918134289645562642535743759173148954690349198
+    239314435508027700476173748584025363358233456528297948113586176334700373411,
+    4938961443782603145429073850479257948842394679856911215618086793243139919601,
+    12474844495149876125785573600414204972007275243517083385075785665371463720248
 ]
 
 

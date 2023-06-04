@@ -168,6 +168,7 @@ export class WeierstrassCurve {
      * @param {BigInt} n 
      */
     scalarMulG1(p, n){
+        if(typeof n !== 'bigint'){throw new Error("n must be bigint type");}
         let tmp = p;
         let result = new AffinePoint(0,0,true);
         let nBit = n.toString(2);

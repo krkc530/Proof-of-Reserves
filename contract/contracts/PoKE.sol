@@ -8,7 +8,7 @@ import "./proofOfReserves.sol";
 /*
     we use ALT_BN128 curve
  */
-contract PoKESigmaProtocol {
+contract ProofOfReservesContractL1 {
 
     // public parameter of Pedersen Commitment 
     // cm = g^v * h^r
@@ -16,6 +16,8 @@ contract PoKESigmaProtocol {
     Pairing.G1Point public h;
 
     address proofOfReserversAddr; 
+
+    uint256 totalValue;
 
     constructor(
         uint256[2] memory _g,
@@ -28,12 +30,18 @@ contract PoKESigmaProtocol {
         h.Y = _h[1];
 
         proofOfReserversAddr = _proofOfReserversAddr;
+        totalValue = 0;
     }
 
-    function get_sum_of_commitments() 
-        public payable  returns(Pairing.G1Point memory)
+    function update_total_value(
+        uint256 value,
+        uint256[3] memory proof
+    )  
+        public 
+        payable 
     {
-        return ProofOfReservesContract(proofOfReserversAddr).get_sum_of_commitments();
+        require(PoKE_sigma_protocol_verify(value, proof), "invalid proof");
+        totalValue = value;
     }
 
     // Proof :
@@ -42,10 +50,10 @@ contract PoKESigmaProtocol {
     //    Proof[2] : s   where s = r' + cr
     //    h^s == t * y^c
     //    h^(r'+ cr) == h^r' * h^(cr)
-    function verify (
+    function PoKE_sigma_protocol_verify (
         uint256    value,
         uint256[3] memory _proof
-    ) public payable returns (bool) {
+    ) private returns (bool) {
         
         // y = cm/g^v = h^r
         Pairing.G1Point memory cm = get_sum_of_commitments();
@@ -54,8 +62,9 @@ contract PoKESigmaProtocol {
         Pairing.G1Point memory t = Pairing.G1Point(_proof[0], _proof[1]);
         uint256 s = _proof[2];
 
+        // c = Hash( h.X || y.X || t.X )
         bytes32 c_bytes = MiMC7._hash(
-            MiMC7._hash(bytes32(h.X), bytes32(y.X)),  
+            bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
             bytes32(t.X)
         );
 
@@ -63,11 +72,22 @@ contract PoKESigmaProtocol {
         Pairing.G1Point memory yc = Pairing.mul(y, uint256(c_bytes));
         Pairing.G1Point memory tyc = Pairing.add(t, yc);
 
-        require(hs.X == tyc.X && hs.Y == tyc.Y, "verify fail");
-        return true;
+        return hs.X == tyc.X && hs.Y == tyc.Y;
     }
 
-    // to Debug
+    function get_sum_of_commitments() 
+        private view returns(Pairing.G1Point memory)
+    {
+        return ProofOfReservesContract(proofOfReserversAddr).get_sum_of_commitments();
+    }
+
+    function get_total_value()
+        public view returns (uint256) 
+    {
+        return totalValue;
+    }
+
+    // ===== to Debug =====
 
     // y = h^r
     function calc_y(
@@ -101,4 +121,77 @@ contract PoKESigmaProtocol {
         ));
         return ret;
     }
+
+    function calc_hs(
+        uint256 value,
+        uint256[3] memory proof
+    )
+        public 
+        payable 
+        returns (Pairing.G1Point memory)
+    {   
+
+        Pairing.G1Point memory hs = Pairing.mul(h, proof[2]);
+        return hs;
+    }
+
+    function calc_yc(
+        uint256 value,
+        uint256[3] memory proof
+    )
+        public 
+        payable 
+        returns (Pairing.G1Point memory, bytes32)
+    {   
+        Pairing.G1Point memory y = calc_y(value);
+        Pairing.G1Point memory t = Pairing.G1Point(proof[0], proof[1]);
+
+        bytes32 c_bytes = MiMC7._hash(
+            bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
+            bytes32(t.X)
+        );
+
+        Pairing.G1Point memory yc = Pairing.mul(y, uint256(c_bytes));
+        return (yc, c_bytes);
+    }
+
+    function calc_tyc(
+        uint256 value,
+        uint256[3] memory proof
+    )
+        public 
+        payable 
+        returns (Pairing.G1Point memory, bytes32)
+    {   
+        Pairing.G1Point memory y = calc_y(value);
+        Pairing.G1Point memory t = Pairing.G1Point(proof[0], proof[1]);
+
+        bytes32 c_bytes = MiMC7._hash(
+            bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
+            bytes32(t.X)
+        );
+
+        Pairing.G1Point memory yc = Pairing.mul(y, uint256(c_bytes));
+        Pairing.G1Point memory tyc= Pairing.add(t, yc);
+        return (tyc, c_bytes);
+    }
 }
+
+/*
+g,h
+[
+    3180562012416913690925935386190007036479226111083987956960601792026358686114,
+    17519154828104037515817392931973887796962669181002901086993947786934567488870
+]
+[ 
+    4048032311302464926298094030158754074633619725258845665812735681205540954289,
+    757310962534471265451611502350520868277877209646502467151549808202870646207
+]
+
+sigma PROOF
+[
+    239314435508027700476173748584025363358233456528297948113586176334700373411,
+    4938961443782603145429073850479257948842394679856911215618086793243139919601,
+    4194976159525599510130147974991281495984698748557958470180572732615368495519
+]
+*/
