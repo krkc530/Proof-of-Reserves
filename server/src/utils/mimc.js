@@ -74,6 +74,7 @@ class MiMCBase {
      */
     hash(...args) {
         var args = types.hexListToIntList(args);
+
         if (args.length == 1)
             return BigInt(this._hash(args[0], args[0])).toString(16);
         else {
@@ -85,36 +86,36 @@ class MiMCBase {
         }
     }
 
-    // ????????
-    hash(arr) {
-        var arr = types.hexListToIntList(arr);
-        if (arr.length == 1)
-            return BigInt(this._hash(arr[0], arr[0])).toString(16);
-        else {
-            let result = this._hash(arr[0], arr[1]);
-            for (let i = 0; i < arr.length - 2; i++) {
-                result = this._hash(result, arr[i + 2]);
-            }
-            return BigInt(result).toString(16);
-        }
-    }
+    // // ????????
+    // hash(arr) {
+    //     var arr = types.hexListToIntList(arr);
+    //     if (arr.length == 1)
+    //         return BigInt(this._hash(arr[0], arr[0])).toString(16);
+    //     else {
+    //         let result = this._hash(arr[0], arr[1]);
+    //         for (let i = 0; i < arr.length - 2; i++) {
+    //             result = this._hash(result, arr[i + 2]);
+    //         }
+    //         return BigInt(result).toString(16);
+    //     }
+    // }
 
-    /**
-     *
-     * @param {...BigInt}     arr         Target is bigint types
-     * @returns {BigInt}
-     */
-    hash(arr) {
-        if (arr.length == 1) {
-            return BigInt(this._hash(arr[0], arr[0])).toString(16);
-        } else {
-            let result = this._hash(arr[0], arr[1]);
-            for (let i = 0; i < arr.length - 2; i++) {
-                result = this._hash(result, arr[i + 2]);
-            }
-            return BigInt(result);
-        }
-    }
+    // /**
+    //  *
+    //  * @param {...BigInt}     arr         Target is bigint types
+    //  * @returns {BigInt}
+    //  */
+    // hash(arr) {
+    //     if (arr.length == 1) {
+    //         return BigInt(this._hash(arr[0], arr[0])).toString(16);
+    //     } else {
+    //         let result = this._hash(arr[0], arr[1]);
+    //         for (let i = 0; i < arr.length - 2; i++) {
+    //             result = this._hash(result, arr[i + 2]);
+    //         }
+    //         return BigInt(result);
+    //     }
+    // }
 
     hashGetOuput(hexArr) {
         if (hexArr.length == 0) {

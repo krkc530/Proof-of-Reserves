@@ -1,0 +1,131 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "gX",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "gY",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "hX",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "hY",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "X",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "Y",
+						"type": "uint256"
+					}
+				],
+				"name": "LogGenerator",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "proof",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "inputs",
+						"type": "uint256[]"
+					}
+				],
+				"name": "verifyBN256",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/PoExpBn256.sol": "PoExpBn256"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/MiMC7.sol": {
+			"keccak256": "0x6699f15f4ecd06e19e2263c96367069906f77d78b734833cea21e0448e07ea29",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://aa4a3451df04180559d204a9669de06fd147533a27edfa2a4051539488836497",
+				"dweb:/ipfs/QmZUNUrNDPATwMPW5cDQ2qh7cMVyrW5xaGedsf5Mrex2PW"
+			]
+		},
+		"contracts/PoExp.sol": {
+			"keccak256": "0x98e7d815f6bd2fb464595a9543a013ae5fbdb2591698e055e2c4d1422ee4f491",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://fab1533591f56f966ba767059cf9a68e3755e592b9231eb81c510cf69e546828",
+				"dweb:/ipfs/QmX3eSsERkxk4VVMUn6QKb7MuR5uDy7BFCperU7hjkta5X"
+			]
+		},
+		"contracts/PoExpBn256.sol": {
+			"keccak256": "0x609fc686cbcf2536b0658501ac91dc632d68f8a4cbb9bec19b4d4be56b5ab9b4",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://a355624859c41c0e484ada160bd96d046de3ca81987c63b29617c45dba5e18f8",
+				"dweb:/ipfs/QmXUcFfyqaBsZYbgYRe6TgAsRkA2jEH6rtghWUPc4B2Zfi"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,53 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/PoExp.sol": "PoExp"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/MiMC7.sol": {
+			"keccak256": "0x6699f15f4ecd06e19e2263c96367069906f77d78b734833cea21e0448e07ea29",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://aa4a3451df04180559d204a9669de06fd147533a27edfa2a4051539488836497",
+				"dweb:/ipfs/QmZUNUrNDPATwMPW5cDQ2qh7cMVyrW5xaGedsf5Mrex2PW"
+			]
+		},
+		"contracts/PoExp.sol": {
+			"keccak256": "0x98e7d815f6bd2fb464595a9543a013ae5fbdb2591698e055e2c4d1422ee4f491",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://fab1533591f56f966ba767059cf9a68e3755e592b9231eb81c510cf69e546828",
+				"dweb:/ipfs/QmX3eSsERkxk4VVMUn6QKb7MuR5uDy7BFCperU7hjkta5X"
+			]
+		}
+	},
+	"version": 1
+}
