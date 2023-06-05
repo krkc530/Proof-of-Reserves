@@ -42,20 +42,23 @@ router.get('/:value', async (req, res) => {
             );
 
             connection.query('SELECT COUNT(*) FROM list', async (err, result) => {
-                var total_usr_num = result[0]['COUNT(*)'];
-                const usr_list = new Array(total_usr_num - 1);
-                for (let i = 0; i < total_usr_num - 1; i++) {
-                    usr_list[i] = (i+1).toString()
-                }
-                console.log(usr_list);
-                legogroth.totalPedCm(usr_list);
+                try {
+                    var total_usr_num = result[0]['COUNT(*)'];
+                    const usr_list = new Array(total_usr_num - 1);
+                    for (let i = 0; i < total_usr_num - 1; i++) {
+                        usr_list[i] = (i+1).toString()
+                    }
+                    console.log(usr_list);
+                    legogroth.totalPedCm(usr_list);
 
-                await porContract.updateTotalValue();
+                    await porContract.updateTotalValue();
+                    res.send({flag: check});
+                } catch (error) {
+                    console.log(error);
+                    res.send({flag: false});
+                }   
             })
-
-            res.send({flag: check});
         })
-
     })
 
 })

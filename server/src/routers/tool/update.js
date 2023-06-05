@@ -67,6 +67,10 @@ router.get('/:id/:value', (req, res) => {
                 await legogroth.totalPedCm(usr_list);
 
                 await porContract.updateTotalValue();
+
+                res.send({
+                    flag : true
+                })
             })
 
         })
