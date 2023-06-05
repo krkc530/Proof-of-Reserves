@@ -1,7 +1,7 @@
 /* global BigInt */
 import "../styles.css";
 import React, { useContext, useEffect, useState } from 'react';
-import { getAllCommitments, getCommitmnetCnt, setContractIns } from "../core/web3/contract";
+import { getAllCommitments, getCommitmnetCnt, setContractIns } from "../core/web3/contractL2";
 import { myContext } from "../App";
 import { getContractAddress } from "../core/http/http";
 

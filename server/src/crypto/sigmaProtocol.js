@@ -3,7 +3,7 @@ import { pedersenGenToContractFormat } from "../utils/string.js";
 import Curve from "./curve.js";
 import mimc from "./mimc.js";
 import CurveParam, { WeierstrassCurveParam } from "./curveParam.js";
-import math from "../utils/math.js";
+import math, {randomFieldElement} from "../utils/math.js";
 
 let sigmaProtocolInstance = undefined;
 

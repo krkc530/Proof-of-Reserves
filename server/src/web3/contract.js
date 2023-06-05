@@ -1,12 +1,15 @@
+import fs from "fs";
 import _ from "lodash";
+import config from "../config.js";
 import Ganache from "./ganache.js";
 import Deploy from "./deploy.js";
 import Web3Interface from "./web3.interface.js";
 import {
-    proofFileToContractFormat
+    proofFileToContractFormat,
 } from "../utils/string.js"
+import sigmaProtocol from "../crypto/sigmaProtocol.js";
 
-export default class proofOfReserveContract extends Web3Interface {
+export class proofOfReserveContractL2 extends Web3Interface {
     constructor(endpoint, abi, contractAddress) {
         super(endpoint);
         this.Contract = new this.eth.Contract(abi, contractAddress);
@@ -18,7 +21,7 @@ export default class proofOfReserveContract extends Web3Interface {
         const receipt = await Deploy(from, sk, [params], rpc, abi, bytecode, gasPrice);
         console.log("deploy receipt:", receipt);
 
-        return new proofOfReserveContract(rpc, abi, receipt.contractAddress);
+        return new proofOfReserveContractL2(rpc, abi, receipt.contractAddress);
     }
 
     async uploadCommitment(
@@ -59,7 +62,6 @@ export default class proofOfReserveContract extends Web3Interface {
             userEthPrivateKey,
             gas
         );
-
     }
 
     async getVk() {
@@ -80,3 +82,62 @@ export default class proofOfReserveContract extends Web3Interface {
         )
     }
 }
+
+export class proofOfReserveContractL1 extends Web3Interface {
+    constructor(endpoint, abi, contractAddress) {
+        super(endpoint);
+        this.Contract = new this.eth.Contract(abi, contractAddress);
+        this.Method = this.Contract.methods;
+        this.Addr = contractAddress;
+    }
+
+    static async deployAndconstruct(from, sk, params, rpc, abi, bytecode, gasPrice = '0x01') {
+        const receipt = await Deploy(from, sk, params, rpc, abi, bytecode, gasPrice);
+        console.log("deploy receipt:", receipt);
+
+        return new proofOfReserveContractL1(rpc, abi, receipt.contractAddress);
+    }
+
+    async updateTotalValue(        
+        userEthAddress = Ganache.getAddress(),
+        userEthPrivateKey = Ganache.getPrivateKey()
+    ) {
+        const totalKeyJson = JSON.parse(fs.readFileSync(config.PATH.proofPath+ "Ped_cm/CM_Key_total.json", 'utf8'))
+    
+        const totalValueString  = totalKeyJson["w"]
+        const totalRandomString = totalKeyJson["v"]
+
+        console.log("totalValueString : ", totalValueString)
+        console.log("totalRandomString : ", totalRandomString)
+
+        const proof = sigmaProtocol().prove(
+            BigInt(totalValueString),
+            BigInt(totalRandomString)
+        )
+        console.log("proof : ", proof)
+        const updateTotalValueMethod = this.Method.update_total_value(
+            totalValueString, [proof["tx"], proof["ty"], proof["s"]]
+        );
+
+        const gas = await updateTotalValueMethod.estimateGas();
+
+        return this.sendContractCall(
+            updateTotalValueMethod,
+            userEthAddress,
+            userEthPrivateKey,
+            gas
+        );
+    }
+    
+    async getTotalValue() {
+        return this.localContractCall(
+            this.Method.get_total_value()
+        )
+    }
+}
+
+export default {
+    proofOfReserveContractL2,
+    proofOfReserveContractL1
+}
+

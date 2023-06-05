@@ -4,7 +4,7 @@ const _ = require('lodash');
 
 const pairingBN128Lib = artifacts.require('Pairing');
 const ccGroth16Bn128Lib = artifacts.require('ccGroth16BN128');
-const proofOfReserves = artifacts.require('ProofOfReservesContract');
+const proofOfReserves = artifacts.require('ProofOfReservesContractL2');
 
 const prepareVk = (vkString) => {
     let result = vkString;

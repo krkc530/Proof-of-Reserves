@@ -4,19 +4,22 @@ import CommitmentScrollView, { testCommitmentArray } from "./components/Commitme
 import Title from "./components/Title";
 import { useAsync } from 'react-async';
 import CommitmentUpdate from "./components/CommitmentUpdate";
-import { getAllCommitments, setContractIns } from "./core/web3/contract";
+import { getAllCommitments, setContractInsL2 } from "./core/web3/contractL2";
 import { getContractAddress } from "./core/http/http";
 
 export const myContext = createContext({
   commitmentArray : [],
   setCommitmentArray : () =>{},
-  contractAddress : "",
-  setContractAddress : () =>{},
+  contractAddressL2 : "",
+  setContractAddressL2 : () =>{},
+  contractAddressL1 : "",
+  setContractAddressL1 : () =>{},
 });
 
 export default function App({Component}) {
   let [commitmentArray, setCommitmentArray] = useState([]);
-  let [contractAddress, setContractAddress] = useState("");
+  let [contractAddressL2, setContractAddressL2] = useState("");
+  let [contractAddressL1, setContractAddressL1] = useState("");
   
   useEffect(() => {
     async function init(){
@@ -27,10 +30,13 @@ export default function App({Component}) {
   }, []);
 
   const loadCommitmentAndContractAddress = async () => {
-    if (contractAddress === "") {
-      const address = await getContractAddress();
-      setContractAddress(address);
-      setContractIns(address)
+    if (contractAddressL2 === "") {
+      let addresses = (await getContractAddress());
+      setContractInsL2(addresses['AddressL2'])
+      setContractAddressL2(addresses['AddressL2']);
+      setContractAddressL1(addresses['AddressL1']);
+      // setContractIns(address)
+      console.log(addresses)
     }
   }
   
@@ -39,8 +45,10 @@ export default function App({Component}) {
     <myContext.Provider value={{
       commitmentArray,
       setCommitmentArray,
-      contractAddress   : contractAddress,
-      setContractAddress: setContractAddress,
+      contractAddressL2   : contractAddressL2,
+      setContractAddressL2: setContractAddressL2,
+      contractAddressL1   : contractAddressL1,
+      setContractAddressL1: setContractAddressL1,
     }}>
       <Title />
       <div className="main">

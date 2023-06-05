@@ -7,6 +7,9 @@ const copyJson = (from, to) => {
     fs.writeFileSync(to, "export default " + contractJson);
 }
 
-const to = process.argv[2];
+const from = process.argv[2];
+const to   = process.argv[3];
 
-copyJson(__dirname + '/../build/contracts/ProofOfReservesContract.json', to);
+copyJson(__dirname + from , to);
+
+//'/../build/contracts/ProofOfReservesContract.json'

@@ -59,7 +59,8 @@ const server = async () => {
     await set_id_value(4523, 3);
     await set_id_value(1324, 4);
     await set_id_value(1324, 5);
-
+    legogroth.totalPedCm(['1','2','3','4','5'])
+    await porContract.updateTotalValue();
 }
 
 export default server;

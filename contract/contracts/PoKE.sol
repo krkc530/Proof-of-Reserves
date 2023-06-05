@@ -4,20 +4,27 @@ pragma solidity >=0.8.0;
 import "./MiMC7.sol";
 import "./PairingBn128.sol";
 import "./proofOfReserves.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 
 /*
     we use ALT_BN128 curve
  */
-contract ProofOfReservesContractL1 {
+contract ProofOfReservesContractL1 is Ownable {
 
     // public parameter of Pedersen Commitment 
     // cm = g^v * h^r
     Pairing.G1Point public g;
     Pairing.G1Point public h;
 
+    // L2 contract address
     address proofOfReserversAddr; 
 
+    // total CEX balance
     uint256 totalValue;
+
+    // total CEX commitment
+    Pairing.G1Point totalCommitment;
 
     constructor(
         uint256[2] memory _g,
@@ -37,10 +44,13 @@ contract ProofOfReservesContractL1 {
         uint256 value,
         uint256[3] memory proof
     )  
-        public 
-        payable 
-    {
-        require(PoKE_sigma_protocol_verify(value, proof), "invalid proof");
+        public  
+        onlyOwner
+    {   
+        (bool result, Pairing.G1Point memory _totalCommitment) = PoKE_sigma_protocol_verify(value, proof);
+        require(result, "invalid proof");
+        
+        totalCommitment = _totalCommitment;
         totalValue = value;
     }
 
@@ -53,7 +63,7 @@ contract ProofOfReservesContractL1 {
     function PoKE_sigma_protocol_verify (
         uint256    value,
         uint256[3] memory _proof
-    ) private returns (bool) {
+    ) private returns (bool, Pairing.G1Point memory) {
         
         // y = cm/g^v = h^r
         Pairing.G1Point memory cm = get_sum_of_commitments();
@@ -72,13 +82,13 @@ contract ProofOfReservesContractL1 {
         Pairing.G1Point memory yc = Pairing.mul(y, uint256(c_bytes));
         Pairing.G1Point memory tyc = Pairing.add(t, yc);
 
-        return hs.X == tyc.X && hs.Y == tyc.Y;
+        return (hs.X == tyc.X && hs.Y == tyc.Y, cm);
     }
 
     function get_sum_of_commitments() 
         private view returns(Pairing.G1Point memory)
     {
-        return ProofOfReservesContract(proofOfReserversAddr).get_sum_of_commitments();
+        return ProofOfReservesContractL2(proofOfReserversAddr).get_sum_of_commitments();
     }
 
     function get_total_value()
@@ -87,94 +97,95 @@ contract ProofOfReservesContractL1 {
         return totalValue;
     }
 
-    // ===== to Debug =====
 
-    // y = h^r
-    function calc_y(
-        uint256 value
-    )
-        public
-        payable
-        returns (Pairing.G1Point memory)
-    {
-        Pairing.G1Point memory cm = get_sum_of_commitments();
-        Pairing.G1Point memory y =  Pairing.add(cm, Pairing.negate(Pairing.mul(g, value)));
-        return y;
-    }
+    // ========= to Debug =========
 
-    // c = Hash( h.x || y.x || t.x )
-    function clac_c(
-        uint256 value,
-        uint256[2] memory t
-    )
-        public
-        payable 
-        returns (uint256[2] memory)
-    {
-        uint256[2] memory ret;
-        Pairing.G1Point memory y = calc_y(value);
+    // // y = h^r
+    // function calc_y(
+    //     uint256 value
+    // )
+    //     public
+    //     payable
+    //     returns (Pairing.G1Point memory)
+    // {
+    //     Pairing.G1Point memory cm = get_sum_of_commitments();
+    //     Pairing.G1Point memory y =  Pairing.add(cm, Pairing.negate(Pairing.mul(g, value)));
+    //     return y;
+    // }
 
-        ret[0] = uint256(MiMC7._hash(bytes32(h.X), bytes32(y.X)));
-        ret[1] = uint256(MiMC7._hash(
-            bytes32(ret[0]),  
-            bytes32(t[0])
-        ));
-        return ret;
-    }
+    // // c = Hash( h.x || y.x || t.x )
+    // function clac_c(
+    //     uint256 value,
+    //     uint256[2] memory t
+    // )
+    //     public
+    //     payable 
+    //     returns (uint256[2] memory)
+    // {
+    //     uint256[2] memory ret;
+    //     Pairing.G1Point memory y = calc_y(value);
 
-    function calc_hs(
-        uint256 value,
-        uint256[3] memory proof
-    )
-        public 
-        payable 
-        returns (Pairing.G1Point memory)
-    {   
+    //     ret[0] = uint256(MiMC7._hash(bytes32(h.X), bytes32(y.X)));
+    //     ret[1] = uint256(MiMC7._hash(
+    //         bytes32(ret[0]),  
+    //         bytes32(t[0])
+    //     ));
+    //     return ret;
+    // }
 
-        Pairing.G1Point memory hs = Pairing.mul(h, proof[2]);
-        return hs;
-    }
+    // function calc_hs(
+    //     uint256 value,
+    //     uint256[3] memory proof
+    // )
+    //     public 
+    //     payable 
+    //     returns (Pairing.G1Point memory)
+    // {   
 
-    function calc_yc(
-        uint256 value,
-        uint256[3] memory proof
-    )
-        public 
-        payable 
-        returns (Pairing.G1Point memory, bytes32)
-    {   
-        Pairing.G1Point memory y = calc_y(value);
-        Pairing.G1Point memory t = Pairing.G1Point(proof[0], proof[1]);
+    //     Pairing.G1Point memory hs = Pairing.mul(h, proof[2]);
+    //     return hs;
+    // }
 
-        bytes32 c_bytes = MiMC7._hash(
-            bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
-            bytes32(t.X)
-        );
+    // function calc_yc(
+    //     uint256 value,
+    //     uint256[3] memory proof
+    // )
+    //     public 
+    //     payable 
+    //     returns (Pairing.G1Point memory, bytes32)
+    // {   
+    //     Pairing.G1Point memory y = calc_y(value);
+    //     Pairing.G1Point memory t = Pairing.G1Point(proof[0], proof[1]);
 
-        Pairing.G1Point memory yc = Pairing.mul(y, uint256(c_bytes));
-        return (yc, c_bytes);
-    }
+    //     bytes32 c_bytes = MiMC7._hash(
+    //         bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
+    //         bytes32(t.X)
+    //     );
 
-    function calc_tyc(
-        uint256 value,
-        uint256[3] memory proof
-    )
-        public 
-        payable 
-        returns (Pairing.G1Point memory, bytes32)
-    {   
-        Pairing.G1Point memory y = calc_y(value);
-        Pairing.G1Point memory t = Pairing.G1Point(proof[0], proof[1]);
+    //     Pairing.G1Point memory yc = Pairing.mul(y, uint256(c_bytes));
+    //     return (yc, c_bytes);
+    // }
 
-        bytes32 c_bytes = MiMC7._hash(
-            bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
-            bytes32(t.X)
-        );
+    // function calc_tyc(
+    //     uint256 value,
+    //     uint256[3] memory proof
+    // )
+    //     public 
+    //     payable 
+    //     returns (Pairing.G1Point memory, bytes32)
+    // {   
+    //     Pairing.G1Point memory y = calc_y(value);
+    //     Pairing.G1Point memory t = Pairing.G1Point(proof[0], proof[1]);
 
-        Pairing.G1Point memory yc = Pairing.mul(y, uint256(c_bytes));
-        Pairing.G1Point memory tyc= Pairing.add(t, yc);
-        return (tyc, c_bytes);
-    }
+    //     bytes32 c_bytes = MiMC7._hash(
+    //         bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
+    //         bytes32(t.X)
+    //     );
+
+    //     Pairing.G1Point memory yc = Pairing.mul(y, uint256(c_bytes));
+    //     Pairing.G1Point memory tyc= Pairing.add(t, yc);
+    //     return (tyc, c_bytes);
+    // }
 }
 
 /*

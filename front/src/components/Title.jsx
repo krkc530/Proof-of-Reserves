@@ -1,13 +1,13 @@
 import "../styles.css";
 import React, { useContext, useEffect, useState } from 'react';
 import { myContext } from "../App";
-import { getTotalValue } from "../core/http/http"
-import { getSumOfCommitmets } from "../core/web3/contract";
+import { getSumOfCommitmets } from "../core/web3/contractL2";
+import { getTotalValue } from "../core/web3/contractL1";
 
 export default () => {
     let str = "PROOF OF RESERVES TOTAL VALUE : "
     let [totalValue, setTotalValue] = useState(0);
-    let {contractAddress, commitmentArray} = useContext(myContext);
+    let {contractAddressL2,contractAddressL1, commitmentArray} = useContext(myContext);
     let [sumOfCommitments, setSumOfCommitments] = useState("");
 
     useEffect(() => {
@@ -30,11 +30,12 @@ export default () => {
                 "display": "flex",
                 "flex": "auto",
                 "color":"beige",
-                "fontFamily":'Franklin Gothic Medium'
+                "fontFamily":'Franklin Gothic Medium',
+                "whiteSpace" : "pre-wrap"
             }}>
-                <h3>contract Address: {contractAddress}</h3>
-                
+                <h4 style={{}}>contract Address L1: {contractAddressL1} {'\n'}contract Address L2: {contractAddressL2}</h4><br/>
             </div>
+            
             {/* <div style={{
                 "paddingLeft":"5%",
                 "paddingRight":"5%",
