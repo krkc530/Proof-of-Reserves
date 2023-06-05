@@ -9,11 +9,13 @@
   "scripts": {
     "testrpc": "node ./node_modules/ganache-cli/cli.js --hardfork istanbul --port 7545 --gasLimit 0x7fffffffffffffff --gasPrice 1 --defaultBalanceEther 900000000000 --networkId 1234 --account_keys_path keys.json",
     "start": "node ./node_modules/ganache-cli/cli.js --port 7545 --gasLimit 0x3FFFFFFFFFFFFF --gasPrice 1 --defaultBalanceEther 900000000000 --networkId 1234 --account_keys_path keys.json",
-    "compile": "truffle compile --all && cp ./build/contracts/ProofOfReservesContract.json ../server/src/web3/ && node ./src/copy.js ../front/src/core/web3/ProofOfReservesContract.js"
+    "compile": "truffle compile --all&& npm run copy && node ./src/copy.js /../build/contracts/ProofOfReservesContractL1.json ../front/src/core/web3/ProofOfReservesContractL1.js && node ./src/copy.js /../build/contracts/ProofOfReservesContractL2.json ../front/src/core/web3/ProofOfReservesContractL2.js",
+    "copy" : "cp ./build/contracts/ProofOfReservesContractL1.json ../server/src/web3/ && cp ./build/contracts/ProofOfReservesContractL2.json ../server/src/web3/"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@openzeppelin/contracts": "^4.9.0",
     "ganache-cli": "^6.12.2",
     "lodash": "^4.17.21",
     "solc": "^0.8.20",

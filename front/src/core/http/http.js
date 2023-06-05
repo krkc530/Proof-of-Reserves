@@ -9,16 +9,37 @@ httpCli.defaults.timeout = 25000;
 
 export async function getContractAddress() {
     try {
-        const addr = (await httpCli.get('/tool/addr'))["data"]["Addr"];
+        const addresses = (await httpCli.get('/tool/addr'))
+        const addr = addresses["data"];
         console.log(addr)
-        return addr
+        return addresses["data"]
     } catch (error) {
+        console.log(error)
         return undefined;
     }
     // console.log();
     // return (await httpCli.get('/tool/addr')).data.Addr;
 }
 
+export async function getL2ContractAddress() {
+    try {
+        const addresses = (await httpCli.get('/tool/addr'))
+        return addresses["data"]['AddressL2']
+    } catch (error) {
+        console.log(error)
+        return undefined;
+    }
+}
+
+export async function getL1ContractAddress() {
+    try {
+        const addresses = (await httpCli.get('/tool/addr'))
+        return addresses["data"]['AddressL1']
+    } catch (error) {
+        console.log(error)
+        return undefined;
+    }
+}
 
 /**
  * 

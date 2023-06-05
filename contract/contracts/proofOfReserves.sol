@@ -3,20 +3,31 @@ pragma solidity >=0.8.0;
 
 import "./ccGroth16VerifyBn128.sol";
 import "./PairingBn128.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ProofOfReservesContract {
+
+contract ProofOfReservesContractL2 is Ownable {
     // G1 Point (x, y)
     struct Commitment {
         uint256 px;
         uint256 py;
     }
 
+    // ccGroth16 검증키
     uint256[] private verifyingKey;
 
+    // 전체 사용자 commitment
     Pairing.G1Point[] commitArray;
+
+    // 전체 사용자 commitment의 합
     Pairing.G1Point sumOfCommitment = Pairing.G1Point(0, 0);
 
+    // 전체 사용자 수
     uint256 private commitCnt = 0;
+
+    // sumOfCommitment의 x좌표 확인
+    mapping(uint256 => bool) _sumOfCommitmentList;
+
 
     constructor(uint256[] memory _vk) {
         verifyingKey = _vk;
@@ -29,7 +40,7 @@ contract ProofOfReservesContract {
     //      uint256[2] D    : G_1
     function upload_commitment(
         uint256[] memory proof
-    ) public payable returns (uint256) {
+    ) public onlyOwner returns (uint256) {
         require(ccGroth16BN128._verify(verifyingKey, proof), "verify fail");
 
         Pairing.G1Point memory cm = Pairing.G1Point(proof[8], proof[9]);
@@ -38,13 +49,15 @@ contract ProofOfReservesContract {
         if(cm.X == 0 && cm.Y == 0) { sumOfCommitment = cm; } 
         else { sumOfCommitment = Pairing.add(sumOfCommitment, cm); }
 
+        _sumOfCommitmentList[sumOfCommitment.X] = true;
+
         return commitCnt++;
     }
 
     function update_commitment(
         uint256 idx,
         uint256[] memory proof
-    ) public payable returns (bool) {
+    ) public onlyOwner returns (bool) {
         require(idx < commitCnt, "Invalid index");
         require(ccGroth16BN128._verify(verifyingKey, proof), "verify fail");
 
@@ -59,10 +72,12 @@ contract ProofOfReservesContract {
         commitArray[idx].Y = proof[9];
 
         sumOfCommitment = Pairing.add(
-            sumOfCommitment,
+            tmp,
             commitArray[idx]
         );
         
+        _sumOfCommitmentList[sumOfCommitment.X] = true;
+
         return true;
     }
 
@@ -80,5 +95,9 @@ contract ProofOfReservesContract {
 
     function get_sum_of_commitments() public view returns (Pairing.G1Point memory) {
         return sumOfCommitment;
+    }
+
+    function is_appeared_sum_of_commitments(uint256 _x) public view returns (bool) {
+        return _sumOfCommitmentList[_x];
     }
 }

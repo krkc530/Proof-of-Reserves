@@ -1,28 +1,30 @@
 import { JsonRpcProvider, Contract } from "ethers";
-import { getContractAddress } from "../http/http";
-import ProofOfReservesContract from "./ProofOfReservesContract";
+import { getContractAddress, getL2ContractAddress } from "../http/http";
+import ProofOfReservesContract from "./ProofOfReservesContractL2";
 import config from "../config";
 // import fs from 'fs';
 
-let   provider      = new JsonRpcProvider("http://127.0.0.1:7545");
+let   provider      = new JsonRpcProvider("http://127.0.0.1:7545", undefined, {batchMaxCount: 1});
 let   contractIns   = undefined;
-let   contractABI   = ProofOfReservesContract.abi;
+let   contractABI   = ProofOfReservesContract["abi"];
 let   contractAddr  = undefined;
 
 export async function getContractAddressAndSetContractIns(abi=contractABI) {
-    if (contractAddr) return contractIns;
-    setContractIns(await getContractAddress(), abi);
+    if (contractAddr != undefined) return contractIns;
+    setContractInsL2(await getL2ContractAddress(), abi);
     return contractIns
 }
 
-export function setContractIns(address, abi=contractABI) {
+export function setContractInsL2(address, abi=contractABI) {
+    console.log(abi)
+    console.log(address)
     contractAddr= address;
     contractIns = new Contract(address, abi, provider);
 }
 
-export function getContractIns() {
+export function getContractInsL2() {
     if(contractIns === undefined){
-        return undefined
+        return getContractAddressAndSetContractIns();
     }
     return contractIns;
 }
@@ -50,8 +52,8 @@ export async function getSumOfCommitmets() {
 }
 
 export default {
-    setContractIns,
-    getContractIns,
+    setContractInsL2,
+    getContractInsL2,
     getCommitmnetCnt,
     getAllCommitments,
 }

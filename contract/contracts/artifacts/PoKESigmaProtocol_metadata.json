@@ -8,36 +8,33 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256[]",
-						"name": "_vk",
-						"type": "uint256[]"
+						"internalType": "uint256[2]",
+						"name": "_g",
+						"type": "uint256[2]"
+					},
+					{
+						"internalType": "uint256[2]",
+						"name": "_h",
+						"type": "uint256[2]"
+					},
+					{
+						"internalType": "address",
+						"name": "_proofOfReserversAddr",
+						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
 			{
-				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "previousOwner",
-						"type": "address"
-					},
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "newOwner",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
 					}
 				],
-				"name": "OwnershipTransferred",
-				"type": "event"
-			},
-			{
-				"inputs": [],
-				"name": "get_all_commitments",
+				"name": "calc_y",
 				"outputs": [
 					{
 						"components": [
@@ -52,21 +49,50 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct Pairing.G1Point[]",
+						"internalType": "struct Pairing.G1Point",
 						"name": "",
-						"type": "tuple[]"
+						"type": "tuple"
 					}
 				],
-				"stateMutability": "view",
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256[2]",
+						"name": "t",
+						"type": "uint256[2]"
+					}
+				],
+				"name": "clac_c",
+				"outputs": [
+					{
+						"internalType": "uint256[2]",
+						"name": "",
+						"type": "uint256[2]"
+					}
+				],
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "get_commitment_cnt",
+				"name": "g",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "X",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Y",
 						"type": "uint256"
 					}
 				],
@@ -95,69 +121,41 @@
 						"type": "tuple"
 					}
 				],
-				"stateMutability": "view",
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "get_vk",
+				"name": "h",
 				"outputs": [
 					{
-						"internalType": "uint256[]",
-						"name": "",
-						"type": "uint256[]"
+						"internalType": "uint256",
+						"name": "X",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Y",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "owner",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "renounceOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "newOwner",
-						"type": "address"
-					}
-				],
-				"name": "transferOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "idx",
+						"name": "value",
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256[]",
-						"name": "proof",
-						"type": "uint256[]"
+						"internalType": "uint256[3]",
+						"name": "_proof",
+						"type": "uint256[3]"
 					}
 				],
-				"name": "update_commitment",
+				"name": "verify",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -167,40 +165,11 @@
 				],
 				"stateMutability": "payable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "proof",
-						"type": "uint256[]"
-					}
-				],
-				"name": "upload_commitment",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "payable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
 			"kind": "dev",
-			"methods": {
-				"owner()": {
-					"details": "Returns the address of the current owner."
-				},
-				"renounceOwnership()": {
-					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
-				},
-				"transferOwnership(address)": {
-					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
-				}
-			},
+			"methods": {},
 			"version": 1
 		},
 		"userdoc": {
@@ -211,7 +180,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/proofOfReserves.sol": "ProofOfReservesContract"
+			"contracts/PoKE.sol": "PoKESigmaProtocol"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -241,12 +210,28 @@
 				"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
 			]
 		},
+		"contracts/MiMC7.sol": {
+			"keccak256": "0x6699f15f4ecd06e19e2263c96367069906f77d78b734833cea21e0448e07ea29",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://aa4a3451df04180559d204a9669de06fd147533a27edfa2a4051539488836497",
+				"dweb:/ipfs/QmZUNUrNDPATwMPW5cDQ2qh7cMVyrW5xaGedsf5Mrex2PW"
+			]
+		},
 		"contracts/PairingBn128.sol": {
 			"keccak256": "0x0dc59306a9d02913a33f44c50674d3151ec883265b2b7e0fd942487c91ee5e22",
 			"license": "LGPL-3.0+",
 			"urls": [
 				"bzz-raw://66115d908c655f9919c936c3f17e96eb8cb12ddf428e54c70d9a9d18dd1d1fc3",
 				"dweb:/ipfs/QmPR6pLjzJcSkqm45G18Uh2nXth1bHCRs9egY2tcP4E4HW"
+			]
+		},
+		"contracts/PoKE.sol": {
+			"keccak256": "0x32af12deec29b7bee7d35cf2ae1360236297a026996f6b0552e9fb90cd3cefb3",
+			"license": "LGPL-3.0+",
+			"urls": [
+				"bzz-raw://05a7f460a4a69da532dcf89372086ca687697c0dde47278d5aaf680b8444ac64",
+				"dweb:/ipfs/QmcTv3Z2772ZJ7a4ouhT28wYqS7APQbnejZ8th7cCxEJhL"
 			]
 		},
 		"contracts/ccGroth16VerifyBn128.sol": {

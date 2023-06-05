@@ -2,16 +2,18 @@ import "../styles.css";
 import React, { useState, useContext } from 'react';
 import { updateValue, uploadValue } from "../core/http/http";
 import { myContext } from "../App";
-import { getAllCommitments } from "../core/web3/contract";
+import { getAllCommitments } from "../core/web3/contractL2";
 
 export default () => {
 
+    const [loading, setLoading] = useState(false);
     const [valueUpload, setValueUpload] = useState('');
     const [valueUpdate, setValueUpdate] = useState('');
     const [indexUpdate, setIndexUpdate] = useState('');
     const { commitmentArray ,setCommitmentArray } = useContext(myContext);
     
     const uploadOnClick = async (e) => {
+        setLoading(true)
         if(isNaN(valueUpload) || valueUpload === '') {
             console.log(isNaN(valueUpload), valueUpload);
             alert("value must be a number");
@@ -24,9 +26,11 @@ export default () => {
         else{
             alert("Error");
         }
+        setLoading(false)
     }
 
     const updateOnClick = async (e) => {
+        setLoading(true)
         if(isNaN(valueUpdate) || valueUpdate === '') {
             alert("value must be a number");
             return
@@ -43,6 +47,7 @@ export default () => {
         else{
             alert("Error");
         }
+        setLoading(false)
     }
 
     const updateCommitmentArray = async () => {
@@ -64,7 +69,7 @@ export default () => {
                 </div>
                 <button 
                     className="button" 
-                    onClick={uploadOnClick}> upload
+                    onClick={ loading ? ()=>{} :uploadOnClick}> upload
                 </button>
             </div>
 
@@ -72,7 +77,7 @@ export default () => {
                 <div className="title"><h3>update</h3> </div>
                 <input type="text" className="inputbox" placeholder="index" onChange={(e) => {setIndexUpdate(e.target.value);}}/>
                 <input type="text" className="inputbox" placeholder="value" style={{"marginBottom" : "11vh"}} onChange={(e) => {setValueUpdate(e.target.value);}}/>
-                <button className="button" onClick={updateOnClick}>update</button>
+                <button className="button" onClick={loading ? ()=>{} :updateOnClick}>update</button>
             </div>
             
         </div>

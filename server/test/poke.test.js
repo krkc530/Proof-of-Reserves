@@ -1,0 +1,158 @@
+import mimc from "../src/crypto/mimc.js";
+import config from "../src/config.js";
+import fs from "fs";
+import {keccak256} from '@ethersproject/keccak256';
+import {toUtf8Bytes} from '@ethersproject/strings';
+import { hexToInt, hexToBytes } from "../src/utils/types.js";
+import { pedersenGenToContractFormat, vkFileToContractFormat, proofFileToContractFormat } from "../src/utils/string.js";
+import sigmaProtocol from "../src/crypto/sigmaProtocol.js";
+import Curve,{ WeierstrassCurve } from "../src/crypto/curve.js";
+import { WeierstrassCurveParam } from "../src/crypto/curveParam.js";
+import math from "../src/utils/math.js";
+
+import legogroth16 from "../napirs-legogroth16/index.js"
+
+
+describe("MiMC", () => {
+    const mimc_seed = "mimc7_seed";
+
+    it("mimc", () => {
+        console.log("1\t",toUtf8Bytes(mimc_seed))
+        console.log("2\t", BigInt(keccak256(toUtf8Bytes(mimc_seed))))
+        // console.log("3\t",keccak256("1"))
+    })
+
+    it("get vk ", () => {
+        console.log("===== vk =====")
+        console.log(vkFileToContractFormat(config.PATH.proofPath+ "Proof_vk/VK.json"))
+    })
+
+    it("get proof TEST / sigma protocol TEST", () => {
+        console.log("===== proofs =====")
+
+        const weierstrassCurve = new WeierstrassCurve();
+        const pp = pedersenGenToContractFormat(config.PATH.proofPath+ "Ped_cm/generator.json");
+
+        const proof1 = proofFileToContractFormat(config.PATH.proofPath+ "Proof_vk/proof_1.json")
+        const proof1Key = JSON.parse(fs.readFileSync(config.PATH.proofPath+ "Ped_cm/CM_key_1.json", 'utf8'))
+        console.log('proof1 : ', [proof1Key["w"], proof1Key['v']])
+        console.log(proof1.map(BigInt))
+
+        const proof2 = proofFileToContractFormat(config.PATH.proofPath+ "Proof_vk/proof_2.json")
+        const proof2Key = JSON.parse(fs.readFileSync(config.PATH.proofPath+ "Ped_cm/CM_key_2.json", 'utf8'))
+        console.log('proof2 : ', [proof2Key["w"], proof2Key['v']])
+        console.log("calc commit 2 :  ",
+            weierstrassCurve.addAffineG1(
+                weierstrassCurve.scalarMulG1(
+                    new Curve.AffinePoint(pp[0], pp[1]),
+                    BigInt(proof2Key["w"])
+                ),
+                weierstrassCurve.scalarMulG1(
+                    new Curve.AffinePoint(pp[2], pp[3]),
+                    BigInt(proof2Key['v'])
+                )
+            )
+        )
+        console.log(proof2.map(BigInt))
+
+        const weierstrassCurveParam = new WeierstrassCurveParam();
+        const totalValue = (BigInt(proof1Key["w"]) + BigInt(proof2Key["w"])).toString()
+        const totalRandom= math.mod(BigInt(proof1Key["v"]) + BigInt(proof2Key["v"]), weierstrassCurveParam.ORDER).toString()
+        console.log('totalValue : ', totalValue)
+        console.log('totalRandom : ', totalRandom)
+
+        console.log("", weierstrassCurve.addAffineG1(
+            new Curve.AffinePoint(proof1[8].toString(), proof1[9].toString()),
+            new Curve.AffinePoint(proof2[8].toString(), proof2[9].toString())
+        ))
+        console.log("total CM : ", weierstrassCurve.addAffineG1(
+            weierstrassCurve.scalarMulG1(
+                new Curve.AffinePoint(pp[0], pp[1]),
+                BigInt(totalValue)
+            ),
+            weierstrassCurve.scalarMulG1(
+                new Curve.AffinePoint(pp[2], pp[3]),
+                BigInt(totalRandom)
+            )
+        ))
+        console.log('y=h^r : ',weierstrassCurve.scalarMulG1(
+            new Curve.AffinePoint(pp[2], pp[3]),
+            BigInt(totalRandom)
+        ))
+
+        legogroth16.totalPedCm(['1', '2']);
+
+        console.log("===== sigma =====")
+        const sigmaProtocolIns = sigmaProtocol();
+        const proof = sigmaProtocolIns.prove(BigInt(totalValue), BigInt(totalRandom));
+        console.log(proof)
+    })
+})
+
+/*
+vk
+[
+  8142147058532162113965078240038268738188241040143886539949794784192679446874,
+  8004331432134872723446219187850746970535617304081785190613162108295654548042,
+  2256440087287610897202381755239429193746841364195438949233259762630415322064,
+  8050294579857561861206818646577175393105003687391891870862956851654978390647,
+  4600174939738704792933453861071321805443550724321008923392870126112059113331,
+  11535041427670642413082640596299358639500081716805991457589515025743545656212,
+  19024948411873503621243990352745304019840338830762275078321505991891390434136,
+  4394670294022020629829052092131038837682151892772485548909912217256829949461,
+  11840372167060564690115466766065570875700196208627664453528791121162466271458,
+  14296649451618206604504137888022612253754154400098966107983802721124960748757,
+  20432999035478894612637453194394379901636567144897547254118911389029718601017,
+  1670822146655142727529614288525549612708030653154862122144317795827174983836,
+  12583439693350359164299772395992430255953623435118631116390496945435882371241,
+  12122321315820126532006740885233552588732441264002776844094616895554016241058,
+  12864181081389317703538660854790347973302536537186747747387297881665299878381,
+  955387076588108978418543333412501498512521554013830841706605646321846761513
+]
+g,h
+[
+    3180562012416913690925935386190007036479226111083987956960601792026358686114,
+    17519154828104037515817392931973887796962669181002901086993947786934567488870
+]
+[ 
+    4048032311302464926298094030158754074633619725258845665812735681205540954289,
+    757310962534471265451611502350520868277877209646502467151549808202870646207
+]
+
+proof_1
+[
+  11608502926445955079145934810504121211138319684954585978029051292165030070710,
+  5021997657335072062020940828415308975364059357107503919916269174963024657645,
+  18926714019225100837750193401897756261954878600302820528893743797121269524720,
+  14739808409647155931429361850229586873033936285308831606652120864758174555221,
+  1649773983215063417859102657128389451402778914748132541641136225329857970627,
+  6405547763069347207890757395495653687780278076581700663469871111104308067296,
+  2734376081311943740573624645838064104184484426355305763331405003853670880483,
+  13258476671908378002189822577100033679267638240773479087866063214064899040124,
+  17193297483531047180092894510294727037474183233994859791846492734510613340936,
+  9662556776159934384183185144907113579889508706949597927236912676724818682704
+]
+
+proof_2 
+[
+  16355897899473426174967809658844411663808587535329287876205075788314639804586,
+  6415186775518039267861241846065827706465783633796798798126966422476264680144,
+  13766914788184397885982533001029692807851936592526574406674329563680605702065,
+  16265896661572076179850684370879478371478355153938464532925459804538855493422,
+  12398537641831482896552012277266365712417358239678715029661226727127402349235,
+  11605795295580084068168271925336090235656495198592202572460596203585802423606,
+  2108203976569394634300789408534328930441874438406049603041971509292786746635,
+  21506404390310421919598219497775188819972641707253419894450324559590421897604,
+  10652194525727428585735160948170083230906753520071957861963303320573814877797,
+  11556280276652901450345614605907813811810370233914055923580574739179311598358
+]
+
+sigma PROOF
+[
+    239314435508027700476173748584025363358233456528297948113586176334700373411,
+    4938961443782603145429073850479257948842394679856911215618086793243139919601,
+    12474844495149876125785573600414204972007275243517083385075785665371463720248
+]
+
+
+*/

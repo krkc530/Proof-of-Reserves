@@ -1,6 +1,6 @@
 import voca from 'voca';
 import Curve from '../src/crypto/curve.js';
-import CurveParam from '../src/crypto/curveParam.js';
+import CurveParam, { WeierstrassCurveParam } from '../src/crypto/curveParam.js';
 
 describe('ccSnark Verify TEST', () => {
     
@@ -74,6 +74,35 @@ describe('ccSnark Verify TEST', () => {
         );
     })
 
+    it("Group operation TEST", () => {
+
+        let baseField= BigInt("0x2523648240000001BA344D80000000086121000000000013A700000000000013").toString(10)
+        console.log("\n\n\n baseField : ", baseField)
+
+        let order = BigInt("0x2523648240000001BA344D8000000007FF9F800000000010A10000000000000D").toString(10)
+        console.log("\n\n\n order : ", order)
+
+        // let montgomeryCurve = new Curve.MontgomeryCurve(CurveParam('EC_BN254'));
+        let weierstrassCurve = new Curve.WeierstrassCurve();
+
+        let a = new Curve.AffinePoint(
+            '17193297483531047180092894510294727037474183233994859791846492734510613340936',
+            '9662556776159934384183185144907113579889508706949597927236912676724818682704'
+        );
+        let b = new Curve.AffinePoint(
+            '10652194525727428585735160948170083230906753520071957861963303320573814877797',
+            '11556280276652901450345614605907813811810370233914055923580574739179311598358'
+        );
+
+        console.log(
+            weierstrassCurve.addAffineG1(a,b)
+        );
+
+        console.log(
+            weierstrassCurve.scalarMulG1(weierstrassCurve.addAffineG1(a,b), BigInt('100'))
+        )
+    })
+
     const prepareString = (myString) => {
         let result = myString;
         result = voca.replaceAll(result, 'QuadExtField', '');
@@ -121,4 +150,6 @@ describe('ccSnark Verify TEST', () => {
         }
         return Affine;
     } 
+
+
 })

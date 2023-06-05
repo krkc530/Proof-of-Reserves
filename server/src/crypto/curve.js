@@ -8,7 +8,7 @@ BigInt.prototype.mod = function(n){
     return ((this % n) + n)%n;
 };
 
-export class AffinePoint{
+class AffinePoint{
     constructor(x , y, inf=false){
         this.x = BigInt(x);
         this.y = BigInt(y);
