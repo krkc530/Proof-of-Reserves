@@ -1,7 +1,7 @@
 import express from "express";
-import {connection} from "../../server.js";
 import legogroth from '../../../napirs-legogroth16/index.js';
 import config from "../../config.js";
+import { connection } from "../../server.js";
 import porContract from "../../web3/index.js";
 
 const router = express.Router();
@@ -19,29 +19,42 @@ router.get('/:id/:value', (req, res) => {
 
     //id 랑 value
 
-    var seed = Math.floor(Math.random() * 10000);
-    legogroth.proof(req.params.id, req.params.value, seed);
+    connection.query('SELECT COUNT(*) FROM list', (err, result) => {
 
-    connection.query('UPDATE list SET value = ?,random = ? WHERE id = ?', [
-        req.params.value, seed, req.params.id
-    ], async (err, result) => {
-        var check = false;
-        if (err) {
-            console.log(err);
-            return;
-        } else {
-            check = true;
+        var total_usr_num = result[0]['COUNT(*)'];
+
+        console.log(Number(req.params.id), Number(total_usr_num));
+
+        if (Number(req.params.id) > Number(total_usr_num)) {
+            res.send({ flag: false, msg: "wrong id" })
+            return
         }
-        // contract
-        await porContract.updateCommitment(
-            Number(req.params.id) - 1,
-            config.PATH.proofPath + 'Proof_vk/proof_' + req.params.id + '.json'
-        );
 
 
-        res.send({
-            flag : check
-        });
+        
+        var seed = Math.floor(Math.random() * 10000);
+        legogroth.proof(req.params.id, req.params.value, seed);
+
+        connection.query('UPDATE list SET value = ?,random = ? WHERE id = ?', [
+            req.params.value, seed, req.params.id
+        ], async (err, result) => {
+            var check = false;
+            if (err) {
+                console.log(err);
+                return;
+            } else {
+                check = true;
+            }
+            // contract
+            await porContract.updateCommitment(
+                Number(req.params.id) - 1,
+                config.PATH.proofPath + 'Proof_vk/proof_' + req.params.id + '.json'
+            );
+
+            res.send({flag: check});
+        })
+
     })
+
 })
 export default router;
