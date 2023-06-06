@@ -29,7 +29,7 @@ router.get('/:id/:value', (req, res) => {
 
         console.log(Number(req.params.id), Number(total_usr_num));
 
-        if (Number(req.params.id) > Number(total_usr_num)) {
+        if (Number(req.params.id) >= Number(total_usr_num) ||Number(req.params.id) <= 0 ) {
             res.send({
                 flag: false,
                 msg: "wrong id"
