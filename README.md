@@ -54,5 +54,5 @@ $ cd front
 $ npm start
 ```
 
-
+<img alt="demo" src="PoR demo.gif" >
 
