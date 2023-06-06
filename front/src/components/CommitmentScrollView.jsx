@@ -63,7 +63,7 @@ export default () => {
     const timer = setInterval(async () => {
       // setContractIns(await getContractAddress());
       setCommitmentArray(await loadCommitment());
-    }, 3000);
+    }, 3333);
 
     return () => {
       clearInterval(timer)

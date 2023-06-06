@@ -5,7 +5,7 @@ import { getSumOfCommitmets } from "../core/web3/contractL2";
 import { getTotalValue } from "../core/web3/contractL1";
 
 export default () => {
-    let str = "PROOF OF RESERVES TOTAL VALUE : "
+    let str = "ITSP & SNP BANK TOTAL VALUE : "
     let [totalValue, setTotalValue] = useState(0);
     let {contractAddressL2,contractAddressL1, commitmentArray} = useContext(myContext);
     let [sumOfCommitments, setSumOfCommitments] = useState("");

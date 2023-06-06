@@ -17,6 +17,7 @@ export default () => {
         if(isNaN(valueUpload) || valueUpload === '') {
             console.log(isNaN(valueUpload), valueUpload);
             alert("value must be a number");
+            setLoading(false)
             return
         }
         if(await uploadValue(valueUpload)){
@@ -33,10 +34,12 @@ export default () => {
         setLoading(true)
         if(isNaN(valueUpdate) || valueUpdate === '') {
             alert("value must be a number");
+            setLoading(false)
             return
         }
         if(isNaN(indexUpdate) || indexUpdate === '') {
             alert("index must be a number");
+            setLoading(false)
             return
         }
 
