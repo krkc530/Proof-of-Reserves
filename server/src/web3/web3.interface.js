@@ -37,7 +37,7 @@ export default class Web3Interface extends Web3 {
         call,
         senderEthAddr,
         senderEthPrivateKey,
-        gas = Constants.DEFAULT_GAS_VALUE,
+        gas = '150000',
         value,
     ) {
         /*
@@ -49,6 +49,7 @@ export default class Web3Interface extends Web3 {
         let txDescription = {
             from: senderEthAddr,
             gas: gas,
+            gasPrice: '0x1',
         };
         if (value !== undefined) {
             txDescription['value'] = value;

@@ -56,6 +56,9 @@ export default {
     updateTotalValue : async () => {
         return await porContractL1.updateTotalValue();
     },
+    getAllCommitments: async () => {
+        return await porContractL2.getAllCommitments();
+    },
     getTotalValue : () => {
         return porContractL1.getTotalValue();
     }
