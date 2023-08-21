@@ -138,3 +138,6 @@ server/test/crs/*.json
 server/test/proof/*.json
 
 *keys.json
+
+
+*.DS_Store
