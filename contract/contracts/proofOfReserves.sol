@@ -18,7 +18,7 @@ contract ProofOfReservesContractL2 is Ownable {
     uint256[] private verifyingKey;
 
     // 전체 사용자 commitment
-    Pairing.G1Point[MAX_ACCOUNT_NUM] commitArray;
+    Pairing.G1Point[] commitArray;
 
     // 전체 사용자 commitment의 합
     Pairing.G1Point sumOfCommitment = Pairing.G1Point(0, 0);
@@ -45,7 +45,7 @@ contract ProofOfReservesContractL2 is Ownable {
         require(ccGroth16BN128._verify(verifyingKey, proof), "verify fail");
 
         Pairing.G1Point memory cm = Pairing.G1Point(proof[8], proof[9]);
-        commitArray[commitCnt] = cm;
+        commitArray.push(cm);
 
         if(cm.X == 0 && cm.Y == 0) { sumOfCommitment = cm; } 
         else { sumOfCommitment = Pairing.add(sumOfCommitment, cm); }
