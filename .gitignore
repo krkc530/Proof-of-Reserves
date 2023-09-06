@@ -145,8 +145,8 @@ server/test/proof/*.json
 
 # Contract build files
 contract/build
-front/src/core/web3/ProofOfReservesContract*.js
-server/src/web3/ProofOfReservesContract*.js
+front/src/core/web3/ProofOfReservesContract*
+server/src/web3/ProofOfReservesContract*
 
 # json build
 server/napirs-legogroth16/json/
