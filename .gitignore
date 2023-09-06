@@ -141,3 +141,12 @@ server/test/proof/*.json
 
 
 *.DS_Store
+
+
+# Contract build files
+contract/build
+front/src/core/web3/ProofOfReservesContract*.js
+server/src/web3/ProofOfReservesContract*.js
+
+# json build
+server/napirs-legogroth16/json/
