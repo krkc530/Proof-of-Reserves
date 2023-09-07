@@ -2,7 +2,8 @@ export default {
   "DB": {
     "host": "127.0.0.1",
     "user": "root",
-    "database": "POR"
+    "database": "POR",
+    "password": "1234"
   },
   "PATH": {
     "homePath": "/Users/freeman/dev/Proof-of-Reserves/server/",

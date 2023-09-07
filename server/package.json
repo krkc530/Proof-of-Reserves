@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node ./setup/clean.js && node ./setup/setup.js && node --experimental-modules --es-module-specifier-resolution=node ./index.js",
     "init": "node --experimental-modules --es-module-specifier-resolution=node ./init.js",
-    "nodemon": "node ./setup/clean.js && node ./setup/setup.js && npm run init && mysql -u root -p < ./database/por.sql && nodemon --experimental-specifier-resolution=node index.js --watch ./src"
+    "nodemon": "node ./setup/clean.js && node ./setup/setup.js && npm run init && mysql -u root -p1234 < ./database/por.sql && nodemon --experimental-specifier-resolution=node index.js --watch ./src"
   },
   "author": "",
   "license": "ISC",
