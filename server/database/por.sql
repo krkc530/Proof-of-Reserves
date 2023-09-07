@@ -3,16 +3,12 @@ CREATE DATABASE POR;
 
 USE POR;
 
-DROP TABLE IF EXISTS user;
-CREATE TABLE list(
-    id INT UNSIGNED,
+DROP TABLE IF EXISTS user_list;
+CREATE TABLE user_list(
+    id INT UNSIGNED NOT NULL,
+    asset_idx INT UNSIGNED NOT NULL,
     value BIGINT UNSIGNED,
-    random BIGINT UNSIGNED
+    random BIGINT UNSIGNED,
+    UNIQUE (id, asset_idx)
 );
 
-INSERT INTO list (id,value,random) VALUES (0,0,0);
-INSERT INTO list (id,value,random) VALUES (1,0,0);
-INSERT INTO list (id,value,random) VALUES (2,0,0);
-INSERT INTO list (id,value,random) VALUES (3,0,0);
-INSERT INTO list (id,value,random) VALUES (4,0,0);
-INSERT INTO list (id,value,random) VALUES (5,0,0);

@@ -6,25 +6,23 @@ import "./PairingBn128.sol";
 import "./proofOfReserves.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-
 /*
     we use ALT_BN128 curve
  */
 contract ProofOfReservesContractL1 is Ownable {
-
-    // public parameter of Pedersen Commitment 
+    // public parameter of Pedersen Commitment
     // cm = g^v * h^r
     Pairing.G1Point public g;
     Pairing.G1Point public h;
 
     // L2 contract address
-    address proofOfReserversAddr; 
+    address proofOfReserversAddr;
 
     // total CEX balance
-    uint256 totalValue;
+    mapping(uint256 => uint256) totalValue;
 
     // total CEX commitment
-    Pairing.G1Point totalCommitment;
+    mapping(uint256 => Pairing.G1Point) totalCommitment;
 
     constructor(
         uint256[2] memory _g,
@@ -37,21 +35,21 @@ contract ProofOfReservesContractL1 is Ownable {
         h.Y = _h[1];
 
         proofOfReserversAddr = _proofOfReserversAddr;
-        totalValue = 0;
     }
 
     function update_total_value(
+        uint256 assetIdx,
         uint256 value,
         uint256[3] memory proof
-    )  
-        public  
-        onlyOwner
-    {   
-        (bool result, Pairing.G1Point memory _totalCommitment) = PoKE_sigma_protocol_verify(value, proof);
+    ) public onlyOwner {
+        (
+            bool result,
+            Pairing.G1Point memory _totalCommitment
+        ) = PoKE_sigma_protocol_verify(assetIdx, value, proof);
         require(result, "invalid proof");
-        
-        totalCommitment = _totalCommitment;
-        totalValue = value;
+
+        totalCommitment[assetIdx] = _totalCommitment;
+        totalValue[assetIdx] = value;
     }
 
     // Proof :
@@ -60,21 +58,24 @@ contract ProofOfReservesContractL1 is Ownable {
     //    Proof[2] : s   where s = r' + cr
     //    h^s == t * y^c
     //    h^(r'+ cr) == h^r' * h^(cr)
-    function PoKE_sigma_protocol_verify (
-        uint256    value,
+    function PoKE_sigma_protocol_verify(
+        uint256 assetIdx,
+        uint256 value,
         uint256[3] memory _proof
     ) private returns (bool, Pairing.G1Point memory) {
-        
         // y = cm/g^v = h^r
-        Pairing.G1Point memory cm = get_sum_of_commitments();
-        Pairing.G1Point memory y =  Pairing.add(cm, Pairing.negate(Pairing.mul(g, value)));
+        Pairing.G1Point memory cm = get_sum_of_commitments(assetIdx);
+        Pairing.G1Point memory y = Pairing.add(
+            cm,
+            Pairing.negate(Pairing.mul(g, value))
+        );
 
         Pairing.G1Point memory t = Pairing.G1Point(_proof[0], _proof[1]);
         uint256 s = _proof[2];
 
         // c = Hash( h.X || y.X || t.X )
         bytes32 c_bytes = MiMC7._hash(
-            bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
+            bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),
             bytes32(t.X)
         );
 
@@ -85,18 +86,17 @@ contract ProofOfReservesContractL1 is Ownable {
         return (hs.X == tyc.X && hs.Y == tyc.Y, cm);
     }
 
-    function get_sum_of_commitments() 
-        private view returns(Pairing.G1Point memory)
-    {
-        return ProofOfReservesContractL2(proofOfReserversAddr).get_sum_of_commitments();
+    function get_sum_of_commitments(
+        uint256 assetIdx
+    ) private view returns (Pairing.G1Point memory) {
+        return
+            ProofOfReservesContractL2(proofOfReserversAddr)
+                .get_sum_of_commitments(assetIdx);
     }
 
-    function get_total_value()
-        public view returns (uint256) 
-    {
-        return totalValue;
+    function get_total_value(uint256 assetIdx) public view returns (uint256) {
+        return totalValue[assetIdx];
     }
-
 
     // ========= to Debug =========
 
@@ -119,7 +119,7 @@ contract ProofOfReservesContractL1 is Ownable {
     //     uint256[2] memory t
     // )
     //     public
-    //     payable 
+    //     payable
     //     returns (uint256[2] memory)
     // {
     //     uint256[2] memory ret;
@@ -127,7 +127,7 @@ contract ProofOfReservesContractL1 is Ownable {
 
     //     ret[0] = uint256(MiMC7._hash(bytes32(h.X), bytes32(y.X)));
     //     ret[1] = uint256(MiMC7._hash(
-    //         bytes32(ret[0]),  
+    //         bytes32(ret[0]),
     //         bytes32(t[0])
     //     ));
     //     return ret;
@@ -137,10 +137,10 @@ contract ProofOfReservesContractL1 is Ownable {
     //     uint256 value,
     //     uint256[3] memory proof
     // )
-    //     public 
-    //     payable 
+    //     public
+    //     payable
     //     returns (Pairing.G1Point memory)
-    // {   
+    // {
 
     //     Pairing.G1Point memory hs = Pairing.mul(h, proof[2]);
     //     return hs;
@@ -150,15 +150,15 @@ contract ProofOfReservesContractL1 is Ownable {
     //     uint256 value,
     //     uint256[3] memory proof
     // )
-    //     public 
-    //     payable 
+    //     public
+    //     payable
     //     returns (Pairing.G1Point memory, bytes32)
-    // {   
+    // {
     //     Pairing.G1Point memory y = calc_y(value);
     //     Pairing.G1Point memory t = Pairing.G1Point(proof[0], proof[1]);
 
     //     bytes32 c_bytes = MiMC7._hash(
-    //         bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
+    //         bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),
     //         bytes32(t.X)
     //     );
 
@@ -170,15 +170,15 @@ contract ProofOfReservesContractL1 is Ownable {
     //     uint256 value,
     //     uint256[3] memory proof
     // )
-    //     public 
-    //     payable 
+    //     public
+    //     payable
     //     returns (Pairing.G1Point memory, bytes32)
-    // {   
+    // {
     //     Pairing.G1Point memory y = calc_y(value);
     //     Pairing.G1Point memory t = Pairing.G1Point(proof[0], proof[1]);
 
     //     bytes32 c_bytes = MiMC7._hash(
-    //         bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),  
+    //         bytes32(MiMC7._hash(bytes32(h.X), bytes32(y.X))),
     //         bytes32(t.X)
     //     );
 
