@@ -3,12 +3,7 @@ import {
   proofOfReserveContractL2,
   proofOfReserveContractL1,
 } from "./contract.js";
-import Ganache from "./ganache.js";
 import config from "../config.js";
-import {
-  vkFileToContractFormat,
-  pedersenGenToContractFormat,
-} from "../utils/string.js";
 
 const contractL2Json = JSON.parse(
   fs.readFileSync(
@@ -23,27 +18,16 @@ const contractL1Json = JSON.parse(
   )
 );
 
-const vkPath = config.PATH.proofPath + "Proof_vk/VK.json";
-const genPath = config.PATH.proofPath + "Ped_cm/generator.json";
-
-const gen = pedersenGenToContractFormat(genPath);
-
-const porContractL2 = await proofOfReserveContractL2.deployAndconstruct(
-  Ganache.getAddress(),
-  Ganache.getPrivateKey(),
-  vkFileToContractFormat(vkPath),
-  config.testProvider,
-  contractL2Json.abi,
-  contractL2Json.bytecode
-);
-
-const porContractL1 = await proofOfReserveContractL1.deployAndconstruct(
-  Ganache.getAddress(),
-  Ganache.getPrivateKey(),
-  [[gen[0], gen[1]], [gen[2], gen[3]], porContractL2.Addr],
+const porContractL1 = new proofOfReserveContractL1(
   config.testProvider,
   contractL1Json.abi,
-  contractL1Json.bytecode
+  config.L1_ADDRESS
+);
+
+const porContractL2 = new proofOfReserveContractL2(
+  config.testProvider,
+  contractL2Json.abi,
+  config.L2_ADDRESS
 );
 
 export default {
