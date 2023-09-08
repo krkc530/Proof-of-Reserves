@@ -8,7 +8,7 @@ const CommitmentUpdate = () => {
   const [valueUpload, setValueUpload] = useState("");
   const [valueUpdate, setValueUpdate] = useState("");
   const [indexUpdate, setIndexUpdate] = useState("");
-  const { setCommitmentArray, assetIdx, setUpdate } = useContext(myContext);
+  const { assetIdx, setUpdate } = useContext(myContext);
 
   const uploadOnClick = async (e) => {
     setLoading(true);
@@ -18,6 +18,13 @@ const CommitmentUpdate = () => {
       setLoading(false);
       return;
     }
+    if (isNaN(assetIdx) || assetIdx === "") {
+      console.log(isNaN(assetIdx), assetIdx);
+      alert("assetIdx must be a number");
+      setLoading(false);
+      return;
+    }
+
     if (await uploadValue(assetIdx, valueUpload)) {
       await updateCommitmentArray();
       alert("Success");
@@ -31,6 +38,12 @@ const CommitmentUpdate = () => {
     setLoading(true);
     if (isNaN(valueUpdate) || valueUpdate === "") {
       alert("value must be a number");
+      setLoading(false);
+      return;
+    }
+    if (isNaN(assetIdx) || assetIdx === "") {
+      console.log(isNaN(assetIdx), assetIdx);
+      alert("assetIdx must be a number");
       setLoading(false);
       return;
     }

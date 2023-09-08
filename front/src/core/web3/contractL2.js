@@ -18,8 +18,6 @@ export async function getContractAddressAndSetContractIns(abi = contractABI) {
 }
 
 export function setContractInsL2(address, abi = contractABI) {
-  console.log(abi);
-  console.log(address);
   contractAddr = address;
   contractIns = new Contract(address, abi, provider);
 }

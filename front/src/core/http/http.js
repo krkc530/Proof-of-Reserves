@@ -8,7 +8,7 @@ httpCli.defaults.timeout = 25000;
 
 export async function getContractAddress() {
   try {
-    const addresses = await httpCli.get("/tool/addr");
+    const addresses = await httpCli.get("/api/addr");
     const addr = addresses["data"];
     console.log(addr);
     return addresses["data"];
@@ -17,12 +17,12 @@ export async function getContractAddress() {
     return undefined;
   }
   // console.log();
-  // return (await httpCli.get('/tool/addr')).data.Addr;
+  // return (await httpCli.get('/api/addr')).data.Addr;
 }
 
 export async function getL2ContractAddress() {
   try {
-    const addresses = await httpCli.get("/tool/addr");
+    const addresses = await httpCli.get("/api/addr");
     return addresses["data"]["AddressL2"];
   } catch (error) {
     console.log(error);
@@ -32,7 +32,7 @@ export async function getL2ContractAddress() {
 
 export async function getL1ContractAddress() {
   try {
-    const addresses = await httpCli.get("/tool/addr");
+    const addresses = await httpCli.get("/api/addr");
     return addresses["data"]["AddressL1"];
   } catch (error) {
     console.log(error);
@@ -42,38 +42,67 @@ export async function getL1ContractAddress() {
 
 /**
  *
+ * @param {String} assetIdx
  * @param {String} value
- * @returns {boolean}
+ * @returns {Promise<boolean>}
  */
 export async function uploadValue(assetIdx, value) {
-  if (typeof value !== "string") return false;
+  if (typeof value !== "string" || typeof assetIdx !== "string") return false;
 
-  const res = await httpCli.get("/tool/upload/" + assetIdx + "/" + value);
+  const data = {
+    asset_idx: assetIdx,
+    value: value,
+  };
 
-  console.log(res.data);
-
-  return res.data.flag;
+  try {
+    const res = await httpCli.post("/api/upload", data);
+    console.debug(res.data);
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 }
 
 /**
  *
  * @param {String} idx   : dec index
+ * @param {String} assetIdx
  * @param {String} value : dec balance of user
+ * @returns {Promise<boolean>}
  */
 export async function updateValue(idx, assetIdx, value) {
-  const res = await httpCli.get(
-    "/tool/update/" + idx + "/" + assetIdx + "/" + value
-  );
+  if (
+    typeof value !== "string" ||
+    typeof assetIdx !== "string" ||
+    typeof idx !== "string"
+  )
+    return false;
 
-  console.log(res.data);
-
-  return res.data.flag;
+  const data = {
+    id: idx,
+    asset_idx: assetIdx,
+    value: value,
+  };
+  try {
+    const res = await httpCli.post("/api/update", data);
+    console.debug(res.data);
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 }
 
 export async function getTotalValue(assetIdx) {
-  const res = await httpCli.get("/tool/total_cm/" + assetIdx);
-
-  return res.data.value;
+  try {
+    const res = await httpCli.get("/api/total_cm/" + assetIdx);
+    const value = res.data.value;
+    return value;
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
 }
 
 export default httpCli;

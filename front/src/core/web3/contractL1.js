@@ -17,8 +17,6 @@ export async function getContractAddressAndSetContractIns(abi = contractABI) {
 }
 
 export function setContractInsL1(address, abi = contractABI) {
-  console.log(abi);
-  console.log(address);
   contractAddr = address;
   contractIns = new Contract(address, abi, provider);
 }
@@ -34,7 +32,6 @@ export async function getTotalValueFromContract(assetIdx) {
   const ret = await (
     await getContractAddressAndSetContractIns()
   ).get_total_value(assetIdx);
-  console.log(ret);
   return ret.toString();
 }
 
