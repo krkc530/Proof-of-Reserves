@@ -50,4 +50,7 @@ export default {
   getTotalValue: (assetIdx) => {
     return porContractL1.getTotalValue(assetIdx);
   },
+  getTotalCommitment: async (assetIdx) => {
+    return porContractL2.getTotalCommitment(assetIdx);
+  },
 };

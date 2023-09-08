@@ -4,6 +4,35 @@ import porContract from "../web3";
 import legoGroth16 from "../../napirs-legogroth16";
 import config from "../config";
 
+import { getBalance } from "./total.value.service";
+import { getTotalValue } from "./total.value.service";
+
+export const updateBalance = async (assetIdx, balance) => {
+  const balanceBN = BigInt(balance);
+  // balance validation
+  if (balanceBN < 0 || balanceBN > 2n ** 64n) {
+    throw new Error("Invalid request params, value range error");
+  }
+
+  const assetBalance = await getBalance(assetIdx);
+
+  // if not exist yet
+  if (assetBalance === undefined) {
+    await DbInstance.query(
+      "INSERT INTO balance_list (asset_idx, balance) VALUES (?, ?)",
+      [assetIdx, balance]
+    );
+
+    return;
+  }
+
+  // update balance
+  await DbInstance.query(
+    "UPDATE balance_list SET balance = ? WHERE asset_idx = ?",
+    [balance, assetIdx]
+  );
+};
+
 const updateCommitment = async (recordId, assetIdx, recordValue) => {
   const recordValueBN = BigInt(recordValue);
 
@@ -57,7 +86,11 @@ const updateService = async (data) => {
   const recordValue = _.get(data, "value");
   const recordId = _.get(data, "id");
 
-  return await updateCommitment(recordId, assetIdx, recordValue);
+  await updateCommitment(recordId, assetIdx, recordValue);
+  const balance = await getTotalValue(assetIdx);
+  await updateBalance(assetIdx, balance);
+
+  return;
 };
 
 export default updateService;

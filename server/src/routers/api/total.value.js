@@ -10,7 +10,7 @@ router.get("/:asset_idx", expressAsyncHandler(getTotalValueController));
 async function getTotalValueController(req, res) {
   console.debug("[getTotalValueController]", req.params);
   const response = await totalValueService(req.params);
-  console.debug("[getTotalValueController] totalValue:", response);
+  console.debug("[getTotalValueController] response:", response);
   res.status(201).json(response);
 }
 

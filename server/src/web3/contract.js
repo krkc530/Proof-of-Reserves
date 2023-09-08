@@ -93,6 +93,10 @@ export class proofOfReserveContractL2 extends Web3Interface {
   async getCommimentCnt(assetIdx) {
     return this.localContractCall(this.Method.get_commitment_cnt(assetIdx));
   }
+
+  async getTotalCommitment(assetIdx) {
+    return this.localContractCall(this.Method.get_sum_of_commitments(assetIdx));
+  }
 }
 
 export class proofOfReserveContractL1 extends Web3Interface {

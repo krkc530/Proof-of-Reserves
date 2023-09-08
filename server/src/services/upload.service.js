@@ -4,6 +4,9 @@ import porContract from "../web3";
 import legoGroth16 from "../../napirs-legogroth16";
 import config from "../config";
 
+import { updateBalance } from "./update.service";
+import { getTotalValue } from "./total.value.service";
+
 const uploadCommitment = async (assetIdx, recordValue) => {
   const recordValueBN = BigInt(recordValue);
 
@@ -50,7 +53,11 @@ const uploadService = async (data) => {
   const assetIdx = _.get(data, "asset_idx");
   const value = _.get(data, "value");
 
-  return await uploadCommitment(assetIdx, value);
+  await uploadCommitment(assetIdx, value);
+  const balance = await getTotalValue(assetIdx);
+  await updateBalance(assetIdx, balance);
+
+  return;
 };
 
 export default uploadService;

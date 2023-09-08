@@ -12,3 +12,10 @@ CREATE TABLE user_list(
     UNIQUE (id, asset_idx)
 );
 
+DROP TABLE IF EXISTS balance_list;
+CREATE TABLE balance_list(
+    asset_idx INT UNSIGNED NOT NULL,
+    balance BIGINT UNSIGNED,
+    UNIQUE (asset_idx)
+);
+
