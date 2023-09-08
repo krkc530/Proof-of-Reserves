@@ -4,17 +4,16 @@ import porContract from "../web3";
 import legoGroth16 from "../../napirs-legogroth16";
 import config from "../config";
 
-import { getBalance } from "./total.value.service";
-import { getTotalValue } from "./total.value.service";
+import { getBalanceFromChain, getBalanceFromServer } from "./balances.service";
 
-export const updateBalance = async (assetIdx, balance) => {
+export const updateChainBalance = async (assetIdx, balance) => {
   const balanceBN = BigInt(balance);
   // balance validation
   if (balanceBN < 0 || balanceBN > 2n ** 64n) {
     throw new Error("Invalid request params, value range error");
   }
 
-  const assetBalance = await getBalance(assetIdx);
+  const assetBalance = await getBalanceFromChain(assetIdx);
 
   // if not exist yet
   if (assetBalance === undefined) {
@@ -87,8 +86,8 @@ const updateService = async (data) => {
   const recordId = _.get(data, "id");
 
   await updateCommitment(recordId, assetIdx, recordValue);
-  const balance = await getTotalValue(assetIdx);
-  await updateBalance(assetIdx, balance);
+  const balance = await getBalanceFromServer(assetIdx);
+  await updateChainBalance(assetIdx, balance);
 
   return;
 };

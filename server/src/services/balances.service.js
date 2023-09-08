@@ -1,7 +1,8 @@
 import _ from "lodash";
 import DbInstance from "../../database";
 
-export const getTotalValue = async (assetIdx) => {
+// this represents balance from "trade" server
+export const getBalanceFromServer = async (assetIdx) => {
   if (assetIdx === undefined) {
     throw new Error("Invalid request params");
   }
@@ -19,7 +20,8 @@ export const getTotalValue = async (assetIdx) => {
   return totalValue;
 };
 
-export const getBalance = async (assetIdx) => {
+// this represents balance from blockchain (mocking)
+export const getBalanceFromChain = async (assetIdx) => {
   const [rows, fields] = await DbInstance.query(
     "SELECT balance FROM balance_list WHERE asset_idx = ?",
     [assetIdx]
@@ -30,16 +32,16 @@ export const getBalance = async (assetIdx) => {
   return totalBalance;
 };
 
-const totalValueService = async (params) => {
+const balanceService = async (params) => {
   const assetIdx = _.get(params, "asset_idx");
 
-  const value = await getTotalValue(assetIdx);
-  const balance = (await getBalance(assetIdx)) || 0;
+  const serverBalance = await getBalanceFromServer(assetIdx);
+  const chainBalance = (await getBalanceFromChain(assetIdx)) || 0;
 
   return {
-    value,
-    balance,
+    serverBalance,
+    chainBalance,
   };
 };
 
-export default totalValueService;
+export default balanceService;

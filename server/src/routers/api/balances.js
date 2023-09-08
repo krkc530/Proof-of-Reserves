@@ -1,7 +1,7 @@
 import express from "express";
 import expressAsyncHandler from "express-async-handler";
 
-import totalValueService from "../../services/total.value.service";
+import balanceService from "../../services/balances.service";
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ router.get("/:asset_idx", expressAsyncHandler(getTotalValueController));
 
 async function getTotalValueController(req, res) {
   console.debug("[getTotalValueController]", req.params);
-  const response = await totalValueService(req.params);
+  const response = await balanceService(req.params);
   console.debug("[getTotalValueController] response:", response);
   res.status(201).json(response);
 }
