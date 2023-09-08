@@ -1,8 +1,8 @@
 import express from "express";
-import tool from './tool/index.js'
+import apiRouter from "./api";
 
 const rootRouter = express.Router();
 
-rootRouter.use('/tool', tool);
+rootRouter.use("/api", apiRouter);
 
 export default rootRouter;
