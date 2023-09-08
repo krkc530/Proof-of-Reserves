@@ -98,7 +98,20 @@ export async function getTotalValue(assetIdx) {
   try {
     const res = await httpCli.get("/api/total_cm/" + assetIdx);
     const value = res.data.value;
-    return value;
+    const balance = res.data.balance;
+    return { value, balance };
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
+}
+
+export async function getAllCommitments(assetIdx) {
+  try {
+    const res = await httpCli.get("/api/commits/" + assetIdx);
+    const commits = res.data.commits;
+    const totalCommit = res.data.totalCommit;
+    return { commits, totalCommit };
   } catch (err) {
     console.error(err);
     return undefined;

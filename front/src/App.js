@@ -1,25 +1,16 @@
 import "./styles.css";
 import React, { useEffect, createContext, useState } from "react";
 import Select from "react-select";
-import CommitmentScrollView from "./components/CommitmentScrollView";
+
 import Title from "./components/Title";
+import CommitmentScrollView from "./components/CommitmentScrollView";
 import CommitmentUpdate from "./components/CommitmentUpdate";
-import {
-  getAllCommitments,
-  getSumOfCommitmets,
-  setContractInsL2,
-} from "./core/web3/contractL2";
-import { getContractAddress } from "./core/http/http";
-import { getTotalValueFromContract } from "./core/web3/contractL1";
-import { getTotalValue } from "./core/http/http";
+
+import { getTotalValue, getAllCommitments } from "./core/http/http";
 
 export const myContext = createContext({
   commitmentArray: [],
   setCommitmentArray: () => {},
-  contractAddressL2: "",
-  setContractAddressL2: () => {},
-  contractAddressL1: "",
-  setContractAddressL1: () => {},
   assetIdx: "",
   setAssetIdx: () => {},
   setUpdate: () => {},
@@ -30,27 +21,18 @@ export default function App({ Component }) {
   let [totalValueFromContract, setTotalValueFromContract] = useState(0);
   let [totalValueFromServer, setTotalValueFromServer] = useState(0);
   let [sumOfCommitments, setSumOfCommitments] = useState(["0", "0"]);
-  let [contractAddressL2, setContractAddressL2] = useState("");
-  let [contractAddressL1, setContractAddressL1] = useState("");
   let [assetIdx, setAssetIdx] = useState("0");
   let [update, setUpdate] = useState(false);
 
-  useEffect(() => {
-    getContractAddress().then((addresses) => {
-      setContractInsL2(addresses["AddressL2"]);
-      setContractAddressL2(addresses["AddressL2"]);
-      setContractAddressL1(addresses["AddressL1"]);
-      // console.log(addresses);
-    });
-  });
-
   const updateAll = () => {
-    getAllCommitments(assetIdx).then((r) => setCommitmentArray(r));
-    getTotalValueFromContract(assetIdx).then((r) =>
-      setTotalValueFromContract(r)
-    );
-    getTotalValue(assetIdx).then((r) => setTotalValueFromServer(r));
-    getSumOfCommitmets(assetIdx).then((r) => setSumOfCommitments(r));
+    getAllCommitments(assetIdx).then(({ commits, totalCommit }) => {
+      setCommitmentArray(commits);
+      setSumOfCommitments(totalCommit);
+    });
+    getTotalValue(assetIdx).then(({ value, balance }) => {
+      setTotalValueFromServer(value);
+      setTotalValueFromContract(balance);
+    });
   };
 
   useEffect(() => {
@@ -83,10 +65,6 @@ export default function App({ Component }) {
       value={{
         commitmentArray,
         setCommitmentArray,
-        contractAddressL2: contractAddressL2,
-        setContractAddressL2: setContractAddressL2,
-        contractAddressL1: contractAddressL1,
-        setContractAddressL1: setContractAddressL1,
         assetIdx,
         setAssetIdx,
         setUpdate,
