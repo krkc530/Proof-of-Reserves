@@ -44,7 +44,8 @@ $ npm run testrpc
 open new terminal.  
 ```
 $ cd server 
-$ npm run nodemon
+$ npm run init 
+$ npm start
 ```
 
 #### run front 
