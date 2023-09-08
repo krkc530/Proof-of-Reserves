@@ -23,7 +23,6 @@ const uploadCommitment = async (assetIdx, recordValue) => {
   // Generate new random
   // TODO: 32bit
   const random = Math.floor(Math.random() * 10000);
-  console.log(newRecordId, recordValue, random);
   legoGroth16.proof(String(newRecordId), recordValue, random);
 
   await DbInstance.query(
