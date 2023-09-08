@@ -94,12 +94,12 @@ export async function updateValue(idx, assetIdx, value) {
   }
 }
 
-export async function getTotalValue(assetIdx) {
+export async function getBalances(assetIdx) {
   try {
-    const res = await httpCli.get("/api/total_cm/" + assetIdx);
-    const value = res.data.value;
-    const balance = res.data.balance;
-    return { value, balance };
+    const res = await httpCli.get("/api/balances/" + assetIdx);
+    const serverBalance = res.data.serverBalance;
+    const chainBalance = res.data.chainBalance;
+    return { serverBalance, chainBalance };
   } catch (err) {
     console.error(err);
     return undefined;

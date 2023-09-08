@@ -6,7 +6,7 @@ import Title from "./components/Title";
 import CommitmentScrollView from "./components/CommitmentScrollView";
 import CommitmentUpdate from "./components/CommitmentUpdate";
 
-import { getTotalValue, getAllCommitments } from "./core/http/http";
+import { getBalances, getAllCommitments } from "./core/http/http";
 
 export const myContext = createContext({
   commitmentArray: [],
@@ -29,9 +29,9 @@ export default function App({ Component }) {
       setCommitmentArray(commits);
       setSumOfCommitments(totalCommit);
     });
-    getTotalValue(assetIdx).then(({ value, balance }) => {
-      setTotalValueFromServer(value);
-      setTotalValueFromContract(balance);
+    getBalances(assetIdx).then(({ serverBalance, chainBalance }) => {
+      setTotalValueFromServer(serverBalance);
+      setTotalValueFromContract(chainBalance);
     });
   };
 
