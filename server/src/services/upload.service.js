@@ -38,15 +38,6 @@ const uploadCommitment = async (assetIdx, recordValue) => {
     assetIdx,
     config.PATH.proofPath + "Proof_vk/proof_" + newRecordId + ".json"
   );
-
-  // userList = ["0", "1", ... , "totalLength - 1", "newRecordId"]
-  const userList = Array.from({ length: newRecordId + 1 }, (_, index) =>
-    index.toString()
-  );
-  legoGroth16.totalPedCm(userList);
-
-  // contract call
-  await porContract.updateTotalValue(assetIdx);
 };
 
 const uploadService = async (data) => {
