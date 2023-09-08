@@ -1,41 +1,21 @@
-import config from "./config.js";
 import bodyParser from "body-parser";
 import express from "express";
-import mysql from "mysql2";
 import cors from "cors";
 import rootRouter from "./routers/index.js";
-import porContract from "./web3/index.js";
-import legogroth from "../napirs-legogroth16/index.js";
 
-export const connection = mysql.createConnection({
-  host: config.DB.host,
-  user: config.DB.user,
-  password: config.DB.password,
-  database: "POR",
-});
+import uploadService from "./services/upload.service.js";
 
-async function set_id_value(id, assetIdx, value) {
-  var seed = Math.floor(Math.random() * 10000);
+const uploadDefaultCommits = async (assetIdx = 0, length = 5) => {
+  const values = Array.from({ length }, () => Math.floor(Math.random() * 1000));
+  for (const v of values) {
+    const data = { asset_idx: assetIdx, value: v.toString() };
+    await uploadService(data);
+  }
+};
 
-  legogroth.proof(String(id), String(value), seed);
-  connection.query(
-    "INSERT INTO user_list (id,asset_idx,value,random) VALUES (?,?,?,?)",
-    [id, assetIdx, value, seed],
-    (err, result) => {
-      if (err) {
-        console.log("error in set_id_value funcion");
-        console.log(err);
-        return;
-      }
-    }
-  );
-
-  // contract
-  await porContract.uploadCommitment(
-    assetIdx,
-    config.PATH.proofPath + "Proof_vk/proof_" + String(id) + ".json"
-  );
-}
+const onStartServer = async () => {
+  uploadDefaultCommits().catch((e) => console.error(e));
+};
 
 const server = async () => {
   const app = express();
@@ -50,17 +30,8 @@ const server = async () => {
 
   app.listen(8000, () => {
     console.log("server start on 8000");
+    onStartServer();
   });
-
-  const user_ids = [0, 1, 2, 3, 4];
-  const asset_idx = 0;
-  for (const id of user_ids) {
-    const rand = Number(Math.floor(Math.random() * 1000));
-    await set_id_value(id, asset_idx, rand);
-  }
-
-  legogroth.totalPedCm(user_ids.map((i) => String(i)));
-  await porContract.updateTotalValue(asset_idx);
 };
 
 export default server;
