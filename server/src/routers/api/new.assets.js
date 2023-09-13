@@ -12,16 +12,12 @@ router.post("/", expressAsyncHandler(newAssetsController));
 
 async function newAssetsController(req, res) {
   console.debug("[newAssetsController]");
-  const { success, key } = await generateAllAssets();
-  const response = {
-    success,
-    key,
-  };
+  const response = await generateAllAssets();
   console.debug("[newAssetsController] response:", response);
   res.status(201).json(response);
 }
 
-async function generateAllAssets() {
+export async function generateAllAssets() {
   const newUserId = await UsersServices.createUser();
   const assetIds = await AssetsServices.getAllAssetIds();
 

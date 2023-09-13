@@ -1,5 +1,6 @@
 import express from "express";
 import expressAsyncHandler from "express-async-handler";
+import { query, validationResult } from "express-validator";
 import _ from "lodash";
 
 import UserAssetsServices from "../../services/userAssets.service";
@@ -7,14 +8,24 @@ import AssetsServices from "../../services/assets.service";
 
 const router = express.Router();
 
-router.get("/", expressAsyncHandler(assetsController));
+router.get(
+  "/",
+  query("key").custom((v) => {
+    return /^[0-9]*$/.test(v);
+  }),
+  expressAsyncHandler(assetsController)
+);
 
 async function assetsController(req, res) {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(400).json({ errors: result.array() });
+  }
   console.debug("[assetsController]", req.query);
   const data = await getUserAssets(req.query);
   const response = { data };
   console.debug("[assetsController] response:", response);
-  res.status(201).json(response);
+  res.status(200).json(response);
 }
 
 async function getUserAssets(query) {

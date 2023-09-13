@@ -4,18 +4,10 @@ import cors from "cors";
 import rootRouter from "./routers/index.js";
 import errorHandler from "./middleware/errorHandler.js";
 
-import uploadService from "./services/upload.service.js";
-
-const uploadDefaultCommits = async (assetIdx = 0, length = 5) => {
-  const values = Array.from({ length }, () => Math.floor(Math.random() * 1000));
-  for (const v of values) {
-    const data = { asset_id: assetIdx, value: v.toString() };
-    await uploadService(data);
-  }
-};
+import { generateAllAssets } from "./routers/api/new.assets.js";
 
 const onStartServer = async () => {
-  uploadDefaultCommits().catch((e) => console.error(e));
+  //   generateAllAssets().catch((e) => console.error(e));
 };
 
 const server = async () => {

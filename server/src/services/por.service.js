@@ -54,34 +54,28 @@ const verifyPoKE = async (totalCommit, totalValue, proof) => {
   return hs.x === t_yc.x && hs.y === t_yc.y;
 };
 
-const verifyCommitment = (value, random, commit) => {
-  const c = createCommitFrom(value, random);
-  const cm = new Curve.AffinePoint(_.get(commit, "0"), _.get(commit, "1"));
+// TODO to pass r to user
+// const verifyCommitment = (value, random, commit) => {
+//   const c = createCommitFrom(value, random);
+//   const cm = new Curve.AffinePoint(_.get(commit, "0"), _.get(commit, "1"));
 
-  return c.x === cm.x && c.y === cm.y;
-};
+//   return c.x === cm.x && c.y === cm.y;
+// };
 
-const createCommitFrom = (value, random) => {
-  const weierstrassCurve = new WeierstrassCurve();
-  // get g, h
-  let { g, h } = SnarkServices.getPublicParameters();
-  g = new Curve.AffinePoint(g.x, g.y);
-  h = new Curve.AffinePoint(h.x, h.y);
+// const createCommitFrom = (value, random) => {
+//   const weierstrassCurve = new WeierstrassCurve();
+//   // get g, h
+//   let { g, h } = SnarkServices.getPublicParameters();
+//   g = new Curve.AffinePoint(g.x, g.y);
+//   h = new Curve.AffinePoint(h.x, h.y);
 
-  const g_v = weierstrassCurve.scalarMulG1(g, BigInt(value));
-  const h_r = weierstrassCurve.scalarMulG1(h, BigInt(random));
-  // c = g^v*h^r
-  const c = weierstrassCurve.addAffineG1(g_v, h_r);
+//   const g_v = weierstrassCurve.scalarMulG1(g, BigInt(value));
+//   const h_r = weierstrassCurve.scalarMulG1(h, BigInt(random));
+//   // c = g^v*h^r
+//   const c = weierstrassCurve.addAffineG1(g_v, h_r);
 
-  return c;
-};
-
-const commitToStr = (commit) => {
-  if (typeof commit.x !== "bigint" && typeof commit.y !== "bigint") {
-    throw new Error("[PoRService] Invalid commit");
-  }
-  return [`0x${commit.x.toString(16)}`, `0x${commit.y.toString(16)}`];
-};
+//   return c;
+// };
 
 const getPor = async (assetId) => {
   const totalCommit = await ContractServices.getTotalCommitment(assetId);
@@ -114,8 +108,8 @@ const getPorForUser = async (userId, assetId) => {
     throw new Error("[PoRService] Invalid input");
   }
   const commitments = await ContractServices.getAllCommitments(assetId);
-  // TODO replace to this
-  //   const myCommitment = commitToStr(createCommitFrom(balance, random));
+  // TODO replace to this, to pass r to user
+  // const myCommitment = commitToStr(createCommitFrom(balance, random));
   const isIncluded = commitments.some((e) => {
     if (e[0] === commitment[0] && e[1] === commitment[1]) {
       return true;
@@ -132,13 +126,11 @@ const getPorForUser = async (userId, assetId) => {
   };
 };
 
-const PorService = async (query) => {
+const PorForUserService = async (query) => {
   const assetId = _.get(query, "asset_id");
   const userId = _.get(query, "key");
 
-  let por = userId
-    ? await getPorForUser(userId, assetId)
-    : await getPor(assetId);
+  const por = await getPorForUser(userId, assetId);
   const { name, logoUrl, unit } = await AssetsServices.getAsset(assetId);
 
   return {
@@ -149,4 +141,23 @@ const PorService = async (query) => {
   };
 };
 
-export default PorService;
+const PorService = async (query) => {
+  const assetId = _.get(query, "asset_id");
+
+  const por = await getPor(assetId);
+  const { name, logoUrl, unit } = await AssetsServices.getAsset(assetId);
+
+  return {
+    ...por,
+    name,
+    logoUrl,
+    unit,
+  };
+};
+
+const PorServices = {
+  PorForUserService,
+  PorService,
+};
+
+export default PorServices;
