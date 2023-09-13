@@ -5,12 +5,16 @@ import porService from "../../services/por.service";
 
 const router = express.Router();
 
-router.get("/:asset_idx", expressAsyncHandler(porRequestController));
+router.get("/", expressAsyncHandler(porRequestController));
 
 async function porRequestController(req, res) {
-  console.debug("[porRequestController]", req.params);
-  const response = await porService(req.params);
-  console.debug("[porRequestController] response:", response);
+  console.debug("[porRequestController]", req.query);
+  const startTime = Date.now();
+  const response = await porService(req.query);
+  console.debug("[porRequestController] PoR response:", response);
+  console.debug(
+    `[porRequestController] Time elapsed: ${Date.now() - startTime}ms`
+  );
   res.status(201).json(response);
 }
 

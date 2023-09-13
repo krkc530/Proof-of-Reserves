@@ -9,7 +9,9 @@ import sigmaProtocol from "../crypto/sigmaProtocol.js";
 
 export class proofOfReserveContractL2 extends Web3Interface {
   constructor(endpoint, abi, contractAddress) {
-    super(endpoint);
+    const senderEthAddr = Ganache.getAddress();
+    const senderEthPrivateKey = Ganache.getPrivateKey();
+    super(endpoint, senderEthAddr, senderEthPrivateKey);
     this.Contract = new this.eth.Contract(abi, contractAddress);
     this.Method = this.Contract.methods;
     this.Addr = contractAddress;
@@ -38,12 +40,7 @@ export class proofOfReserveContractL2 extends Web3Interface {
     return new proofOfReserveContractL2(rpc, abi, receipt.contractAddress);
   }
 
-  async uploadCommitment(
-    assetIdx,
-    proofPath,
-    userEthAddress = Ganache.getAddress(),
-    userEthPrivateKey = Ganache.getPrivateKey()
-  ) {
+  async uploadCommitment(assetIdx, proofPath) {
     const uploadUserMethod = this.Method.upload_commitment(
       assetIdx,
       proofFileToContractFormat(proofPath)
@@ -51,21 +48,10 @@ export class proofOfReserveContractL2 extends Web3Interface {
 
     const gas = await uploadUserMethod.estimateGas();
 
-    return this.sendContractCall(
-      uploadUserMethod,
-      userEthAddress,
-      userEthPrivateKey,
-      gas
-    );
+    return this.sendContractCall(uploadUserMethod, gas);
   }
 
-  async updateCommitment(
-    assetIdx,
-    id,
-    proofPath,
-    userEthAddress = Ganache.getAddress(),
-    userEthPrivateKey = Ganache.getPrivateKey()
-  ) {
+  async updateCommitment(assetIdx, id, proofPath) {
     const updateUserMethod = this.Method.update_commitment(
       assetIdx,
       id,
@@ -74,12 +60,7 @@ export class proofOfReserveContractL2 extends Web3Interface {
 
     const gas = await updateUserMethod.estimateGas();
 
-    return this.sendContractCall(
-      updateUserMethod,
-      userEthAddress,
-      userEthPrivateKey,
-      gas
-    );
+    return this.sendContractCall(updateUserMethod, gas);
   }
 
   async getVk() {
@@ -101,7 +82,9 @@ export class proofOfReserveContractL2 extends Web3Interface {
 
 export class proofOfReserveContractL1 extends Web3Interface {
   constructor(endpoint, abi, contractAddress) {
-    super(endpoint);
+    const senderEthAddr = Ganache.getAddress();
+    const senderEthPrivateKey = Ganache.getPrivateKey();
+    super(endpoint, senderEthAddr, senderEthPrivateKey);
     this.Contract = new this.eth.Contract(abi, contractAddress);
     this.Method = this.Contract.methods;
     this.Addr = contractAddress;
@@ -130,11 +113,7 @@ export class proofOfReserveContractL1 extends Web3Interface {
     return new proofOfReserveContractL1(rpc, abi, receipt.contractAddress);
   }
 
-  async updateTotalValue(
-    assetIdx,
-    userEthAddress = Ganache.getAddress(),
-    userEthPrivateKey = Ganache.getPrivateKey()
-  ) {
+  async updateTotalValue(assetIdx) {
     const totalKeyJson = JSON.parse(
       fs.readFileSync(
         config.PATH.proofPath + "Ped_cm/CM_Key_total.json",
@@ -162,12 +141,7 @@ export class proofOfReserveContractL1 extends Web3Interface {
 
     const gas = await updateTotalValueMethod.estimateGas();
 
-    return this.sendContractCall(
-      updateTotalValueMethod,
-      userEthAddress,
-      userEthPrivateKey,
-      gas
-    );
+    return this.sendContractCall(updateTotalValueMethod, gas);
   }
 
   async getTotalValue(assetIdx) {

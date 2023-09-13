@@ -41,12 +41,22 @@ export default {
   updateCommitment: async (assetIdx, idx, proofPath) => {
     return await porContractL2.updateCommitment(assetIdx, idx, proofPath);
   },
+  /**
+   * deprecated
+   * @param {*} assetIdx
+   * @returns
+   */
   updateTotalValue: async (assetIdx) => {
     return await porContractL1.updateTotalValue(assetIdx);
   },
   getAllCommitments: async (assetIdx) => {
     return await porContractL2.getAllCommitments(assetIdx);
   },
+  /**
+   * deprecated
+   * @param {*} assetIdx
+   * @returns
+   */
   getTotalValue: (assetIdx) => {
     return porContractL1.getTotalValue(assetIdx);
   },
