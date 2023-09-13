@@ -21,9 +21,20 @@ export async function generateAllAssets() {
   const newUserId = await UsersServices.createUser();
   const assetIds = await AssetsServices.getAllAssetIds();
 
-  for (const assetId of assetIds) {
-    const balance = Math.floor(Math.random() * 1000);
-    await UserAssetsServices.createUserAsset(newUserId, assetId, balance);
+  // TODO: refactor
+  const balances = [
+    Math.floor(Math.random() * 10), // STOs
+    Math.floor(Math.random() * 10),
+    Math.floor(Math.random() * 10),
+    Math.floor(Math.random() * 100000), // CBDCs
+    Math.floor(Math.random() * 100000),
+    Math.floor(Math.random() * 100000),
+    Math.floor(Math.random() * 1000000000000), // FT, unit = Gwei (10^-9 ETH)
+  ];
+
+  for (const [i, assetId] of assetIds.entries()) {
+    // const balance = Math.floor(Math.random() * 100000);
+    await UserAssetsServices.createUserAsset(newUserId, assetId, balances[i]);
   }
 
   return {

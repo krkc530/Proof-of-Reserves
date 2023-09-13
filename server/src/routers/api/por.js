@@ -4,6 +4,7 @@ import { query, validationResult } from "express-validator";
 import _ from "lodash";
 
 import PorServices from "../../services/por.service";
+import { formatNumberWithDecimal } from "../../utils/string";
 
 const router = express.Router();
 
@@ -28,6 +29,14 @@ async function porRequestController(req, res) {
     console.debug("[porRequestController]", req.query);
     const startTime = Date.now();
     const response = await PorServices.PorForUserService(req.query);
+    // TODO: refactor
+    if (response.unit === "ETH") {
+      response.myAsset = formatNumberWithDecimal(response.myAsset, 10 ** 9);
+      response.totalAsset = formatNumberWithDecimal(
+        response.totalAsset,
+        10 ** 9
+      );
+    }
     console.debug("[porRequestController] PoR response:", response);
     console.debug(
       `[porRequestController] Time elapsed: ${Date.now() - startTime}ms`
@@ -37,6 +46,10 @@ async function porRequestController(req, res) {
   console.debug("[porRequestController]", req.query);
   const startTime = Date.now();
   const response = await PorServices.PorService(req.query);
+  // TODO: refactor
+  if (response.unit === "ETH") {
+    response.totalAsset = formatNumberWithDecimal(response.totalAsset, 10 ** 9);
+  }
   console.debug("[porRequestController] PoR response:", response);
   console.debug(
     `[porRequestController] Time elapsed: ${Date.now() - startTime}ms`

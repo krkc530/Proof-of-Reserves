@@ -5,6 +5,7 @@ import _ from "lodash";
 
 import UserAssetsServices from "../../services/userAssets.service";
 import AssetsServices from "../../services/assets.service";
+import { formatNumberWithDecimal } from "../../utils/string";
 
 const router = express.Router();
 
@@ -36,10 +37,11 @@ async function getUserAssets(query) {
 
   for (const assetId of assetIds) {
     const { name, logoUrl, unit } = await AssetsServices.getAsset(assetId);
-    const myAsset = await UserAssetsServices.getUserAssetBalance(
-      userId,
-      assetId
-    );
+    let myAsset = await UserAssetsServices.getUserAssetBalance(userId, assetId);
+    // TODO: refactor
+    if (unit === "ETH") {
+      myAsset = formatNumberWithDecimal(myAsset, 10 ** 9);
+    }
     userAssets.push({
       name,
       logoUrl,
