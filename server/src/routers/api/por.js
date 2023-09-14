@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get(
   "/",
-  query("asset_id").custom((v) => {
+  query("assetId").custom((v) => {
     return /^[0-9]*$/.test(v);
   }),
   expressAsyncHandler(porRequestController)

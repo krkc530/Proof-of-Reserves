@@ -18,7 +18,7 @@ const createUserAsset = async (userId, assetId, balance) => {
   const random = Math.floor(Math.random() * 10000);
 
   await DbInstance.execute(
-    "INSERT INTO UserAssets (user_id, asset_id, balance, random) VALUES (?, ?, ?, ?)",
+    "INSERT INTO UserAssets (userId, assetId, balance, random) VALUES (?, ?, ?, ?)",
     [userId, assetId, balance, random]
   );
 
@@ -37,7 +37,7 @@ const createUserAsset = async (userId, assetId, balance) => {
       // store commitment to UserAsset record
       console.debug("[UserAssetsService] Commitment stored:", commit);
       await DbInstance.execute(
-        "UPDATE UserAssets SET is_stored = true, com_x = ?, com_y = ? WHERE user_id = ? AND asset_id = ?",
+        "UPDATE UserAssets SET isStored = true, comX = ?, comY = ? WHERE userId = ? AND assetId = ?",
         [commit[0], commit[1], userId, assetId]
       );
     })
@@ -48,7 +48,7 @@ const createUserAsset = async (userId, assetId, balance) => {
 
 const getUserAssetBalance = async (userId, assetId) => {
   const [rows, fields] = await DbInstance.query(
-    "SELECT balance FROM UserAssets WHERE user_id = ? AND asset_id = ?",
+    "SELECT balance FROM UserAssets WHERE userId = ? AND assetId = ?",
     [userId, assetId]
   );
   const balance = _.get(rows, "0.balance");
@@ -58,19 +58,19 @@ const getUserAssetBalance = async (userId, assetId) => {
 
 const getUserAsset = async (userId, assetId) => {
   const [rows, fields] = await DbInstance.query(
-    "SELECT * FROM UserAssets WHERE user_id = ? AND asset_id = ?",
+    "SELECT * FROM UserAssets WHERE userId = ? AND assetId = ?",
     [userId, assetId]
   );
 
   const balance = _.get(rows, "0.balance");
   const random = _.get(rows, "0.random");
-  const com_x = _.get(rows, "0.com_x");
-  const com_y = _.get(rows, "0.com_y");
+  const comX = _.get(rows, "0.comX");
+  const comY = _.get(rows, "0.comY");
 
   return {
     balance,
     random,
-    commitment: [com_x, com_y],
+    commitment: [comX, comY],
   };
 };
 

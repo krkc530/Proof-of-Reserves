@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get(
   "/",
-  query("asset_id").custom((v) => {
+  query("assetId").custom((v) => {
     return /^[0-9]*$/.test(v);
   }),
   expressAsyncHandler(commitsController)
@@ -21,7 +21,7 @@ async function commitsController(req, res) {
     return res.status(400).json({ errors: result.array() });
   }
   console.debug("[commitsController]", req.query);
-  const assetId = _.get(req.query, "asset_id");
+  const assetId = _.get(req.query, "assetId");
   const commitments = await ContractServices.getAllCommitments(assetId);
   console.debug("[commitsController]:", _.get(commitments, "length"));
   res.status(200).json({ commitments });

@@ -127,7 +127,7 @@ const getPorForUser = async (userId, assetId) => {
 };
 
 const PorForUserService = async (query) => {
-  const assetId = _.get(query, "asset_id");
+  const assetId = _.get(query, "assetId");
   const userId = _.get(query, "key");
 
   const por = await getPorForUser(userId, assetId);
@@ -142,7 +142,7 @@ const PorForUserService = async (query) => {
 };
 
 const PorService = async (query) => {
-  const assetId = _.get(query, "asset_id");
+  const assetId = _.get(query, "assetId");
 
   const por = await getPor(assetId);
   const { name, logoUrl, unit } = await AssetsServices.getAsset(assetId);

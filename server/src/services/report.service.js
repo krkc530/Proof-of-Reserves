@@ -7,7 +7,7 @@ import UserAssetsServices from "./userAssets.service";
 const createReport = async (userId, assetId) => {
   const { commitment } = await UserAssetsServices.getUserAsset(userId, assetId);
   const [rows, fields] = await DbInstance.execute(
-    "INSERT INTO Reports (user_id, asset_id, com_x, com_y) VALUES (?, ?,?,?)",
+    "INSERT INTO Reports (userId, assetId, comX, comY) VALUES (?, ?,?,?)",
     [userId, assetId, commitment[0], commitment[1]]
   );
   const reportId = rows.insertId;
@@ -17,17 +17,17 @@ const createReport = async (userId, assetId) => {
 
 const getReportsForAsset = async (assetId) => {
   const [rows, fields] = await DbInstance.query(
-    "SELECT user_id, ts, com_x, com_y FROM Reports WHERE asset_id = ?",
+    "SELECT userId, ts, comX, comY FROM Reports WHERE assetId = ?",
     [assetId]
   );
   const reports = [];
 
   for (const row of rows) {
-    console.log(_.get(row, "com_x"), _.get(row, "com_y"));
+    console.log(_.get(row, "comX"), _.get(row, "comY"));
 
     reports.push({
-      user_id: _.get(row, "user_id"),
-      commitment: [_.get(row, "com_x"), _.get(row, "com_y")],
+      userId: _.get(row, "userId"),
+      commitment: [_.get(row, "comX"), _.get(row, "comY")],
       ts: _.get(row, "ts"),
     });
   }

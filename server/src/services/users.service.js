@@ -3,7 +3,7 @@ import DbInstance from "../../database";
 
 const createUser = async (userName) => {
   const [rows, fields] = await DbInstance.execute(
-    "INSERT INTO Users (user_name) VALUES (?)",
+    "INSERT INTO Users (userName) VALUES (?)",
     [userName || "test"]
   );
   const userId = rows.insertId;
@@ -12,11 +12,11 @@ const createUser = async (userName) => {
 };
 
 const getAllUserIds = async () => {
-  const [rows, fields] = await DbInstance.query("SELECT user_id FROM Users");
+  const [rows, fields] = await DbInstance.query("SELECT userId FROM Users");
   const userIds = [];
 
   for (const row of rows) {
-    userIds.push(_.get(row, "user_id"));
+    userIds.push(_.get(row, "userId"));
   }
 
   return userIds;

@@ -3,7 +3,7 @@ import DbInstance from "../../database";
 
 const createAsset = async (assetName, logoUrl, unit) => {
   const [rows, fields] = await DbInstance.execute(
-    "INSERT INTO Assets (asset_name, logo_url, unit, balance) VALUES (?, ?, ?, ?)",
+    "INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES (?, ?, ?, ?)",
     [assetName || "test", logoUrl, unit, "0"]
   );
   const assetId = rows.insertId;
@@ -12,7 +12,7 @@ const createAsset = async (assetName, logoUrl, unit) => {
 };
 
 const updateAssetBalance = async (assetId, balance) => {
-  await DbInstance.execute("UPDATE Assets SET balance = ? WHERE asset_id = ?", [
+  await DbInstance.execute("UPDATE Assets SET balance = ? WHERE assetId = ?", [
     balance,
     assetId,
   ]);
@@ -22,7 +22,7 @@ const updateAssetBalance = async (assetId, balance) => {
 
 const getAssetBalance = async (assetId) => {
   const [rows, fields] = await DbInstance.query(
-    "SELECT balance FROM Assets WHERE asset_id = ?",
+    "SELECT balance FROM Assets WHERE assetId = ?",
     [assetId]
   );
   const balance = _.get(rows, "0.balance");
@@ -32,12 +32,12 @@ const getAssetBalance = async (assetId) => {
 
 const getAsset = async (assetId) => {
   const [rows, fields] = await DbInstance.query(
-    "SELECT * FROM Assets WHERE asset_id = ?",
+    "SELECT * FROM Assets WHERE assetId = ?",
     [assetId]
   );
   const result = _.get(rows, "0");
-  const name = _.get(result, "asset_name");
-  const logoUrl = _.get(result, "logo_url");
+  const name = _.get(result, "assetName");
+  const logoUrl = _.get(result, "logoUrl");
   const unit = _.get(result, "unit");
   const balance = _.get(result, "balance");
 
@@ -50,11 +50,11 @@ const getAsset = async (assetId) => {
 };
 
 const getAllAssetIds = async () => {
-  const [rows, fields] = await DbInstance.query("SELECT asset_id FROM Assets");
+  const [rows, fields] = await DbInstance.query("SELECT assetId FROM Assets");
   const assetIds = [];
 
   for (const row of rows) {
-    assetIds.push(_.get(row, "asset_id"));
+    assetIds.push(_.get(row, "assetId"));
   }
 
   return assetIds;
