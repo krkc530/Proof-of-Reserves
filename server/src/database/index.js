@@ -1,5 +1,5 @@
 import mysql2 from "mysql2/promise";
-import config from "../src/config";
+import config from "../config";
 
 // singleton instance config
 const DbInstance = await mysql2.createConnection({

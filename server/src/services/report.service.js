@@ -1,6 +1,5 @@
 import _ from "lodash";
-import config from "../config";
-import DbInstance from "../../database";
+import DbInstance from "../database";
 
 import UserAssetsServices from "./userAssets.service";
 

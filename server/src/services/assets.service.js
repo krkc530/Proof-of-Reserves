@@ -1,5 +1,5 @@
 import _ from "lodash";
-import DbInstance from "../../database";
+import DbInstance from "../database";
 
 const createAsset = async (assetName, logoUrl, unit) => {
   const [rows, fields] = await DbInstance.execute(

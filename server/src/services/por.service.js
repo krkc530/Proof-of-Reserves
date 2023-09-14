@@ -1,5 +1,4 @@
 import _ from "lodash";
-import DbInstance from "../../database";
 
 import SnarkServices from "./snark.service";
 import ContractServices from "./contract.service";

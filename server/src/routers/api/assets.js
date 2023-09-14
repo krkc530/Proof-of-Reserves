@@ -1,6 +1,7 @@
 import express from "express";
 import expressAsyncHandler from "express-async-handler";
 import { query, validationResult } from "express-validator";
+import createHttpError from "http-errors";
 import _ from "lodash";
 
 import UserAssetsServices from "../../services/userAssets.service";
@@ -38,6 +39,9 @@ async function getUserAssets(query) {
   for (const assetId of assetIds) {
     const { name, logoUrl, unit } = await AssetsServices.getAsset(assetId);
     let myAsset = await UserAssetsServices.getUserAssetBalance(userId, assetId);
+    if (!myAsset) {
+      throw createHttpError.NotFound("User asset not found");
+    }
     // TODO: refactor
     if (unit === "ETH") {
       myAsset = formatNumberWithDecimal(myAsset, 10 ** 9);

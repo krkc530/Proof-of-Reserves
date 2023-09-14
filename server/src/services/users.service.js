@@ -1,5 +1,5 @@
 import _ from "lodash";
-import DbInstance from "../../database";
+import DbInstance from "../database";
 
 const createUser = async (userName) => {
   const [rows, fields] = await DbInstance.execute(
