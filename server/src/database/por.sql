@@ -30,13 +30,13 @@ CREATE TABLE UserAssets (
     PRIMARY KEY (userId, assetId)
 );
 
-INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('STO1', 'https://res.cloudinary.com/demo/image/upload/w_128/sofa_cat.jpg', 'Token', '0');
-INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('STO2', 'https://res.cloudinary.com/demo/image/upload/w_128/sofa_cat.jpg', 'Token', '0');
-INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('STO3', 'https://res.cloudinary.com/demo/image/upload/w_128/sofa_cat.jpg', 'Token', '0');
-INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('Wangsimni CBDC', 'https://res.cloudinary.com/demo/image/upload/w_128/sofa_cat.jpg', 'WON', '0');
-INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('Zkrypto CBDC', 'https://res.cloudinary.com/demo/image/upload/w_128/sofa_cat.jpg', 'WON', '0');
-INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('Hanyang CBDC', 'https://res.cloudinary.com/demo/image/upload/w_128/sofa_cat.jpg', 'WON', '0');
-INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('Ethereum', 'https://res.cloudinary.com/demo/image/upload/w_128/sofa_cat.jpg', 'ETH', '0');
+INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('STO1', 'https://res.cloudinary.com/nuri/image/upload/v1694680280/por/fqnl7edbqiqzrwhlpfrj.png', 'Token', '0');
+INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('STO2', 'https://res.cloudinary.com/nuri/image/upload/v1694680280/por/srihqafaw1ngahwfwj7u.png', 'Token', '0');
+INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('STO3', 'https://res.cloudinary.com/nuri/image/upload/v1694680280/por/p9673nfdf0o8j6cttrsv.png', 'Token', '0');
+INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('Wangsimni CBDC', 'https://res.cloudinary.com/nuri/image/upload/v1694680280/por/io8mldzd9adjycdgz9ln.png', '₩', '0');
+INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('Zkrypto CBDC', 'https://res.cloudinary.com/nuri/image/upload/v1694680280/por/w4pk3sisdeisehmcgpzh.png', '₩', '0');
+INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('Hanyang CBDC', 'https://res.cloudinary.com/nuri/image/upload/v1694680280/por/xfxoq7eujxzzadvqpn0t.png', '₩', '0');
+INSERT INTO Assets (assetName, logoUrl, unit, balance) VALUES ('Ethereum', 'https://res.cloudinary.com/nuri/image/upload/v1694680280/por/qalbqowne5iailgddvsh.png', 'ETH', '0');
 
 DROP TABLE IF EXISTS Reports;
 CREATE TABLE Reports (
