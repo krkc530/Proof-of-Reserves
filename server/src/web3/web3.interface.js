@@ -72,8 +72,6 @@ export default class Web3Interface extends Web3 {
       // nonce update
       this.nonce++;
 
-      console.log("txCount", this.nonce);
-
       const signedTx = await this.eth.accounts.signTransaction(
         rawTx,
         this.senderEthPrivateKey
