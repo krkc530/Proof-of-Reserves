@@ -5,6 +5,7 @@ import rootRouter from "./routers/index.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 import { generateAllAssets } from "./routers/api/new.assets.js";
+import scheduler from "./utils/scheduler.js";
 
 const onStartServer = async () => {
   //   generateAllAssets().catch((e) => console.error(e));
@@ -25,6 +26,7 @@ const server = async () => {
   app.listen(8000, () => {
     console.log("server start on 8000");
     onStartServer();
+    scheduler.start();
   });
 };
 

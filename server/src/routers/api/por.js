@@ -22,30 +22,18 @@ async function porRequestController(req, res) {
     return res.status(400).json({ errors: result.array() });
   }
   const userId = _.get(req.query, "key");
+  let porService;
   if (userId !== undefined) {
     if (!/^[0-9]*$/.test(userId)) {
       return res.status(400).json({ errors: "Invalid value" });
     }
-    console.debug("[porRequestController]", req.query);
-    const startTime = Date.now();
-    const response = await PorServices.PorForUserService(req.query);
-    // TODO: refactor
-    if (response.unit === "ETH") {
-      response.myAsset = formatNumberWithDecimal(response.myAsset, 10 ** 9);
-      response.totalAsset = formatNumberWithDecimal(
-        response.totalAsset,
-        10 ** 9
-      );
-    }
-    console.debug("[porRequestController] PoR response:", response);
-    console.debug(
-      `[porRequestController] Time elapsed: ${Date.now() - startTime}ms`
-    );
-    return res.status(200).json(response);
+    porService = PorServices.PorForUserService(req.query);
+  } else {
+    porService = PorServices.PorService(req.query);
   }
   console.debug("[porRequestController]", req.query);
   const startTime = Date.now();
-  const response = await PorServices.PorService(req.query);
+  const response = await porService;
   // TODO: refactor
   if (response.unit === "ETH") {
     response.totalAsset = formatNumberWithDecimal(response.totalAsset, 10 ** 9);

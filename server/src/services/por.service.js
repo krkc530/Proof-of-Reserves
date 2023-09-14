@@ -5,6 +5,7 @@ import UserAssetsServices from "./userAssets.service";
 import AssetsServices from "./assets.service";
 import Curve, { WeierstrassCurve } from "../crypto/curve";
 import mimc from "../crypto/mimc";
+import AssetStatesInstance from "../utils/assetStates";
 
 const generatePoKE = async (userIds, assetId) => {
   const proofIds = [];
@@ -92,6 +93,12 @@ const getPor = async (assetId) => {
   const totalCommit = SnarkServices.getTotalCommitment();
   console.debug("[PoRService] PoKE:", proof);
 
+  // mocking bad balance
+  const assetStatus = AssetStatesInstance.getAssetState(assetId);
+  if (!assetStatus) {
+    totalBalance *= 2n;
+  }
+
   const isCoincided = await verifyPoKE(totalCommit, totalBalance, proof);
   return {
     isCoincided,
@@ -137,10 +144,10 @@ const PorForUserService = async (query) => {
   const { name, logoUrl, unit } = await AssetsServices.getAsset(assetId);
 
   return {
-    ...por,
     name,
     logoUrl,
     unit,
+    ...por,
   };
 };
 
@@ -151,10 +158,10 @@ const PorService = async (query) => {
   const { name, logoUrl, unit } = await AssetsServices.getAsset(assetId);
 
   return {
-    ...por,
     name,
     logoUrl,
     unit,
+    ...por,
   };
 };
 
