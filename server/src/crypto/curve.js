@@ -1,7 +1,7 @@
 /* global BigInt */
 
 import math from "../utils/math.js";
-import Config from "../config.js";
+import config from "../utils/config.js";
 import CurveParam, { WeierstrassCurveParam } from "./curveParam.js";
 
 BigInt.prototype.mod = function (n) {
@@ -255,7 +255,7 @@ export function multscalar(baseX, exp, curveOption) {
   let cvParam =
     curveOption !== undefined
       ? CurveParam(curveOption)
-      : CurveParam(Config.EC_TYPE);
+      : CurveParam(config.EC_TYPE);
   let curve = new MontgomeryCurve(cvParam);
   let baseY = curve.computeYCoord(baseX);
   let bp = new AffinePoint(baseX, baseY);
@@ -275,7 +275,7 @@ export function basePointMul(exp, curveOption) {
   let cvParam =
     curveOption !== undefined
       ? CurveParam(curveOption)
-      : CurveParam(Config.EC_TYPE);
+      : CurveParam(config.EC_TYPE);
   let curve = new MontgomeryCurve(cvParam);
   let baseY = curve.computeYCoord(curve.g);
   let bp = new AffinePoint(curve.g, baseY);

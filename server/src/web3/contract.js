@@ -115,10 +115,7 @@ export class proofOfReserveContractL1 extends Web3Interface {
 
   async updateTotalValue(assetIdx) {
     const totalKeyJson = JSON.parse(
-      fs.readFileSync(
-        config.PATH.proofPath + "Ped_cm/CM_Key_total.json",
-        "utf8"
-      )
+      fs.readFileSync(config.SNARK_PATH + "Ped_cm/CM_Key_total.json", "utf8")
     );
 
     const totalValueString = totalKeyJson["w"] || "0";

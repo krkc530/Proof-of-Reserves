@@ -1,12 +1,12 @@
 import mysql2 from "mysql2/promise";
-import config from "../config";
+import config from "../utils/config";
 
 // singleton instance config
 const DbInstance = mysql2.createPool({
-  host: config.DB.host,
-  user: config.DB.user,
-  password: config.DB.password,
-  database: "POR",
+  host: config.DB_HOST,
+  user: config.DB_USER,
+  database: config.DB_DATABASE,
+  password: config.DB_PASSWORD,
   enableKeepAlive: true,
 });
 

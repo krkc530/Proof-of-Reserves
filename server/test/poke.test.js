@@ -1,93 +1,126 @@
 import mimc from "../src/crypto/mimc.js";
 import config from "../src/config.js";
 import fs from "fs";
-import {keccak256} from '@ethersproject/keccak256';
-import {toUtf8Bytes} from '@ethersproject/strings';
+import { keccak256 } from "@ethersproject/keccak256";
+import { toUtf8Bytes } from "@ethersproject/strings";
 import { hexToInt, hexToBytes } from "../src/utils/types.js";
-import { pedersenGenToContractFormat, vkFileToContractFormat, proofFileToContractFormat } from "../src/utils/string.js";
+import {
+  pedersenGenToContractFormat,
+  vkFileToContractFormat,
+  proofFileToContractFormat,
+} from "../src/utils/string.js";
 import sigmaProtocol from "../src/crypto/sigmaProtocol.js";
-import Curve,{ WeierstrassCurve } from "../src/crypto/curve.js";
+import Curve, { WeierstrassCurve } from "../src/crypto/curve.js";
 import { WeierstrassCurveParam } from "../src/crypto/curveParam.js";
 import math from "../src/utils/math.js";
 
-import legogroth16 from "../napirs-legogroth16/index.js"
-
+import legogroth16 from "../napirs-legogroth16/index.js";
 
 describe("MiMC", () => {
-    const mimc_seed = "mimc7_seed";
+  const mimc_seed = "mimc7_seed";
 
-    it("mimc", () => {
-        console.log("1\t",toUtf8Bytes(mimc_seed))
-        console.log("2\t", BigInt(keccak256(toUtf8Bytes(mimc_seed))))
-        // console.log("3\t",keccak256("1"))
-    })
+  it("mimc", () => {
+    console.log("1\t", toUtf8Bytes(mimc_seed));
+    console.log("2\t", BigInt(keccak256(toUtf8Bytes(mimc_seed))));
+    // console.log("3\t",keccak256("1"))
+  });
 
-    it("get vk ", () => {
-        console.log("===== vk =====")
-        console.log(vkFileToContractFormat(config.PATH.proofPath+ "Proof_vk/VK.json"))
-    })
+  it("get vk ", () => {
+    console.log("===== vk =====");
+    console.log(vkFileToContractFormat(config.SNARK_PATH + "Proof_vk/VK.json"));
+  });
 
-    it("get proof TEST / sigma protocol TEST", () => {
-        console.log("===== proofs =====")
+  it("get proof TEST / sigma protocol TEST", () => {
+    console.log("===== proofs =====");
 
-        const weierstrassCurve = new WeierstrassCurve();
-        const pp = pedersenGenToContractFormat(config.PATH.proofPath+ "Ped_cm/generator.json");
+    const weierstrassCurve = new WeierstrassCurve();
+    const pp = pedersenGenToContractFormat(
+      config.SNARK_PATH + "Ped_cm/generator.json"
+    );
 
-        const proof1 = proofFileToContractFormat(config.PATH.proofPath+ "Proof_vk/proof_1.json")
-        const proof1Key = JSON.parse(fs.readFileSync(config.PATH.proofPath+ "Ped_cm/CM_key_1.json", 'utf8'))
-        console.log('proof1 : ', [proof1Key["w"], proof1Key['v']])
-        console.log(proof1.map(BigInt))
+    const proof1 = proofFileToContractFormat(
+      config.SNARK_PATH + "Proof_vk/proof_1.json"
+    );
+    const proof1Key = JSON.parse(
+      fs.readFileSync(config.SNARK_PATH + "Ped_cm/CM_key_1.json", "utf8")
+    );
+    console.log("proof1 : ", [proof1Key["w"], proof1Key["v"]]);
+    console.log(proof1.map(BigInt));
 
-        const proof2 = proofFileToContractFormat(config.PATH.proofPath+ "Proof_vk/proof_2.json")
-        const proof2Key = JSON.parse(fs.readFileSync(config.PATH.proofPath+ "Ped_cm/CM_key_2.json", 'utf8'))
-        console.log('proof2 : ', [proof2Key["w"], proof2Key['v']])
-        console.log("calc commit 2 :  ",
-            weierstrassCurve.addAffineG1(
-                weierstrassCurve.scalarMulG1(
-                    new Curve.AffinePoint(pp[0], pp[1]),
-                    BigInt(proof2Key["w"])
-                ),
-                weierstrassCurve.scalarMulG1(
-                    new Curve.AffinePoint(pp[2], pp[3]),
-                    BigInt(proof2Key['v'])
-                )
-            )
+    const proof2 = proofFileToContractFormat(
+      config.SNARK_PATH + "Proof_vk/proof_2.json"
+    );
+    const proof2Key = JSON.parse(
+      fs.readFileSync(config.SNARK_PATH + "Ped_cm/CM_key_2.json", "utf8")
+    );
+    console.log("proof2 : ", [proof2Key["w"], proof2Key["v"]]);
+    console.log(
+      "calc commit 2 :  ",
+      weierstrassCurve.addAffineG1(
+        weierstrassCurve.scalarMulG1(
+          new Curve.AffinePoint(pp[0], pp[1]),
+          BigInt(proof2Key["w"])
+        ),
+        weierstrassCurve.scalarMulG1(
+          new Curve.AffinePoint(pp[2], pp[3]),
+          BigInt(proof2Key["v"])
         )
-        console.log(proof2.map(BigInt))
+      )
+    );
+    console.log(proof2.map(BigInt));
 
-        const weierstrassCurveParam = new WeierstrassCurveParam();
-        const totalValue = (BigInt(proof1Key["w"]) + BigInt(proof2Key["w"])).toString()
-        const totalRandom= math.mod(BigInt(proof1Key["v"]) + BigInt(proof2Key["v"]), weierstrassCurveParam.ORDER).toString()
-        console.log('totalValue : ', totalValue)
-        console.log('totalRandom : ', totalRandom)
+    const weierstrassCurveParam = new WeierstrassCurveParam();
+    const totalValue = (
+      BigInt(proof1Key["w"]) + BigInt(proof2Key["w"])
+    ).toString();
+    const totalRandom = math
+      .mod(
+        BigInt(proof1Key["v"]) + BigInt(proof2Key["v"]),
+        weierstrassCurveParam.ORDER
+      )
+      .toString();
+    console.log("totalValue : ", totalValue);
+    console.log("totalRandom : ", totalRandom);
 
-        console.log("", weierstrassCurve.addAffineG1(
-            new Curve.AffinePoint(proof1[8].toString(), proof1[9].toString()),
-            new Curve.AffinePoint(proof2[8].toString(), proof2[9].toString())
-        ))
-        console.log("total CM : ", weierstrassCurve.addAffineG1(
-            weierstrassCurve.scalarMulG1(
-                new Curve.AffinePoint(pp[0], pp[1]),
-                BigInt(totalValue)
-            ),
-            weierstrassCurve.scalarMulG1(
-                new Curve.AffinePoint(pp[2], pp[3]),
-                BigInt(totalRandom)
-            )
-        ))
-        console.log('y=h^r : ',weierstrassCurve.scalarMulG1(
-            new Curve.AffinePoint(pp[2], pp[3]),
-            BigInt(totalRandom)
-        ))
+    console.log(
+      "",
+      weierstrassCurve.addAffineG1(
+        new Curve.AffinePoint(proof1[8].toString(), proof1[9].toString()),
+        new Curve.AffinePoint(proof2[8].toString(), proof2[9].toString())
+      )
+    );
+    console.log(
+      "total CM : ",
+      weierstrassCurve.addAffineG1(
+        weierstrassCurve.scalarMulG1(
+          new Curve.AffinePoint(pp[0], pp[1]),
+          BigInt(totalValue)
+        ),
+        weierstrassCurve.scalarMulG1(
+          new Curve.AffinePoint(pp[2], pp[3]),
+          BigInt(totalRandom)
+        )
+      )
+    );
+    console.log(
+      "y=h^r : ",
+      weierstrassCurve.scalarMulG1(
+        new Curve.AffinePoint(pp[2], pp[3]),
+        BigInt(totalRandom)
+      )
+    );
 
-        legogroth16.totalPedCm(['1', '2']);
+    legogroth16.totalPedCm(["1", "2"]);
 
-        console.log("===== sigma =====")
-        const sigmaProtocolIns = sigmaProtocol();
-        const proof = sigmaProtocolIns.prove(BigInt(totalValue), BigInt(totalRandom));
-        console.log(proof)
-    })
-})
+    console.log("===== sigma =====");
+    const sigmaProtocolIns = sigmaProtocol();
+    const proof = sigmaProtocolIns.prove(
+      BigInt(totalValue),
+      BigInt(totalRandom)
+    );
+    console.log(proof);
+  });
+});
 
 /*
 vk

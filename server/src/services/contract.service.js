@@ -6,8 +6,7 @@ import Contract from "../web3";
 import { addPrefixAndPadHex, decStrToHex } from "../utils/types";
 
 const uploadCommitment = async (assetId, proofId) => {
-  const proofPath =
-    config.PATH.proofPath + "Proof_vk/proof_" + proofId + ".json";
+  const proofPath = config.SNARK_PATH + "Proof_vk/proof_" + proofId + ".json";
 
   if (!fs.existsSync(proofPath)) {
     throw new Error(`[ContractService] Not exist: ${proofPath}`);
