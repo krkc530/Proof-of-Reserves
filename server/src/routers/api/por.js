@@ -50,7 +50,8 @@ async function porRequestController(req, res) {
   if (response.unit === "ETH") {
     response.totalAsset = formatNumberWithDecimal(response.totalAsset, 10 ** 9);
   }
-  console.debug("[porRequestController] PoR response:", response);
+  // omit because commitments too long
+  // console.debug("[porRequestController] PoR response:", response);
   console.debug(
     `[porRequestController] Time elapsed: ${Date.now() - startTime}ms`
   );

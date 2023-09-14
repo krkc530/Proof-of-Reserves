@@ -1,7 +1,6 @@
 import _ from "lodash";
 import DbInstance from "../database";
 import SnarkServices from "./snark.service";
-import AssetsServices from "./assets.service";
 
 const createUserAsset = async (userId, assetId, balance) => {
   const bnBalance = BigInt(balance);
@@ -15,25 +14,14 @@ const createUserAsset = async (userId, assetId, balance) => {
   // TODO: 32bit
   const random = Math.floor(Math.random() * 10000);
 
-  await DbInstance.execute(
-    "INSERT INTO UserAssets (userId, assetId, balance, random) VALUES (?, ?, ?, ?)",
-    [userId, assetId, balance, random]
-  );
-
-  // generate proof
+  // // generate proof and get commit
   const proofId = SnarkServices.generateProof(userId, assetId, balance, random);
   const commit = SnarkServices.getCommitmentFromProof(proofId);
 
-  // update total asset balance in DB
-  const assetBalance = await AssetsServices.getAssetBalance(assetId);
-  const updatedAssetBalance = BigInt(assetBalance) + BigInt(balance);
-  await AssetsServices.updateAssetBalance(assetId, updatedAssetBalance);
-
-  // store commitment to UserAsset record
-  console.debug("[UserAssetsService] Commitment stored:", commit);
+  // create UserAsset
   await DbInstance.execute(
-    "UPDATE UserAssets SET isStored = true, comX = ?, comY = ? WHERE userId = ? AND assetId = ?",
-    [commit[0], commit[1], userId, assetId]
+    "INSERT INTO UserAssets (userId, assetId, balance, random, comX, comY) VALUES (?, ?, ?, ?, ?, ?)",
+    [userId, assetId, balance, random, _.get(commit, "0"), _.get(commit, "1")]
   );
 };
 
@@ -65,23 +53,9 @@ const getUserAsset = async (userId, assetId) => {
   };
 };
 
-const getUserIdsFromStoredAssets = async (assetId) => {
-  const [rows, fields] = await DbInstance.query(
-    "SELECT userId FROM UserAssets WHERE assetId = ? AND isStored = true",
-    [assetId]
-  );
-  const userIds = [];
-
-  for (const row of rows) {
-    userIds.push(_.get(row, "userId"));
-  }
-
-  return userIds;
-};
-
 const getAllCommitments = async (assetId) => {
   const [rows, fields] = await DbInstance.query(
-    "SELECT comX, comY FROM UserAssets WHERE assetId = ? AND isStored = true",
+    "SELECT comX, comY FROM UserAssets WHERE assetId = ?",
     [assetId]
   );
   const commitments = [];
@@ -93,12 +67,31 @@ const getAllCommitments = async (assetId) => {
   return commitments;
 };
 
+const getUserAssets = async (assetId) => {
+  const [rows, fields] = await DbInstance.query(
+    "SELECT * FROM UserAssets WHERE assetId = ?",
+    [assetId]
+  );
+  const userAssets = [];
+
+  for (const row of rows) {
+    userAssets.push({
+      userId: _.get(row, "userId"),
+      balance: _.get(row, "balance"),
+      random: _.get(row, "random"),
+      commitment: [_.get(row, "comX"), _.get(row, "comY")],
+    });
+  }
+
+  return userAssets;
+};
+
 const UserAssetsServices = {
   createUserAsset,
   getUserAssetBalance,
   getUserAsset,
-  getUserIdsFromStoredAssets,
   getAllCommitments,
+  getUserAssets,
 };
 
 export default UserAssetsServices;

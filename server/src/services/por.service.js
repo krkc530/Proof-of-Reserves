@@ -6,10 +6,7 @@ import AssetsServices from "./assets.service";
 import Curve, { WeierstrassCurve } from "../crypto/curve";
 import mimc from "../crypto/mimc";
 
-const generatePoKE = async (assetId) => {
-  // only stored ids
-  const userIds = await UserAssetsServices.getUserIdsFromStoredAssets(assetId);
-
+const generatePoKE = async (userIds, assetId) => {
   const proofIds = [];
   for (const userId of userIds) {
     const proofId = `${userId}_${assetId}`;
@@ -76,25 +73,35 @@ const verifyPoKE = async (totalCommit, totalValue, proof) => {
 // };
 
 const getPor = async (assetId) => {
+  const userAssets = await UserAssetsServices.getUserAssets(assetId);
+
+  // initialized as bn
+  let totalBalance = 0n;
+  let userIds = [];
+  let commitments = [];
+
+  for (const userAsset of userAssets) {
+    const { balance, userId, commitment } = userAsset;
+    totalBalance += BigInt(balance);
+    userIds.push(userId);
+    commitments.push(commitment);
+  }
+
   // this generates total commitment
-  const proof = await generatePoKE(assetId);
-  const totalBalance = await AssetsServices.getAssetBalance(assetId);
+  const proof = await generatePoKE(userIds, assetId);
   const totalCommit = SnarkServices.getTotalCommitment();
   console.debug("[PoRService] PoKE:", proof);
 
-  if (typeof totalBalance !== "string") {
-    throw new Error("[PoRService] Invalid input");
-  }
   const isCoincided = await verifyPoKE(totalCommit, totalBalance, proof);
-
   return {
     isCoincided,
-    totalAsset: totalBalance,
+    totalAsset: totalBalance.toString(),
+    commitments,
   };
 };
 
 const getPorForUser = async (userId, assetId) => {
-  const { isCoincided, totalAsset } = await getPor(assetId);
+  const { isCoincided, totalAsset, commitments } = await getPor(assetId);
 
   // user cm is included && cm is correct
   const { balance, random, commitment } = await UserAssetsServices.getUserAsset(
@@ -104,7 +111,6 @@ const getPorForUser = async (userId, assetId) => {
   if (typeof balance !== "string" || typeof random !== "string") {
     throw new Error("[PoRService] Invalid input");
   }
-  const commitments = await UserAssetsServices.getAllCommitments(assetId);
   // TODO replace to this, to pass r to user
   // const myCommitment = commitToStr(createCommitFrom(balance, random));
   const isIncluded = commitments.some((e) => {
@@ -116,10 +122,10 @@ const getPorForUser = async (userId, assetId) => {
   return {
     isIncluded,
     isCoincided,
-    myCommitment: commitment,
-    commitments,
     totalAsset,
+    myCommitment: commitment,
     myAsset: balance,
+    commitments,
   };
 };
 
