@@ -1,15 +1,14 @@
 import _ from "lodash";
 
 import SnarkServices from "./snark.service";
-import ContractServices from "./contract.service";
-import UsersServices from "./users.service";
 import UserAssetsServices from "./userAssets.service";
 import AssetsServices from "./assets.service";
 import Curve, { WeierstrassCurve } from "../crypto/curve";
 import mimc from "../crypto/mimc";
 
 const generatePoKE = async (assetId) => {
-  const userIds = await UsersServices.getAllUserIds();
+  // only stored ids
+  const userIds = await UserAssetsServices.getUserIdsFromStoredAssets(assetId);
 
   const proofIds = [];
   for (const userId of userIds) {
@@ -77,11 +76,10 @@ const verifyPoKE = async (totalCommit, totalValue, proof) => {
 // };
 
 const getPor = async (assetId) => {
-  const totalCommit = await ContractServices.getTotalCommitment(assetId);
-  const totalBalance = await AssetsServices.getAssetBalance(assetId);
-
-  // PoKE verify
+  // this generates total commitment
   const proof = await generatePoKE(assetId);
+  const totalBalance = await AssetsServices.getAssetBalance(assetId);
+  const totalCommit = SnarkServices.getTotalCommitment();
   console.debug("[PoRService] PoKE:", proof);
 
   if (typeof totalBalance !== "string") {
@@ -106,7 +104,7 @@ const getPorForUser = async (userId, assetId) => {
   if (typeof balance !== "string" || typeof random !== "string") {
     throw new Error("[PoRService] Invalid input");
   }
-  const commitments = await ContractServices.getAllCommitments(assetId);
+  const commitments = await UserAssetsServices.getAllCommitments(assetId);
   // TODO replace to this, to pass r to user
   // const myCommitment = commitToStr(createCommitFrom(balance, random));
   const isIncluded = commitments.some((e) => {

@@ -3,7 +3,7 @@ import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import _ from "lodash";
 
-import ContractServices from "../../services/contract.service";
+import UserAssetsServices from "../../services/userAssets.service";
 
 const router = express.Router();
 
@@ -28,7 +28,7 @@ async function SearchCommitController(req, res) {
   const assetId = _.get(req.body, "assetId");
   const commitment = _.get(req.body, "commitment");
 
-  const commitments = await ContractServices.getAllCommitments(assetId);
+  const commitments = await UserAssetsServices.getAllCommitments(assetId);
   const isIncluded = commitments.some((e) => {
     if (e[0] === commitment[0] && e[1] === commitment[1]) {
       return true;

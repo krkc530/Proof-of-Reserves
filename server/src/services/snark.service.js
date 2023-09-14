@@ -6,6 +6,7 @@ import legoGroth16 from "../../napirs-legogroth16";
 import sigmaProtocol from "../crypto/sigmaProtocol";
 import { pedersenGenToContractFormat } from "../utils/string";
 import { proofFileToContractFormat } from "../utils/string";
+import { parseCommitFile } from "../utils/string";
 import { addPrefixAndPadHex, decStrToHex } from "../utils/types";
 
 const generateProof = (userId, assetId, value, random) => {
@@ -38,7 +39,7 @@ const generateTotalKey = (proofIds) => {
 };
 
 const generateTotalProof = () => {
-  const { totalRandomString, totalValueString } = readTotalKey();
+  const { totalRandomString, totalValueString } = getTotalKey();
 
   console.debug("[SnarkService] totalValueString:", totalValueString);
   console.debug("[SnarkService] totalRandomString:", totalRandomString);
@@ -52,7 +53,8 @@ const generateTotalProof = () => {
   return proof;
 };
 
-const readProof = (proofId) => {
+// should called after generateProof()
+const getProof = (proofId) => {
   const proofPath =
     config.PATH.proofPath + "Proof_vk/proof_" + proofId + ".json";
   if (!fs.existsSync(proofPath)) {
@@ -64,7 +66,8 @@ const readProof = (proofId) => {
   return proof;
 };
 
-const readTotalKey = () => {
+// should called after generateTotalKey()
+const getTotalKey = () => {
   const totalKeyPath = config.PATH.proofPath + "Ped_cm/CM_Key_total.json";
   if (!fs.existsSync(totalKeyPath)) {
     console.error("[SnarkService] Not exist:", totalKeyPath);
@@ -82,8 +85,9 @@ const readTotalKey = () => {
   };
 };
 
+// should called after generateProof()
 const getCommitmentFromProof = (proofId) => {
-  const proof = readProof(proofId);
+  const proof = getProof(proofId);
   const rawCommit = [proof[8], proof[9]];
 
   return rawCommit.map((decStr) => addPrefixAndPadHex(decStrToHex(decStr)));
@@ -102,12 +106,27 @@ const getPublicParameters = () => {
   return { g, h };
 };
 
+// should called after generateTotalProof()
+const getTotalCommitment = () => {
+  const totalCommitPath = config.PATH.proofPath + "Ped_cm/CM_total.json";
+  if (!fs.existsSync(totalCommitPath)) {
+    console.error("[SnarkService] Not exist:", totalCommitPath);
+    return;
+  }
+
+  const decimalTotalCommit = parseCommitFile(totalCommitPath);
+  return decimalTotalCommit.map((decStr) =>
+    addPrefixAndPadHex(decStrToHex(decStr))
+  );
+};
+
 const SnarkServices = {
   generateProof,
   generateTotalKey,
   generateTotalProof,
   getPublicParameters,
   getCommitmentFromProof,
+  getTotalCommitment,
 };
 
 export default SnarkServices;

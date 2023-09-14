@@ -1,7 +1,6 @@
 import _ from "lodash";
 import DbInstance from "../database";
 import SnarkServices from "./snark.service";
-import ContractServices from "./contract.service";
 import AssetsServices from "./assets.service";
 
 const createUserAsset = async (userId, assetId, balance) => {
@@ -25,24 +24,17 @@ const createUserAsset = async (userId, assetId, balance) => {
   const proofId = SnarkServices.generateProof(userId, assetId, balance, random);
   const commit = SnarkServices.getCommitmentFromProof(proofId);
 
-  // upload commit with proof to contract
-  ContractServices.uploadCommitment(assetId, proofId)
-    .then(async (e) => {
-      // update total asset balance in DB
-      const assetBalance = await AssetsServices.getAssetBalance(assetId);
-      const updatedAssetBalance = BigInt(assetBalance) + BigInt(balance);
-      await AssetsServices.updateAssetBalance(assetId, updatedAssetBalance);
+  // update total asset balance in DB
+  const assetBalance = await AssetsServices.getAssetBalance(assetId);
+  const updatedAssetBalance = BigInt(assetBalance) + BigInt(balance);
+  await AssetsServices.updateAssetBalance(assetId, updatedAssetBalance);
 
-      // store commitment to UserAsset record
-      console.debug("[UserAssetsService] Commitment stored:", commit);
-      await DbInstance.execute(
-        "UPDATE UserAssets SET isStored = true, comX = ?, comY = ? WHERE userId = ? AND assetId = ?",
-        [commit[0], commit[1], userId, assetId]
-      );
-    })
-    .catch((err) => {
-      console.error("[UserAssetsService] Error while upload commitment", err);
-    });
+  // store commitment to UserAsset record
+  console.debug("[UserAssetsService] Commitment stored:", commit);
+  await DbInstance.execute(
+    "UPDATE UserAssets SET isStored = true, comX = ?, comY = ? WHERE userId = ? AND assetId = ?",
+    [commit[0], commit[1], userId, assetId]
+  );
 };
 
 const getUserAssetBalance = async (userId, assetId) => {
@@ -73,10 +65,40 @@ const getUserAsset = async (userId, assetId) => {
   };
 };
 
+const getUserIdsFromStoredAssets = async (assetId) => {
+  const [rows, fields] = await DbInstance.query(
+    "SELECT userId FROM UserAssets WHERE assetId = ? AND isStored = true",
+    [assetId]
+  );
+  const userIds = [];
+
+  for (const row of rows) {
+    userIds.push(_.get(row, "userId"));
+  }
+
+  return userIds;
+};
+
+const getAllCommitments = async (assetId) => {
+  const [rows, fields] = await DbInstance.query(
+    "SELECT comX, comY FROM UserAssets WHERE assetId = ? AND isStored = true",
+    [assetId]
+  );
+  const commitments = [];
+
+  for (const row of rows) {
+    commitments.push([_.get(row, "comX"), _.get(row, "comY")]);
+  }
+
+  return commitments;
+};
+
 const UserAssetsServices = {
   createUserAsset,
   getUserAssetBalance,
   getUserAsset,
+  getUserIdsFromStoredAssets,
+  getAllCommitments,
 };
 
 export default UserAssetsServices;

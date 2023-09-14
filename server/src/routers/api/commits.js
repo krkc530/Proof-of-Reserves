@@ -3,7 +3,7 @@ import expressAsyncHandler from "express-async-handler";
 import { query, validationResult } from "express-validator";
 import _ from "lodash";
 
-import ContractServices from "../../services/contract.service";
+import UserAssetsServices from "../../services/userAssets.service";
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ async function commitsController(req, res) {
   }
   console.debug("[commitsController]", req.query);
   const assetId = _.get(req.query, "assetId");
-  const commitments = await ContractServices.getAllCommitments(assetId);
+  const commitments = await UserAssetsServices.getAllCommitments(assetId);
   console.debug("[commitsController]:", _.get(commitments, "length"));
   res.status(200).json({ commitments });
 }

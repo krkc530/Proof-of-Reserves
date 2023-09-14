@@ -80,3 +80,10 @@ export const formatNumberWithDecimal = (number, unit = 1, decimal = 2) => {
 
   return formattedNumber;
 };
+
+export const parseCommitFile = (path) => {
+  const commitJson = JSON.parse(fs.readFileSync(path, "utf8"));
+  const rawCommit = _.get(commitJson, "cm");
+
+  return parseG1Point(prepareString(rawCommit));
+};
