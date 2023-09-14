@@ -5,7 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "pm2 start npm -- run server",
+    "start": "pm2 start --name server npm -- run server && pm2 logs server",
+    "kill": "pm2 kill",
+    "flush": "pm2 flush",
     "server": "node --experimental-specifier-resolution=node index.js",
     "nodemon": "nodemon --experimental-specifier-resolution=node index.js --watch ./src",
     "init": "node ./setup/clean.js && node ./setup/setup.js && npm run initDb && npm run initConfig",
