@@ -1,5 +1,5 @@
 /* global BigInt */
-import _ from 'lodash';
+import _ from "lodash";
 
 /**
  * Padded before '0's up to length [width]
@@ -8,9 +8,9 @@ import _ from 'lodash';
  * @return {String|string}
  */
 String.prototype.fillZero = function (width) {
-    return this.length >= width ?
-        this :
-        new Array(width-this.length+1).join('0') + this;
+  return this.length >= width
+    ? this
+    : new Array(width - this.length + 1).join("0") + this;
 };
 
 /**
@@ -21,20 +21,20 @@ String.prototype.fillZero = function (width) {
  * @returns {boolean}
  */
 export function isBigIntFormat(data) {
-    if (_.isNil(data) || data === '') {
-        return false;
-    }
-    if (typeof data === 'bigint') {
-        return true;
-    }
-    return isNaN(data) ? !isNaN('0x' + data) : !isNaN(data);
+  if (_.isNil(data) || data === "") {
+    return false;
+  }
+  if (typeof data === "bigint") {
+    return true;
+  }
+  return isNaN(data) ? !isNaN("0x" + data) : !isNaN(data);
 }
 
 export function isHexStringFormat(data) {
-    if (data.substring(0, 2) !== '0x') {
-        return false;
-    }
-    return isBigIntFormat(data);
+  if (data.substring(0, 2) !== "0x") {
+    return false;
+  }
+  return isBigIntFormat(data);
 }
 
 /**
@@ -43,10 +43,9 @@ export function isHexStringFormat(data) {
  * @returns {BigInt}
  */
 export function hexToInt(hexString) {
-    if (hexString.toString().substring(0, 2) !== '0x')
-        hexString = '0x' + hexString;
-    // console.log(hexString);
-    return BigInt(hexString);
+  if (hexString.toString().substring(0, 2) !== "0x")
+    hexString = "0x" + hexString;
+  return BigInt(hexString);
 }
 
 /**
@@ -55,11 +54,11 @@ export function hexToInt(hexString) {
  * @returns {Array[BigInt]}
  */
 export function hexListToIntList(hexList) {
-    const intList = [];
-    for (let i = 0; i < hexList.length; i++) {
-        intList[i] = hexToInt(hexList[i]);
-    }
-    return intList;
+  const intList = [];
+  for (let i = 0; i < hexList.length; i++) {
+    intList[i] = hexToInt(hexList[i]);
+  }
+  return intList;
 }
 
 /**
@@ -68,43 +67,43 @@ export function hexListToIntList(hexList) {
  * @returns {Array}             bytes array
  */
 export function hexToBytes(hexString) {
-    if (hexString.toString().substring(0, 2) === '0x')
-        hexString = hexString.substring(2);
-    for (var bytes = [], c = 0; c < hexString.length; c += 2)
-        bytes.push(parseInt(hexString.substr(c, 2), 16));
-    return bytes;
+  if (hexString.toString().substring(0, 2) === "0x")
+    hexString = hexString.substring(2);
+  for (var bytes = [], c = 0; c < hexString.length; c += 2)
+    bytes.push(parseInt(hexString.substr(c, 2), 16));
+  return bytes;
 }
 
 export function decStrToHex(decString) {
-    return BigInt(decString).toString(16);
+  return BigInt(decString).toString(16);
 }
 
 export function hexStrToDec(hexString) {
-    return BigInt(addPrefixHex(hexString)).toString(10);
+  return BigInt(addPrefixHex(hexString)).toString(10);
 }
 
 export function decArrayToHexArray(decArray) {
-    const hexArray = [];
-    for (let i = 0; i < decArray.length; i++) {
-        hexArray[i] = decStrToHex(decArray[i]);
-    }
-    return hexArray;
+  const hexArray = [];
+  for (let i = 0; i < decArray.length; i++) {
+    hexArray[i] = decStrToHex(decArray[i]);
+  }
+  return hexArray;
 }
 
 export function hexArrayToDecArray(hexArray) {
-    const decArray = [];
-    for (let i = 0; i < hexArray.length; i++) {
-        decArray[i] = hexStrToDec(hexArray[i]);
-    }
-    return decArray;
+  const decArray = [];
+  for (let i = 0; i < hexArray.length; i++) {
+    decArray[i] = hexStrToDec(hexArray[i]);
+  }
+  return decArray;
 }
 
 export function padZeroHexString(hexString, length = 64) {
-    if (hexString.substring(0, 2) === '0x') {
-        return hexString.substring(2, hexString.length).padStart(length, '0');
-    } else {
-        return hexString.substring(0, hexString.length).padStart(length, '0');
-    }
+  if (hexString.substring(0, 2) === "0x") {
+    return hexString.substring(2, hexString.length).padStart(length, "0");
+  } else {
+    return hexString.substring(0, hexString.length).padStart(length, "0");
+  }
 }
 
 /**
@@ -113,32 +112,32 @@ export function padZeroHexString(hexString, length = 64) {
  * @returns
  */
 export function flatten(items) {
-    const flat = [];
-    items.forEach(item => {
-        if (Array.isArray(item)) {
-            flat.push(...flatten(item));
-        } else {
-            flat.push(item);
-        }
-    });
+  const flat = [];
+  items.forEach((item) => {
+    if (Array.isArray(item)) {
+      flat.push(...flatten(item));
+    } else {
+      flat.push(item);
+    }
+  });
 
-    return flat;
+  return flat;
 }
 
 export function addPrefixHex(hexString) {
-    if (hexString.substring(0, 2) !== '0x') {
-        return '0x' + hexString;
-    } else {
-        return hexString;
-    }
+  if (hexString.substring(0, 2) !== "0x") {
+    return "0x" + hexString;
+  } else {
+    return hexString;
+  }
 }
 
 export function subtractPrefixHex(hexString) {
-    if (hexString.substring(0, 2) !== '0x') {
-        return hexString;
-    } else {
-        return hexString.substring(2, hexString.length);
-    }
+  if (hexString.substring(0, 2) !== "0x") {
+    return hexString;
+  } else {
+    return hexString.substring(2, hexString.length);
+  }
 }
 
 /**
@@ -149,45 +148,45 @@ export function subtractPrefixHex(hexString) {
  * @param {object} obj Hex string object
  */
 export function removeHexRepresentation(obj) {
-    for (let key in obj) {
-        if (typeof obj[key] === 'string') {
-            obj[key] = obj[key].replace('0x', '');
-        } else if (typeof obj[key] === 'object') {
-            removeHexRepresentation(obj[key]);
-        }
+  for (let key in obj) {
+    if (typeof obj[key] === "string") {
+      obj[key] = obj[key].replace("0x", "");
+    } else if (typeof obj[key] === "object") {
+      removeHexRepresentation(obj[key]);
     }
+  }
 }
 
 export function addPrefixAndPadHex(hexString, length = 64) {
-    hexString = padZeroHexString(hexString, length);
+  hexString = padZeroHexString(hexString, length);
 
-    return '0x' + hexString;
+  return "0x" + hexString;
 }
 
 export function addPrefixHexFromArray(hexArray) {
-    const flat = [];
-    hexArray.forEach(element => {
-        if (Array.isArray(element)) {
-            flat.push(...addPrefixHexFromArray(element));
-        } else {
-            flat.push(addPrefixHex(element));
-        }
-    });
+  const flat = [];
+  hexArray.forEach((element) => {
+    if (Array.isArray(element)) {
+      flat.push(...addPrefixHexFromArray(element));
+    } else {
+      flat.push(addPrefixHex(element));
+    }
+  });
 
-    return flat;
+  return flat;
 }
 
 export function addPrefixAndPadHexFromArray(hexArray, length = 64) {
-    const flat = [];
-    hexArray.forEach(element => {
-        if (Array.isArray(element)) {
-            flat.push(...addPrefixAndPadHexFromArray(element, length));
-        } else {
-            flat.push(addPrefixAndPadHex(element, length));
-        }
-    });
+  const flat = [];
+  hexArray.forEach((element) => {
+    if (Array.isArray(element)) {
+      flat.push(...addPrefixAndPadHexFromArray(element, length));
+    } else {
+      flat.push(addPrefixAndPadHex(element, length));
+    }
+  });
 
-    return flat;
+  return flat;
 }
 
 /**
@@ -199,52 +198,49 @@ export function addPrefixAndPadHexFromArray(hexArray, length = 64) {
  * @returns {string} 3 digits comma
  */
 export function addComma(number) {
-    if (number === '0' || number === 0 || number === BigInt('0')) {
-        return '0';
-    }
+  if (number === "0" || number === 0 || number === BigInt("0")) {
+    return "0";
+  }
 
-    if (typeof number === 'string' && parseFloat(number)) {
-        return number.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
-    else if (typeof number === 'bigint') {
-        return number.toString(10).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
-    else if (typeof number === 'number') {
-        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
+  if (typeof number === "string" && parseFloat(number)) {
+    return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } else if (typeof number === "bigint") {
+    return number.toString(10).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } else if (typeof number === "number") {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 }
 
 export function asciiToHex(str) {
-    let arr = [];
-    for (let n = 0, l = str.length; n < l; n++) {
-        let hex = Number(str.charCodeAt(n)).toString(16);
-        arr.push(hex);
-    }
+  let arr = [];
+  for (let n = 0, l = str.length; n < l; n++) {
+    let hex = Number(str.charCodeAt(n)).toString(16);
+    arr.push(hex);
+  }
 
-    return arr.join('');
+  return arr.join("");
 }
 
 const types = {
-    isBigIntFormat,
-    isHexStringFormat,
-    hexToInt,
-    hexListToIntList,
-    hexToBytes,
-    decStrToHex,
-    hexStrToDec,
-    decArrayToHexArray,
-    hexArrayToDecArray,
-    padZeroHexString,
-    flatten,
-    addPrefixHex,
-    subtractPrefixHex,
-    removeHexRepresentation,
-    addPrefixAndPadHex,
-    addPrefixHexFromArray,
-    addPrefixAndPadHexFromArray,
-    addComma,
-    asciiToHex
+  isBigIntFormat,
+  isHexStringFormat,
+  hexToInt,
+  hexListToIntList,
+  hexToBytes,
+  decStrToHex,
+  hexStrToDec,
+  decArrayToHexArray,
+  hexArrayToDecArray,
+  padZeroHexString,
+  flatten,
+  addPrefixHex,
+  subtractPrefixHex,
+  removeHexRepresentation,
+  addPrefixAndPadHex,
+  addPrefixHexFromArray,
+  addPrefixAndPadHexFromArray,
+  addComma,
+  asciiToHex,
 };
-
 
 export default types;

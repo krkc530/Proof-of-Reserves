@@ -40,8 +40,8 @@ const generateTotalKey = (proofIds) => {
 const generateTotalProof = () => {
   const { totalRandomString, totalValueString } = readTotalKey();
 
-  console.log("[SnarkService] totalValueString:", totalValueString);
-  console.log("[SnarkService] totalRandomString:", totalRandomString);
+  console.debug("[SnarkService] totalValueString:", totalValueString);
+  console.debug("[SnarkService] totalRandomString:", totalRandomString);
 
   // Note that totalValueString is actually not used
   const proof = sigmaProtocol().prove(

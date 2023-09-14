@@ -22,8 +22,6 @@ const getReportsForAsset = async (assetId) => {
   const reports = [];
 
   for (const row of rows) {
-    console.log(_.get(row, "comX"), _.get(row, "comY"));
-
     reports.push({
       userId: _.get(row, "userId"),
       commitment: [_.get(row, "comX"), _.get(row, "comY")],

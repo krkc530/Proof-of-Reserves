@@ -58,7 +58,6 @@ export const jsonToContractFormat = (json) => {
 
 export const vkFileToContractFormat = (path) => {
   const vkJson = JSON.parse(fs.readFileSync(path, "utf8"));
-  console.log(vkJson);
   return jsonToContractFormat(vkJson);
 };
 
