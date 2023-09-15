@@ -16,8 +16,9 @@ const scheduler = cron.schedule(
       const random = Math.floor(Math.random() * 10) % assetLength;
       AssetStatesInstance.setAssetState(random, false);
       console.debug(
-        "[Scheduler] Updated states",
-        Object.assign({}, AssetStatesInstance.states)
+        "[Scheduler] Updated states:",
+        Object.assign({}, AssetStatesInstance.states),
+        new Date()
       );
     } catch (err) {
       console.error(err);
